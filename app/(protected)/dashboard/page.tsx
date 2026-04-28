@@ -186,10 +186,10 @@ export default function DashboardPage() {
                         <h3 className="font-medium text-sm text-white truncate max-w-[140px] group-hover:text-blue-400 transition-colors" title={dataset.name}>{dataset.name}</h3>
                         <button onClick={() => handleDeleteDataset(dataset.id)} className="text-white/20 hover:text-rose-400 transition-colors opacity-0 group-hover:opacity-100"><MoreHorizontal className="w-4 h-4" /></button>
                       </div>
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-white/40 font-mono bg-white/5 px-2 py-0.5 rounded">{formatBytes(dataset.size_bytes || 0)}</span>
-                        <span className="text-white/30">{dataset.row_count.toLocaleString()} rows</span>
-                      </div>
+                       <div className="flex items-center justify-between text-xs">
+                         <span className="text-white/40 font-mono bg-white/5 px-2 py-0.5 rounded">{formatBytes(0)}</span>
+                         <span className="text-white/30">{dataset.row_count.toLocaleString()} rows</span>
+                       </div>
                     </div>
                   ))}
                   
