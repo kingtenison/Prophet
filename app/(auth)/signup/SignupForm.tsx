@@ -15,12 +15,13 @@ export function SignupForm({
   const [state, formAction] = useActionState(action, {})
 
   return (
-    <div className="min-h-screen bg-[#0a0b0f] flex items-center justify-center p-6 relative overflow-hidden">
-      {/* Ambient background */}
+    <div className="min-h-screen bg-black flex items-center justify-center p-6 relative overflow-hidden">
+      {/* Ambient background with electric blue gradients */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-[#4f8ef7] opacity-[0.05] blur-[120px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-[#7c5cfc] opacity-[0.05] blur-[120px]" />
-        <div className="absolute inset-0 opacity-[0.02]" style={{
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-[#2563EB] opacity-[0.06] blur-[120px]" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-[#1D4ED8] opacity-[0.05] blur-[120px]" />
+        {/* Subtle grid pattern */}
+        <div className="absolute inset-0 opacity-[0.015]" style={{
           backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
           backgroundSize: '60px 60px'
         }} />
@@ -70,9 +71,9 @@ export function SignupForm({
             </Button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-[#4b5162]">
+          <p className="mt-6 text-center text-sm text-white/40">
             Already have an account?{' '}
-            <Link href="/login" className="font-semibold text-[#4f8ef7] hover:text-[#7aadff] transition-colors">
+            <Link href="/login" className="font-semibold text-[#2563EB] hover:text-[#60A5FA] transition-colors">
               Sign in
             </Link>
           </p>

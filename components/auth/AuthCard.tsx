@@ -5,41 +5,39 @@ import { Zap } from 'lucide-react'
 interface AuthCardProps {
   children: React.ReactNode
   title: string
+  className?: string
   subtitle?: string
 }
 
-export function AuthCard({ children, title, subtitle }: AuthCardProps) {
+export function AuthCard({ children, title, className, subtitle }: AuthCardProps) {
   return (
     <div className="w-full max-w-md mx-auto">
-      {/* Glow orbs behind card */}
       <div className="relative">
+        {/* Atmospheric glow effects */}
         <div className="absolute -inset-40 -z-10 pointer-events-none">
-          <div className="absolute top-10 left-10 w-64 h-64 rounded-full bg-[#4f8ef7] opacity-[0.07] blur-[80px]" />
-          <div className="absolute bottom-10 right-10 w-64 h-64 rounded-full bg-[#7c5cfc] opacity-[0.07] blur-[80px]" />
+          <div className="absolute top-10 left-10 w-64 h-64 rounded-full bg-[#2563EB]/15 blur-[80px]" />
+          <div className="absolute bottom-10 right-10 w-64 h-64 rounded-full bg-[rgba(223,255,0,0.1)] blur-[80px]" />
         </div>
 
-        <div className="relative bg-[#111318] border border-white/[0.08] rounded-2xl p-8 shadow-[0_20px_80px_rgba(0,0,0,0.6)]">
-          {/* Header */}
+        <div className="relative bg-[#111]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-6 md:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.5),0_0_0_1px_rgba(37,99,235,0.08)_inset]">
           <div className="text-center mb-8">
-            {/* Logo mark */}
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-[#4f8ef7] to-[#7c5cfc] shadow-[0_4px_24px_rgba(79,142,247,0.40)] mb-5">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-[#2563EB] to-[#1D4ED8] shadow-[0_4px_24px_rgba(37,99,235,0.3)] mb-5">
               <Zap className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-2xl font-display font-bold text-white tracking-tight">{title}</h1>
+            <h1 className="font-display font-bold text-2xl md:text-3xl text-white tracking-tight">{title}</h1>
             {subtitle && (
-              <p className="mt-2 text-sm text-[#8b91a7]">{subtitle}</p>
+              <p className="mt-2 text-white/50 text-sm md:text-base">{subtitle}</p>
             )}
           </div>
-
           {children}
         </div>
       </div>
 
-      <p className="mt-5 text-center text-xs text-[#4b5162]">
+      <p className="mt-5 text-center text-xs text-white/40">
         By continuing, you agree to our{' '}
-        <a href="#" className="text-[#4f8ef7] hover:underline">Terms</a>
+        <a href="#" className="text-[#2563EB] hover:text-[#60A5FA] transition-colors">Terms</a>
         {' '}and{' '}
-        <a href="#" className="text-[#4f8ef7] hover:underline">Privacy Policy</a>.
+        <a href="#" className="text-[#2563EB] hover:text-[#60A5FA] transition-colors">Privacy Policy</a>.
       </p>
     </div>
   )

@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react'
+import { CheckCircle, XCircle, AlertTriangle, Info } from 'lucide-react'
 
 interface Toast {
   id: string
@@ -54,7 +55,7 @@ function ToastContainer({ toasts, removeToast }: { toasts: Toast[]; removeToast:
       {toasts.map(t => (
         <div
           key={t.id}
-          className="p-4 rounded-xl shadow-elevated border animate-slide-up"
+          className="p-4 rounded-xl shadow-lg border animate-slide-up"
           style={{
             backgroundColor: getColor(t.type).bg,
             borderColor: getColor(t.type).border,
@@ -85,7 +86,7 @@ function getColor(type: string) {
     case 'success': return { bg: 'rgba(52, 211, 153, 0.12)', border: '#34d399', text: '#34d399' }
     case 'error': return { bg: 'rgba(251, 113, 133, 0.12)', border: '#fb7185', text: '#fb7185' }
     case 'warning': return { bg: 'rgba(251, 191, 36, 0.12)', border: '#fbbf24', text: '#fbbf24' }
-    default: return { bg: 'rgba(79, 142, 247, 0.12)', border: '#4f8ef7', text: '#4f8ef7' }
+    default: return { bg: 'rgba(37, 99, 235, 0.12)', border: '#2563EB', text: '#2563EB' }
   }
 }
 
@@ -98,5 +99,3 @@ function getIcon(type: string) {
     default: return <Info className={className} />
   }
 }
-
-import { CheckCircle, XCircle, AlertTriangle, Info } from 'lucide-react'

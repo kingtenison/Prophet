@@ -8,7 +8,7 @@ interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function Skeleton({ className, variant = 'text', width, height, style, ...props }: SkeletonProps) {
-  const baseStyles = 'animate-pulse bg-[#16191f]'
+  const baseStyles = 'animate-pulse bg-white/5'
 
   const variantStyles = {
     text: 'h-4 rounded',
@@ -33,7 +33,7 @@ export function Skeleton({ className, variant = 'text', width, height, style, ..
 
 export function TableRowSkeleton() {
   return (
-    <div className="flex items-center gap-4 py-3 border-b border-white/[0.07]">
+    <div className="flex items-center gap-4 py-3 border-b border-white/5">
       <Skeleton variant="circular" width={32} height={32} />
       <Skeleton width="30%" height={16} />
       <Skeleton width="20%" height={16} />
@@ -45,6 +45,6 @@ export function TableRowSkeleton() {
 
 export function ChartSkeleton() {
   return (
-    <div className="w-full h-80 bg-[#0d0f14] rounded-2xl animate-pulse border border-white/[0.07]" />
+    <div className="w-full h-80 bg-[#111] rounded-2xl animate-pulse border border-white/5" />
   )
 }

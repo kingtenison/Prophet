@@ -258,9 +258,9 @@ export default function ChartBuilderPage() {
         {/* Left Panel: Config */}
         <div className="lg:w-1/3 space-y-6">
           <Card>
-            <div className="px-6 py-4 border-b border-secondary-100">
-              <h1 className="font-display font-bold text-xl text-secondary-900">Chart Builder</h1>
-              <p className="text-sm text-secondary-500 mt-0.5">
+            <div className="px-6 py-4 border-b border-white/10">
+              <h1 className="font-display font-bold text-xl text-white">Chart Builder</h1>
+              <p className="text-sm text-white/50 mt-0.5">
                 Build a chart from your dataset
               </p>
             </div>
@@ -268,7 +268,7 @@ export default function ChartBuilderPage() {
             <div className="p-6 space-y-5">
               {/* Dataset Selector */}
               <div>
-                <label className="block text-sm font-medium text-secondary-700 mb-1.5">
+                <label className="block text-sm font-medium text-white/70 mb-1.5">
                   Dataset
                 </label>
                 <Select
@@ -285,7 +285,7 @@ export default function ChartBuilderPage() {
                 <>
                   {/* Chart Type */}
                   <div>
-                    <label className="block text-sm font-medium text-secondary-700 mb-2">
+                    <label className="block text-sm font-medium text-white/70 mb-2">
                       Chart type
                     </label>
                     <div className="grid grid-cols-3 gap-2">
@@ -303,8 +303,8 @@ export default function ChartBuilderPage() {
                             key={chart.value}
                             onClick={() => setChartType(chart.value as any)}
                             className={`p-3 rounded-xl border text-center transition-all ${chartType === chart.value
-                                ? 'border-primary-500 bg-primary-50 text-primary-700'
-                                : 'border-secondary-200 hover:border-secondary-300'
+                                ? 'border-blue-500 bg-blue-500/10 text-blue-500'
+                                : 'border-white/20 hover:border-white/30'
                               }`}
                           >
                             <Icon className="w-5 h-5 mx-auto mb-1" />
@@ -318,7 +318,7 @@ export default function ChartBuilderPage() {
                   {/* Axis Selection */}
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-secondary-700 mb-1.5">
+                      <label className="block text-sm font-medium text-white/70 mb-1.5">
                         X-Axis / Labels
                       </label>
                       <Select
@@ -331,7 +331,7 @@ export default function ChartBuilderPage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-secondary-700 mb-1.5">
+                      <label className="block text-sm font-medium text-white/70 mb-1.5">
                         Y-Axis / Values
                       </label>
                       <Select
@@ -351,7 +351,7 @@ export default function ChartBuilderPage() {
                   {/* Aggregation */}
                   {['bar', 'line', 'scatter'].includes(chartType) && (
                     <div>
-                      <label className="block text-sm font-medium text-secondary-700 mb-1.5">
+                      <label className="block text-sm font-medium text-white/70 mb-1.5">
                         Aggregation
                       </label>
                       <div className="flex gap-1.5">
@@ -360,8 +360,8 @@ export default function ChartBuilderPage() {
                             key={agg}
                             onClick={() => setAggregation(agg)}
                             className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-all ${aggregation === agg
-                                ? 'bg-primary-600 text-white border-primary-600'
-                                : 'border-secondary-200 text-secondary-600 hover:border-secondary-300'
+                                ? 'bg-blue-600 text-white border-blue-600'
+                                : 'border-white/20 text-white/60 hover:border-white/30'
                               }`}
                           >
                             {agg.toUpperCase()}
@@ -374,7 +374,7 @@ export default function ChartBuilderPage() {
                   {/* Group By (optional) */}
                   {(chartType === 'bar' || chartType === 'line') && (
                     <div>
-                      <label className="block text-sm font-medium text-secondary-700 mb-1.5">
+                      <label className="block text-sm font-medium text-white/70 mb-1.5">
                         Group by (optional)
                       </label>
                       <Select
@@ -393,11 +393,11 @@ export default function ChartBuilderPage() {
                   {/* Filter Builder */}
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <label className="text-sm font-medium text-secondary-700">Filters</label>
+                      <label className="text-sm font-medium text-white/70">Filters</label>
                       <button
                         type="button"
                         onClick={addFilter}
-                        className="text-xs text-primary-600 hover:text-primary-700 font-medium"
+                        className="text-xs text-blue-500 hover:text-blue-500 font-medium"
                       >
                         + Add filter
                       </button>
@@ -433,7 +433,7 @@ export default function ChartBuilderPage() {
                         <button
                           type="button"
                           onClick={() => removeFilter(f.id)}
-                          className="p-2 text-secondary-400 hover:text-rose-600"
+                          className="p-2 text-white/40 hover:text-rose-600"
                         >
                           ×
                         </button>
@@ -443,7 +443,7 @@ export default function ChartBuilderPage() {
 
                   {/* Title */}
                   <div>
-                    <label className="block text-sm font-medium text-secondary-700 mb-1.5">
+                    <label className="block text-sm font-medium text-white/70 mb-1.5">
                       Chart title
                     </label>
                     <Input
@@ -456,7 +456,7 @@ export default function ChartBuilderPage() {
                   {/* Color */}
                   {chartType !== 'table' && (
                     <div>
-                      <label className="block text-sm font-medium text-secondary-700 mb-1.5">
+                      <label className="block text-sm font-medium text-white/70 mb-1.5">
                         Primary color
                       </label>
                       <div className="flex gap-2">
@@ -474,7 +474,7 @@ export default function ChartBuilderPage() {
                   )}
 
                   {/* Save Actions */}
-                  <div className="pt-4 border-t border-secondary-100 flex gap-2">
+                  <div className="pt-4 border-t border-white/10 flex gap-2">
                     <Button
                       variant="primary"
                       className="flex-1 gap-2"
@@ -495,14 +495,14 @@ export default function ChartBuilderPage() {
           {/* Dataset Info */}
           {selectedDataset && (
             <Card className="p-4">
-              <h3 className="font-medium text-secondary-900 mb-3">Dataset Info</h3>
+              <h3 className="font-medium text-white mb-3">Dataset Info</h3>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-secondary-600">Rows</span>
+                  <span className="text-white/60">Rows</span>
                   <span className="font-medium">{selectedDataset.row_count.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-secondary-600">Columns</span>
+                  <span className="text-white/60">Columns</span>
                   <span className="font-medium">{selectedDataset.columns.length}</span>
                 </div>
               </div>
@@ -513,17 +513,17 @@ export default function ChartBuilderPage() {
         {/* Right Panel: Preview */}
         <div className="lg:flex-1 space-y-6">
           <Card className="p-6">
-            <h2 className="font-display font-bold text-xl text-secondary-900 mb-6">
+            <h2 className="font-display font-bold text-xl text-white mb-6">
               Live Preview
             </h2>
 
             {loading ? (
               <div className="h-96 flex items-center justify-center">
-                <div className="w-10 h-10 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin" />
+                <div className="w-10 h-10 border-4 border-blue-500/20 border-t-blue-600 rounded-full animate-spin" />
               </div>
             ) : !selectedDatasetId || !xColumn || !yColumn || chartData.length === 0 ? (
-              <div className="h-96 flex items-center justify-center border-2 border-dashed border-secondary-200 rounded-xl">
-                <div className="text-center text-secondary-500">
+              <div className="h-96 flex items-center justify-center border-2 border-dashed border-white/20 rounded-xl">
+                <div className="text-center text-white/50">
                   <BarChart3 className="w-16 h-16 mx-auto mb-3 opacity-30" />
                   <p>Select a dataset and configure axes to see preview</p>
                 </div>
@@ -549,8 +549,8 @@ export default function ChartBuilderPage() {
             <YAxis tick={{ fontSize: 12 }} stroke="#64748b" />
             <Tooltip
               contentStyle={{
-                backgroundColor: '#fff',
-                border: '1px solid #e2e8f0',
+                backgroundColor: '#111',
+                border: '1px solid rgba(255,255,255,0.1)',
                 borderRadius: '12px',
                 boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
               }}
@@ -572,8 +572,8 @@ export default function ChartBuilderPage() {
             <YAxis tick={{ fontSize: 12 }} stroke="#64748b" />
             <Tooltip
               contentStyle={{
-                backgroundColor: '#fff',
-                border: '1px solid #e2e8f0',
+                backgroundColor: '#111',
+                border: '1px solid rgba(255,255,255,0.1)',
                 borderRadius: '12px',
                 boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
               }}
@@ -610,8 +610,8 @@ export default function ChartBuilderPage() {
             </Pie>
             <Tooltip
               contentStyle={{
-                backgroundColor: '#fff',
-                border: '1px solid #e2e8f0',
+                backgroundColor: '#111',
+                border: '1px solid rgba(255,255,255,0.1)',
                 borderRadius: '12px',
                 boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
               }}
@@ -628,8 +628,8 @@ export default function ChartBuilderPage() {
             <Tooltip
               cursor={{ strokeDasharray: '3 3' }}
               contentStyle={{
-                backgroundColor: '#fff',
-                border: '1px solid #e2e8f0',
+                backgroundColor: '#111',
+                border: '1px solid rgba(255,255,255,0.1)',
                 borderRadius: '12px',
                 boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
               }}
@@ -640,7 +640,7 @@ export default function ChartBuilderPage() {
 
       default:
         return (
-          <div className="h-96 flex items-center justify-center text-secondary-500">
+          <div className="h-96 flex items-center justify-center text-white/50">
             {chartType.toUpperCase()} chart preview coming soon
           </div>
         )

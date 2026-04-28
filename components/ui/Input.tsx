@@ -6,26 +6,27 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string
   hint?: string
   icon?: React.ReactNode
+  containerClassName?: string
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, label, error, hint, icon, id, ...props }, ref) => {
+  ({ className, label, error, hint, icon, id, containerClassName, ...props }, ref) => {
     const generatedId = React.useId()
     const inputId = id || `input-${generatedId.replace(/:/g, '-')}`
 
     return (
-      <div className="w-full">
+      <div className={cn('w-full', containerClassName)}>
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-xs font-semibold text-[#8b91a7] mb-2 uppercase tracking-wider"
+            className="block text-sm font-medium text-white mb-2 uppercase tracking-wider"
           >
             {label}
           </label>
         )}
         <div className="relative">
           {icon && (
-            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#4b5162] pointer-events-none">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none transition-colors focus-within:text-[#2563EB]">
               {icon}
             </div>
           )}
@@ -33,24 +34,25 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             id={inputId}
             className={cn(
-              'w-full bg-[#16191f] border border-white/[0.08] rounded-xl text-[0.9rem] text-[#f0f2f8]',
-              'placeholder:text-[#4b5162] transition-all duration-200 outline-none',
-              'px-4 py-3',
+              'w-full bg-[#111] border border-white/8 rounded-lg text-white placeholder:text-white/30',
+              'transition-all duration-200 outline-none',
+              'px-4 py-3 min-h-[48px]',
+              'focus:border-[#2563EB] focus:ring-2 focus:ring-[rgba(37,99,235,0.25)] focus:ring-offset-0',
+              'hover:border-white/15',
               icon && 'pl-10',
-              'focus:border-[#4f8ef7] focus:ring-2 focus:ring-[#4f8ef7]/15',
-              'hover:border-white/[0.14]',
-              error && 'border-rose-500/60 focus:border-rose-500 focus:ring-rose-500/15',
+              error && 'border-red-500 focus:ring-red-500/25 focus:border-red-500',
               className
             )}
             {...props}
           />
         </div>
-        {error && <p className="mt-1.5 text-xs text-rose-400 flex items-center gap-1">⚠ {error}</p>}
-        {hint && !error && <p className="mt-1.5 text-xs text-[#4b5162]">{hint}</p>}
+        {error && <p className="mt-1.5 text-xs text-red-400 flex items-center gap-1">⚠ {error}</p>}
+        {hint && !error && <p className="mt-1.5 text-xs text-white/40">{hint}</p>}
       </div>
     )
   }
 )
+
 Input.displayName = 'Input'
 
 export { Input }

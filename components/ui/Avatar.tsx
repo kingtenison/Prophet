@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { cn } from '@/lib/utils'
 
 interface AvatarProps {
   src?: string | null
@@ -21,10 +22,15 @@ export function Avatar({ src, name, size = 'md', className }: AvatarProps) {
     lg: 'w-14 h-14 text-lg',
   }
 
+  // Generate consistent gradient based on name
+  const gradientId = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
+  const hues = [138, 144, 155, 160] // Electric blue palette
+  const hue = hues[gradientId % hues.length]
+
   return (
     <div
       className={cn(
-        'relative flex items-center justify-center rounded-full overflow-hidden ring-2 ring-secondary-100',
+        'relative flex items-center justify-center rounded-full overflow-hidden ring-2 ring-white/10',
         sizes[size],
         className
       )}
@@ -32,10 +38,15 @@ export function Avatar({ src, name, size = 'md', className }: AvatarProps) {
       {src ? (
         <img src={src} alt={name} className="w-full h-full object-cover" />
       ) : (
-        <span className="font-semibold text-secondary-600">{initials}</span>
+        <div 
+          className="w-full h-full flex items-center justify-center"
+          style={{
+            background: `linear-gradient(135deg, hsl(${hue}, 75%, 65%) 0%, hsl(${hue + 20}, 70%, 50%) 100%)`
+          }}
+        >
+          <span className="font-semibold text-white">{initials}</span>
+        </div>
       )}
     </div>
   )
 }
-
-import { cn } from '@/lib/utils'

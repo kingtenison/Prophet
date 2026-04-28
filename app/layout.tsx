@@ -29,7 +29,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.variable} ${syne.variable} font-sans antialiased bg-[#0a0b0f] text-[#f0f2f8]`}>
+      <body className={`${inter.variable} ${syne.variable} font-sans antialiased bg-black text-white`}>
         <Providers>{children}</Providers>
       </body>
     </html>

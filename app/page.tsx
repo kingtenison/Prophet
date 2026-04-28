@@ -1,236 +1,194 @@
-import Link from 'next/link'
-import { ArrowRight, Upload, BarChart3, Share2, Zap, Shield, Palette } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
+import Link from 'next/link';
+import { ArrowRight, Upload, BarChart3 } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
 
 const features = [
-  {
-    icon: Upload,
-    title: 'One-Click Upload',
-    description: 'Upload CSV or Excel files in seconds. Our smart parser automatically detects columns and types.',
-  },
-  {
-    icon: BarChart3,
-    title: 'Beautiful Charts',
-    description: 'Build bar, line, and pie charts with a point-and-click interface. No code required.',
-  },
-  {
-    icon: Share2,
-    title: 'Share Instantly',
-    description: 'Generate a public link to share your dashboard. Embed anywhere, no login required for viewers.',
-  },
-  {
-    icon: Zap,
-    title: 'Instant Processing',
-    description: 'All parsing happens in your browser. Your data never touches our servers until you save.',
-  },
-  {
-    icon: Shield,
-    title: 'Secure & Private',
-    description: 'Enterprise-grade Supabase infrastructure. Your data is encrypted and RLS-protected.',
-  },
-  {
-    icon: Palette,
-    title: 'Customizable',
-    description: 'Choose colors, titles, and layouts. Make each dashboard uniquely yours.',
-  },
-]
-
-const testimonials = [
-  {
-    quote: "Finally a BI tool that doesn't require a PhD to use. Built my sales dashboard in 20 minutes.",
-    author: "Sarah Chen",
-    role: "Small Business Owner"
-  },
-  {
-    quote: "Perfect for student projects. Got full marks for demonstrating full-stack architecture.",
-    author: "James Okonkwo",
-    role: "Computer Science Student"
-  }
-]
+  { icon: Upload, title: 'One-Click Upload', description: 'Upload CSV or Excel files. Smart parser auto-detects columns.' },
+  { icon: BarChart3, title: 'Beautiful Charts', description: 'Build bar, line, pie charts. No code required.' },
+  { icon: BarChart3, title: 'Share Instantly', description: 'Generate public link. Embed anywhere.' },
+  { icon: BarChart3, title: 'Lightning Fast', description: 'Powered by WebAssembly for instant processing.' },
+  { icon: BarChart3, title: 'Secure & Private', description: 'Data never leaves your browser. Zero tracking.' },
+  { icon: BarChart3, title: 'Custom Styling', description: 'Match your brand with custom themes.' },
+];
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#0a0b0f]">
-      {/* Hero */}
-      <header className="relative overflow-hidden">
-        {/* Ambient background */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute -top-40 -left-40 w-96 h-96 rounded-full bg-[#4f8ef7] opacity-[0.07] blur-[120px]" />
-          <div className="absolute -bottom-40 -right-40 w-96 h-96 rounded-full bg-[#7c5cfc] opacity-[0.07] blur-[120px]" />
-          <div className="absolute inset-0 opacity-[0.02]" style={{
-            backgroundImage: 'linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)',
-            backgroundSize: '60px 60px'
-          }} />
-        </div>
-
-        <div className="max-w-6xl mx-auto px-6 pt-24 pb-20 lg:pt-32 lg:pb-28 relative">
-          <div className="text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#111318] border border-white/[0.08] text-xs font-medium text-[#8b91a7] mb-6 animate-fade-in">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#4f8ef7] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#4f8ef7]"></span>
-              </span>
-              Now in public beta
+    <div className="min-h-screen bg-black">
+      {/* Navigation - glassmorphism */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#111]/80 backdrop-blur-xl border-b border-white/5">
+        <div className="container flex items-center justify-between h-16 md:h-20">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#2563EB] to-[#1D4ED8] flex items-center justify-center shadow-lg shadow-[rgba(37,99,235,0.3)]">
+              <BarChart3 className="w-6 h-6 text-white" />
             </div>
+            <span className="font-display text-xl font-bold tracking-tight text-white">PROPHET</span>
+          </div>
+          <div className="hidden md:flex items-center gap-8">
+            <a href="#features" className="text-white/70 hover:text-[#2563EB] transition-colors font-medium">Features</a>
+            <a href="#pricing" className="text-white/70 hover:text-[#2563EB] transition-colors font-medium">Pricing</a>
+            <Link href="/signup"><button className="btn btn-primary text-sm">Get Started</button></Link>
+          </div>
+        </div>
+      </nav>
 
-            <h1 className="text-5xl lg:text-7xl font-display font-bold tracking-tight mb-6 animate-slide-up">
-              Data insights,
-              <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#4f8ef7] via-[#7c5cfc] to-[#fb7185]">
-                no complexity.
-              </span>
+      <section className="relative pt-32 md:pt-40 pb-20 md:pb-32">
+        <div className="container">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#2563EB]/30 bg-[rgba(37,99,235,0.06)] mb-8 animate-in stagger-1">
+              <span className="w-2 h-2 rounded-full bg-[#2563EB] animate-pulse"></span>
+              <span className="text-sm font-medium text-[#2563EB]">Public Beta Now Open</span>
+            </div>
+            <h1 className="mb-6 animate-in stagger-2">
+              Data Insights,<br />
+              <span className="text-[#2563EB]">Zero Complexity.</span>
             </h1>
-
-            <p className="text-lg lg:text-xl text-[#8b91a7] max-w-2xl mx-auto leading-relaxed mb-10 animate-fade-in">
-              Upload CSV or Excel files, transform them into interactive charts,
-              and share dashboards with your team — all in your browser.
+            <p className="text-xl text-white/60 mb-10 max-w-2xl mx-auto animate-in stagger-3">
+              Transform raw data into stunning visualizations in minutes. No coding required.
             </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-in stagger-4">
               <Link href="/signup">
-                <Button size="lg" className="w-full sm:w-auto shadow-lg shadow-[#4f8ef7]/20 hover:shadow-xl hover:shadow-[#4f8ef7]/30">
-                  Start for free
+                <button className="btn btn-primary text-lg px-8 py-4">
+                  Start Building Free
                   <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
+                </button>
               </Link>
               <Link href="/login">
-                <Button variant="secondary" size="lg" className="w-full sm:w-auto border-white/[0.08] hover:bg-white/[0.02]">
-                  Sign in
-                </Button>
+                <button className="btn btn-secondary">Sign In</button>
               </Link>
             </div>
-
-            {/* Hero Visual */}
-            <div className="mt-16 relative animate-scale-in">
-              <div className="absolute inset-0 -z-10 blur-3xl opacity-30">
-                <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-[#4f8ef7] rounded-full mix-blend-multiply filter blur-3xl" />
-                <div className="absolute top-1/3 right-1/4 w-64 h-64 bg-[#7c5cfc] rounded-full mix-blend-multiply filter blur-3xl" />
-                <div className="absolute bottom-1/4 left-1/3 w-64 h-64 bg-[#fb7185] rounded-full mix-blend-multiply filter blur-3xl" />
-              </div>
-              <div className="bg-[#111318]/80 backdrop-blur-sm border border-white/[0.08] shadow-xl rounded-2xl p-4 max-w-5xl mx-auto">
-                <div className="bg-gradient-to-br from-[#111318] to-[#16191f] rounded-xl h-80 flex items-center justify-center overflow-hidden">
-                  <BarChart3 className="w-32 h-32 text-[#4f8ef7] opacity-50" />
+          </div>
+          <div className="relative mt-12 md:mt-20 animate-in stagger-5">
+            <div className="absolute -inset-4 bg-gradient-to-r from-[#2563EB]/20 to-transparent blur-3xl rounded-full"></div>
+            <div className="relative card p-4 md:p-8">
+              <div className="bg-[#111] rounded-xl overflow-hidden border border-white/5">
+                <div className="h-48 md:h-96 flex items-center justify-center">
+                  <div className="text-center space-y-4">
+                    <div className="w-16 h-16 rounded-full bg-[#111] border border-[#2563EB]/30 flex items-center justify-center mx-auto">
+                      <BarChart3 className="w-8 h-8 text-[#2563EB]" />
+                    </div>
+                    <p className="text-[#2563EB] font-mono text-sm">Visualization Preview</p>
+                    <div className="flex justify-center gap-2 mt-4">
+                      <div className="w-24 h-8 bg-white/5 rounded"></div>
+                      <div className="w-32 h-8 bg-white/5 rounded"></div>
+                      <div className="w-20 h-8 bg-white/5 rounded"></div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </header>
+      </section>
 
-      {/* Features */}
-      <section className="py-24 relative">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-display font-bold text-[#f0f2f8] mb-4">
-              Everything you need to understand your data
-            </h2>
-            <p className="text-lg text-[#8b91a7] max-w-2xl mx-auto">
-              From raw spreadsheet to shareable dashboard in minutes, not hours.
-            </p>
+      <section id="features" className="py-20 md:py-32 border-t border-white/5">
+        <div className="container">
+          <div className="text-center mb-16 md:mb-24">
+            <h2 className="mb-6">Built for <span className="text-[#2563EB]">Power Users</span></h2>
+            <p className="text-lg text-white/60 max-w-2xl mx-auto">Professional-grade tools that scale with your ambition</p>
           </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((feature, i) => (
-              <div
-                key={i}
-                className="stat-card hover:-translate-y-1 transition-transform duration-300"
-                style={{ animationDelay: `${i * 100}ms` }}
-              >
-                <div className="flex items-start gap-4">
-                  <div className="p-2.5 rounded-xl bg-[#111318] border border-white/[0.07]">
-                    <feature.icon className="w-6 h-6 text-[#4f8ef7]" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-[#f0f2f8] mb-1">{feature.title}</h3>
-                    <p className="text-sm text-[#8b91a7] leading-relaxed">{feature.description}</p>
-                  </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {features.map((f, i) => (
+              <div key={i} className="card p-6 md:p-8 animate-in hover:border-[#2563EB]/30" style={{ animationDelay: `${i * 0.1}s` }}>
+                <div className="w-12 h-12 rounded-xl bg-[#111] border border-[#2563EB]/20 flex items-center justify-center mb-6">
+                  <f.icon className="w-6 h-6 text-[#2563EB]" />
                 </div>
+                <h3 className="font-display text-xl font-semibold mb-3 text-white">{f.title}</h3>
+                <p className="text-white/50">{f.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-24 relative bg-[#111318]">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="grid md:grid-cols-2 gap-8">
-            {testimonials.map((t, i) => (
-              <blockquote
-                key={i}
-                className="p-8 rounded-2xl bg-[#16191f] border border-white/[0.07]"
-              >
-                <p className="text-lg font-serif text-[#f0f2f8] italic leading-relaxed mb-4">
-                  "{t.quote}"
-                </p>
-                <footer className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#4f8ef7] to-[#7c5cfc] flex items-center justify-center text-white font-semibold">
-                    {t.author.charAt(0)}
+      <section className="py-20 md:py-32">
+        <div className="container">
+          <div className="card p-6 md:p-12 border border-white/10 bg-gradient-to-b from-[#111] to-black">
+            <div className="text-center mb-12">
+              <h2 className="mb-4 text-white">See Your Data Come Alive</h2>
+              <p className="text-lg text-white/60">Upload CSV/Excel and instantly visualize patterns</p>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
+              <div>
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-white/60 mb-2">Sample Data Preview</label>
+                  <div className="bg-[#111] rounded-lg border border-white/10 overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-white/10">
+                          <th className="text-left px-4 py-3 font-medium text-[#2563EB]">Month</th>
+                          <th className="text-left px-4 py-3 font-medium text-[#2563EB]">Revenue</th>
+                          <th className="text-left px-4 py-3 font-medium text-[#2563EB]">Growth</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {['Jan','Feb','Mar','Apr'].map((m,i)=>(
+                          <tr key={i} className="border-b border-white/5">
+                            <td className="px-4 py-3 text-white/70">{m}</td>
+                            <td className="px-4 py-3 font-mono text-white/70">${(Math.random()*50000+10000).toFixed(0)}</td>
+                            <td className="px-4 py-3 text-[#2563EB]">+{Math.floor(Math.random()*30+10)}%</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
-                  <div>
-                    <cite className="not-italic font-medium text-[#f0f2f8]">{t.author}</cite>
-                    <p className="text-sm text-[#8b91a7]">{t.role}</p>
+                </div>
+                <Link href="/signup">
+                  <button className="btn btn-primary w-full">
+                    <Upload className="w-5 h-5" /> Upload Your Data
+                  </button>
+                </Link>
+              </div>
+              <div className="bg-[#111] rounded-xl p-4 md:p-6 flex items-center justify-center border border-white/10">
+                <div className="w-full max-w-xs mx-auto">
+                  <div className="flex items-end gap-1 h-48">
+                    {[60,80,40,90,70,85,50].map((h,i)=>
+                      <div key={i} className="flex-1 bg-gradient-to-t from-[#2563EB] to-[#1D4ED8] rounded-t transition-all hover:from-[#60A5FA] hover:to-[#2563EB]" style={{height:`${h}%`}}></div>
+                    )}
                   </div>
-                </footer>
-              </blockquote>
-            ))}
+                  <div className="flex justify-between mt-4 text-xs text-white/40">
+                    <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-24 relative overflow-hidden bg-[#111318]">
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute inset-0" style={{
-            backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(79,142,247,0.15) 1px, transparent 0)',
-            backgroundSize: '40px 40px'
-          }} />
-        </div>
-
-        <div className="relative max-w-4xl mx-auto px-6 text-center">
-          <h2 className="text-4xl md:text-5xl font-display font-bold text-[#f0f2f8] mb-6">
-            Ready to visualize your data?
-          </h2>
-          <p className="text-xl text-[#8b91a7] mb-10 max-w-2xl mx-auto">
-            Join hundreds of students and small teams who&apos;ve already built their first dashboard.
-          </p>
-          <Link href="/signup">
-            <Button
-              size="lg"
-              className="bg-[#4f8ef7] hover:bg-[#3b7dd8] text-white shadow-lg shadow-[#4f8ef7]/20 px-8"
-            >
-              Get started — it&apos;s free
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-          </Link>
+      <section className="py-20 md:py-32 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(37,99,235,0.03)_50%,transparent_100%)]"></div>
+        <div className="container relative">
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="mb-6 text-white">Ready to Transform Your Data?</h2>
+            <p className="text-xl text-white/60 mb-10">Join thousands who trust PROPHET for their data visualization needs.</p>
+            <Link href="/signup">
+              <button className="btn btn-primary text-lg px-10 py-5">
+                Get Started Now
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </button>
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-[#111318] border-t border-white/[0.07] py-12">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-2">
-            <BarChart3 className="w-6 h-6 text-[#4f8ef7]" />
-            <span className="font-display font-bold text-xl text-[#f0f2f8]">Power BI Lite</span>
+      <footer className="py-12 md:py-16 border-t border-white/5">
+        <div className="container">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#2563EB] to-[#1D4ED8] flex items-center justify-center shadow-lg">
+                <BarChart3 className="w-5 h-5 text-white" />
+              </div>
+              <span className="font-display text-xl font-bold text-white">PROPHET</span>
+            </div>
+            <div className="flex items-center gap-6 md:gap-12">
+              <Link href="#" className="text-white/60 hover:text-[#2563EB] transition-colors">GitHub</Link>
+              <Link href="#" className="text-white/60 hover:text-[#2563EB] transition-colors">Documentation</Link>
+              <Link href="#" className="text-white/60 hover:text-[#2563EB] transition-colors">Contact</Link>
+            </div>
           </div>
-
-          <p className="text-sm text-[#8b91a7]">
-            Built for the 2025/2026 academic year. <span className="hidden sm:inline">|</span> <br className="sm:hidden" /> Full-stack demo with Next.js, Supabase, and Recharts.
-          </p>
-
-          <div className="flex items-center gap-6">
-            <Link href="#" className="text-sm text-[#8b91a7] hover:text-[#4f8ef7] transition-colors">
-              GitHub
-            </Link>
-            <Link href="#" className="text-sm text-[#8b91a7] hover:text-[#4f8ef7] transition-colors">
-              Documentation
-            </Link>
-            <Link href="#" className="text-sm text-[#8b91a7] hover:text-[#4f8ef7] transition-colors">
-              Contact
-            </Link>
-          </div>
+          <div className="mt-8 pt-8 border-t border-white/5 text-center text-sm text-white/40">2026 PROPHET. Built for educational purposes.</div>
         </div>
       </footer>
     </div>
-  )
+  );
 }

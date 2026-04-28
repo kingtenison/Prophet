@@ -16,7 +16,7 @@ export default async function ProtectedLayout({
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0b0f]">
+    <div className="min-h-screen bg-black">
       <Navbar />
       {/* Offset main content by sidebar width — 232px expanded */}
       <main className="md:ml-[232px] min-h-screen transition-all duration-300">

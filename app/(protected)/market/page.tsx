@@ -120,15 +120,15 @@ export default function MarketResearchPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0b0f]">
+    <div className="min-h-screen bg-[black]">
       <div className="max-w-6xl mx-auto px-4 py-12">
         {/* Header */}
         <div className="mb-12 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-500/20 rounded-2xl mb-6 text-primary-500 border border-primary-500/20">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-[rgba(37,99,235,0.15)] rounded-2xl mb-6 text-[#2563EB] border border-primary-500/20">
             <Compass className="w-8 h-8" />
           </div>
           <h1 className="text-4xl font-display font-bold tracking-tight">Market Intelligence</h1>
-          <p className="text-[#8b91a7] mt-3 text-lg max-w-2xl mx-auto">
+          <p className="text-white/50 mt-3 text-lg max-w-2xl mx-auto">
             Discover your competitive advantage with live, AI-driven market audits.
           </p>
         </div>
@@ -141,11 +141,11 @@ export default function MarketResearchPage() {
                 <p className="text-sm font-medium">{error}</p>
               </div>
             )}
-            <Card className="p-8 shadow-elevated border-white/[0.08] bg-[#111318]">
+            <Card className="p-8 shadow-elevated border-white/10 bg-[#111]">
               <form onSubmit={handleSearch} className="space-y-6">
                 <div className="space-y-2 relative">
-                  <label className="text-sm font-semibold text-[#8b91a7] flex items-center gap-2">
-                    <Building2 className="w-4 h-4 text-primary-500" /> Organization Name
+                  <label className="text-sm font-semibold text-white/50 flex items-center gap-2">
+                    <Building2 className="w-4 h-4 text-[#2563EB]" /> Organization Name
                   </label>
                   <div className="relative">
                     <Input 
@@ -159,24 +159,24 @@ export default function MarketResearchPage() {
                     />
                     {searchingName && (
                       <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                        <Loader2 className="w-4 h-4 animate-spin text-primary-500" />
+                        <Loader2 className="w-4 h-4 animate-spin text-[#2563EB]" />
                       </div>
                     )}
                   </div>
                    {showSuggestions && suggestions.length > 0 && (
-                     <div className="absolute z-50 w-full mt-1 bg-[#111318] border border-white/[0.08] rounded-xl shadow-xl max-h-60 overflow-y-auto overflow-x-hidden animate-in fade-in zoom-in-95 duration-100">
+                     <div className="absolute z-50 w-full mt-1 bg-[#111] border border-white/10 rounded-xl shadow-xl max-h-60 overflow-y-auto overflow-x-hidden animate-in fade-in zoom-in-95 duration-100">
                        {suggestions.map((s) => (
                          <button
                            key={s.id || s.place_id}
                            type="button"
                            onClick={() => selectSuggestion(s)}
-                           className="w-full px-4 py-3 text-left hover:bg-white/[0.02] transition-colors border-b last:border-b-0 border-white/[0.07] group"
+                           className="w-full px-4 py-3 text-left hover:bg-white/[0.02] transition-colors border-b last:border-b-0 border-white/5 group"
                          >
-                           <div className="font-bold text-[#f0f2f8] group-hover:text-primary-500 transition-colors">{s.name}</div>
-                           <div className="text-[10px] text-[#4b5162] mt-0.5 flex items-center gap-1">
+                           <div className="font-bold text-white group-hover:text-[#2563EB] transition-colors">{s.name}</div>
+                           <div className="text-[10px] text-white/30 mt-0.5 flex items-center gap-1">
                              <MapPin className="w-3 h-3" /> {s.location}
                            </div>
-                           <div className="text-[10px] font-bold text-primary-500 uppercase mt-1 tracking-wider">{s.type}</div>
+                           <div className="text-[10px] font-bold text-[#2563EB] uppercase mt-1 tracking-wider">{s.type}</div>
                          </button>
                        ))}
                      </div>
@@ -185,8 +185,8 @@ export default function MarketResearchPage() {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-[#8b91a7] flex items-center gap-2">
-                      <Target className="w-4 h-4 text-primary-500" /> Business Category
+                    <label className="text-sm font-semibold text-white/50 flex items-center gap-2">
+                      <Target className="w-4 h-4 text-[#2563EB]" /> Business Category
                     </label>
                     <Input 
                       placeholder="e.g. Coffee Shop" 
@@ -196,8 +196,8 @@ export default function MarketResearchPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-[#8b91a7] flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-primary-500" /> Location
+                    <label className="text-sm font-semibold text-white/50 flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-[#2563EB]" /> Location
                     </label>
                     <div className="relative group">
                       <Input 
@@ -210,14 +210,14 @@ export default function MarketResearchPage() {
                       <button
                         type="button"
                         onClick={handleUseLocation}
-                        className={`absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md transition-colors ${geoCoords ? 'bg-primary-500/20 text-primary-500' : 'hover:bg-white/[0.02] text-[#4b5162]'}`}
+                        className={`absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md transition-colors ${geoCoords ? 'bg-[rgba(37,99,235,0.15)] text-[#2563EB]' : 'hover:bg-white/[0.02] text-white/30'}`}
                         title="Use my current location"
                       >
                         {geoLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Compass className="w-4 h-4" />}
                       </button>
                     </div>
                     {geoCoords && (
-                      <p className="text-[10px] text-primary-500 font-semibold animate-in fade-in slide-in-from-top-1">
+                      <p className="text-[10px] text-[#2563EB] font-semibold animate-in fade-in slide-in-from-top-1">
                         Using live GPS coordinates
                       </p>
                     )}
@@ -226,7 +226,7 @@ export default function MarketResearchPage() {
 
                 <Button 
                   type="submit" 
-                  className="w-full h-14 text-lg font-bold gap-2 shadow-lg shadow-primary-500/20"
+                  className="w-full h-14 text-lg font-bold gap-2 shadow-lg shadow-[rgba(37,99,235,0.2)]"
                   disabled={loading || geoLoading}
                 >
                   <Search className="w-5 h-5" /> Start Competitive Analysis
@@ -234,15 +234,15 @@ export default function MarketResearchPage() {
               </form>
             </Card>
             
-            <div className="mt-8 grid grid-cols-3 gap-4 text-center">
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
               {[
                 { icon: Globe, label: 'Real-time Search' },
                 { icon: Users, label: 'Competitor Profiling' },
                 { icon: TrendingUp, label: 'Gap Analysis' }
               ].map((item, i) => (
-                <div key={item.label} className="p-4 rounded-xl bg-[#111318] border border-white/[0.07] shadow-sm">
-                  <item.icon className="w-5 h-5 text-[#4b5162] mx-auto mb-2" />
-                  <p className="text-xs font-bold text-[#8b91a7] uppercase tracking-wider">{item.label}</p>
+                <div key={item.label} className="p-4 rounded-xl bg-[#111] border border-white/5 shadow-sm">
+                  <item.icon className="w-5 h-5 text-white/30 mx-auto mb-2" />
+                  <p className="text-xs font-bold text-white/50 uppercase tracking-wider">{item.label}</p>
                 </div>
               ))}
             </div>
@@ -254,18 +254,18 @@ export default function MarketResearchPage() {
             <div className="relative mb-8">
               <div className="w-32 h-32 border-4 border-primary-500/20 rounded-full animate-[spin_3s_linear_infinite]" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <Globe className="w-12 h-12 text-primary-500 animate-pulse" />
+                <Globe className="w-12 h-12 text-[#2563EB] animate-pulse" />
               </div>
             </div>
             <h2 className="text-2xl font-display font-bold">Gathering Intelligence</h2>
-            <p className="text-[#8b91a7] mt-2">Searching for {formData.businessType}s in {formData.location}...</p>
+            <p className="text-white/50 mt-2">Searching for {formData.businessType}s in {formData.location}...</p>
             
             <div className="mt-12 space-y-3 w-full max-w-md">
-              <div className="flex items-center gap-3 text-sm text-[#8b91a7] px-4 py-2 bg-[#111318] rounded-lg border border-white/[0.07]">
+              <div className="flex items-center gap-3 text-sm text-white/50 px-4 py-2 bg-[#111] rounded-lg border border-white/5">
                 <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
                 Scanning local business directories...
               </div>
-              <div className="flex items-center gap-3 text-sm text-[#8b91a7] px-4 py-2 bg-[#111318] rounded-lg border border-white/[0.07] opacity-60">
+              <div className="flex items-center gap-3 text-sm text-white/50 px-4 py-2 bg-[#111] rounded-lg border border-white/5 opacity-60">
                 <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse" />
                 Analyzing competitor reviews and ratings...
               </div>
@@ -282,7 +282,7 @@ export default function MarketResearchPage() {
               </div>
               <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
                 <div>
-                  <Badge variant="secondary" className="bg-primary-500/20 text-primary-400 border-primary-500/20 mb-2">Analysis Complete</Badge>
+                  <Badge variant="secondary" className="bg-[rgba(37,99,235,0.15)] text-[#a5adff] border-primary-500/20 mb-2">Analysis Complete</Badge>
                   <h2 className="text-2xl font-bold font-display">{formData.businessName} Market Outlook</h2>
                   <p className="text-indigo-100/80 mt-1 flex items-center gap-1.5">
                     <MapPin className="w-3.5 h-3.5" />
@@ -300,21 +300,21 @@ export default function MarketResearchPage() {
               <div className="lg:col-span-2 space-y-8">
                 {(!analysis.competitors || analysis.competitors.length === 0) ? (
                   <Card className="p-12 text-center bg-gradient-to-br from-primary-500/10 to-indigo-500/10 border border-primary-500/20 border-dashed">
-                    <Globe className="w-16 h-16 text-primary-500/50 mx-auto mb-6" />
-                    <h3 className="text-2xl font-display font-bold text-[#f0f2f8]">National Market Gap Identified</h3>
-                    <p className="text-[#8b91a7] mt-2 max-w-md mx-auto">
+                    <Globe className="w-16 h-16 text-[#2563EB]/50 mx-auto mb-6" />
+                    <h3 className="text-2xl font-display font-bold text-white">National Market Gap Identified</h3>
+                    <p className="text-white/50 mt-2 max-w-md mx-auto">
                       We couldn't find any direct competitors in this category across your entire country. This is a <strong className="text-white">National Blue Ocean Opportunity</strong> for {formData.businessName}.
                     </p>
                     <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 max-w-xl mx-auto">
-                      <div className="bg-[#111318] p-4 rounded-xl border border-primary-500/20 text-left">
+                      <div className="bg-[#111] p-4 rounded-xl border border-primary-500/20 text-left">
                         <Zap className="w-5 h-5 text-amber-500 mb-2" />
-                        <h4 className="font-bold text-sm text-[#f0f2f8]">First Mover Advantage</h4>
-                        <p className="text-xs text-[#8b91a7]">Be the first to establish brand authority in {formData.location}.</p>
+                        <h4 className="font-bold text-sm text-white">First Mover Advantage</h4>
+                        <p className="text-xs text-white/50">Be the first to establish brand authority in {formData.location}.</p>
                       </div>
-                      <div className="bg-[#111318] p-4 rounded-xl border border-primary-500/20 text-left">
-                        <Target className="w-5 h-5 text-primary-500 mb-2" />
-                        <h4 className="font-bold text-sm text-[#f0f2f8]">Captive Audience</h4>
-                        <p className="text-xs text-[#8b91a7]">Serve customers who currently have to travel far for {formData.businessType} services.</p>
+                      <div className="bg-[#111] p-4 rounded-xl border border-primary-500/20 text-left">
+                        <Target className="w-5 h-5 text-[#2563EB] mb-2" />
+                        <h4 className="font-bold text-sm text-white">Captive Audience</h4>
+                        <p className="text-xs text-white/50">Serve customers who currently have to travel far for {formData.businessType} services.</p>
                       </div>
                     </div>
                   </Card>
@@ -323,8 +323,8 @@ export default function MarketResearchPage() {
                     {/* Visual Analysis */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <Card className="p-6">
-                        <h3 className="font-bold text-[#f0f2f8] mb-4 flex items-center gap-2">
-                          <DollarSign className="w-4 h-4 text-primary-500" /> Price vs Rating Landscape
+                        <h3 className="font-bold text-white mb-4 flex items-center gap-2">
+                          <DollarSign className="w-4 h-4 text-[#2563EB]" /> Price vs Rating Landscape
                         </h3>
                         <div className="h-64">
                           <ResponsiveContainer width="100%" height="100%">
@@ -336,7 +336,7 @@ export default function MarketResearchPage() {
                               <Tooltip cursor={{ strokeDasharray: '3 3' }} content={({ active, payload }) => {
                                 if (active && payload && payload.length) {
                                   return (
-                                    <div className="bg-[#111318] border border-white/[0.08] rounded-lg p-2 text-xs text-[#d1d5db]">
+                                    <div className="bg-[#111] border border-white/10 rounded-lg p-2 text-xs text-white/60">
                                       <p>{payload[0].payload.name}</p>
                                       <p>Rating: {payload[0].payload.rating}</p>
                                       <p>Price: ${payload[0].payload.priceIndex}</p>
@@ -356,7 +356,7 @@ export default function MarketResearchPage() {
                       </Card>
 
                       <Card className="p-6">
-                        <h3 className="font-bold text-[#f0f2f8] mb-4 flex items-center gap-2">
+                        <h3 className="font-bold text-white mb-4 flex items-center gap-2">
                           <Zap className="w-4 h-4 text-amber-500" /> Digital Visibility Index
                         </h3>
                         <div className="h-64">
@@ -368,7 +368,7 @@ export default function MarketResearchPage() {
                               <Tooltip content={({ active, payload }) => {
                                 if (active && payload && payload.length) {
                                   return (
-                                    <div className="bg-[#111318] border border-white/[0.08] rounded-lg p-2 text-xs text-[#d1d5db]">
+                                    <div className="bg-[#111] border border-white/10 rounded-lg p-2 text-xs text-white/60">
                                       <p>{payload[0].payload.name}</p>
                                       <p>Digital Presence: {payload[0].value}%</p>
                                     </div>
@@ -387,47 +387,47 @@ export default function MarketResearchPage() {
 
                 {/* Organization Audit & SWOT */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <Card className="p-6 border-primary-500/20 bg-[#111318]">
-                    <h3 className="font-bold text-[#f0f2f8] mb-4 flex items-center gap-2">
-                      <ShieldCheck className="w-5 h-5 text-primary-500" /> Digital Footprint Audit
+                  <Card className="p-6 border-primary-500/20 bg-[#111]">
+                    <h3 className="font-bold text-white mb-4 flex items-center gap-2">
+                      <ShieldCheck className="w-5 h-5 text-[#2563EB]" /> Digital Footprint Audit
                     </h3>
                     <div className="space-y-4">
-                      <div className="flex items-center justify-between p-3 bg-[#111318] rounded-xl border border-white/[0.07]">
-                        <span className="text-sm text-[#8b91a7]">Web Presence</span>
+                      <div className="flex items-center justify-between p-3 bg-[#111] rounded-xl border border-white/5">
+                        <span className="text-sm text-white/50">Web Presence</span>
                         <Badge variant={analysis.userAudit?.website ? 'success' : 'danger'}>
                           {analysis.userAudit?.website ? 'Detected' : 'Missing'}
                         </Badge>
                       </div>
-                      <div className="flex items-center justify-between p-3 bg-[#111318] rounded-xl border border-white/[0.07]">
-                        <span className="text-sm text-[#8b91a7]">Search Visibility</span>
+                      <div className="flex items-center justify-between p-3 bg-[#111] rounded-xl border border-white/5">
+                        <span className="text-sm text-white/50">Search Visibility</span>
                         <div className="flex items-center gap-2">
-                          <div className="w-24 h-1.5 bg-[#16191f] rounded-full overflow-hidden">
+                          <div className="w-24 h-1.5 bg-white/5 rounded-full overflow-hidden">
                             <div className="h-full bg-primary-500" style={{ width: `${analysis.userAudit?.digitalPresence || 0}%` }} />
                           </div>
-                          <span className="text-xs font-bold text-[#d1d5db]">{analysis.userAudit?.digitalPresence || 0}%</span>
+                          <span className="text-xs font-bold text-white/60">{analysis.userAudit?.digitalPresence || 0}%</span>
                         </div>
                       </div>
-                      <p className="text-xs text-[#4b5162] italic px-1">
+                      <p className="text-xs text-white/30 italic px-1">
                         "{(analysis.userAudit?.snippet || 'No public data found').substring(0, 120)}..."
                       </p>
                     </div>
                   </Card>
 
-                   <div className="grid grid-cols-2 gap-3">
+                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                      {[
                        { label: 'Strengths', items: analysis.swot?.strengths || [], color: 'emerald', icon: Zap },
                        { label: 'Weaknesses', items: analysis.swot?.weaknesses || [], color: 'rose', icon: TrendingUp },
                        { label: 'Opportunities', items: analysis.swot?.opportunities || [], color: 'primary', icon: Target },
                        { label: 'Threats', items: analysis.swot?.threats || [], color: 'amber', icon: ShieldCheck },
                      ].map((quad) => (
-                       <div key={quad.label} className={`p-4 rounded-2xl border bg-[#111318] border-white/[0.07]`}>
+                       <div key={quad.label} className={`p-4 rounded-2xl border bg-[#111] border-white/5`}>
                          <div className="flex items-center gap-2 mb-2">
-                           <quad.icon className={`w-3.5 h-3.5 text-[#8b91a7]`} />
-                           <h4 className="text-xs font-bold uppercase tracking-wider text-[#f0f2f8]">{quad.label}</h4>
+                           <quad.icon className={`w-3.5 h-3.5 text-white/50`} />
+                           <h4 className="text-xs font-bold uppercase tracking-wider text-white">{quad.label}</h4>
                          </div>
                          <ul className="space-y-1.5">
                            {quad.items.slice(0, 2).map((item: string, i: number) => (
-                             <li key={i} className="text-[10px] leading-tight text-[#d1d5db] flex items-start gap-1.5">
+                             <li key={i} className="text-[10px] leading-tight text-white/60 flex items-start gap-1.5">
                                <div className={`w-1 h-1 rounded-full bg-[#4b5162] shrink-0 mt-1`} />
                                {item}
                              </li>
@@ -440,35 +440,35 @@ export default function MarketResearchPage() {
 
                 {/* Competitive Advantage Roadmap */}
                 <Card className="p-8 border-emerald-500/20 bg-emerald-500/10">
-                  <h3 className="text-xl font-display font-bold text-[#f0f2f8] mb-6 flex items-center gap-3">
+                  <h3 className="text-xl font-display font-bold text-white mb-6 flex items-center gap-3">
                     <Target className="w-6 h-6 text-emerald-500" /> Nationwide Strategic Roadmap
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-[#111318] p-5 rounded-2xl border border-emerald-500/20 text-left">
+                    <div className="bg-[#111] p-5 rounded-2xl border border-emerald-500/20 text-left">
                       <h4 className="font-bold text-emerald-400 mb-2 flex items-center gap-2">
                         <Users className="w-4 h-4" /> Market Benchmark
                       </h4>
-                      <p className="text-sm text-[#8b91a7] leading-relaxed">
-                        The average digital presence in this sector is <strong className="text-[#d1d5db]">{analysis.metrics?.avgDigital || 0}%</strong>. 
-                        Your current position is <strong className="text-[#d1d5db]">{analysis.metrics?.digitalGap >= 0 ? '+' : ''}{analysis.metrics?.digitalGap || 0}%</strong> relative to the benchmark.
+                      <p className="text-sm text-white/50 leading-relaxed">
+                        The average digital presence in this sector is <strong className="text-white/60">{analysis.metrics?.avgDigital || 0}%</strong>. 
+                        Your current position is <strong className="text-white/60">{analysis.metrics?.digitalGap >= 0 ? '+' : ''}{analysis.metrics?.digitalGap || 0}%</strong> relative to the benchmark.
                       </p>
                     </div>
-                    <div className="bg-[#111318] p-5 rounded-2xl border border-emerald-500/20 text-left">
+                    <div className="bg-[#111] p-5 rounded-2xl border border-emerald-500/20 text-left">
                       <h4 className="font-bold text-emerald-400 mb-2 flex items-center gap-2">
                         <DollarSign className="w-4 h-4" /> Competitive Pricing
                       </h4>
-                      <p className="text-sm text-[#8b91a7] leading-relaxed">
-                        The average Price Index is <strong className="text-[#d1d5db]">{analysis.metrics?.avgPrice || 0}</strong>. 
-                        A <strong className="text-[#d1d5db]">{(analysis.metrics?.avgPrice || 0) > 70 ? 'Premium' : 'Value-Driven'}</strong> strategy is currently dominant in your national market.
+                      <p className="text-sm text-white/50 leading-relaxed">
+                        The average Price Index is <strong className="text-white/60">{analysis.metrics?.avgPrice || 0}</strong>. 
+                        A <strong className="text-white/60">{(analysis.metrics?.avgPrice || 0) > 70 ? 'Premium' : 'Value-Driven'}</strong> strategy is currently dominant in your national market.
                       </p>
                     </div>
                   </div>
                   
                   <div className="mt-8 pt-8 border-t border-emerald-500/20">
-                    <h4 className="text-sm font-bold text-[#f0f2f8] uppercase tracking-widest mb-4">Analytical Next Steps</h4>
+                    <h4 className="text-sm font-bold text-white uppercase tracking-widest mb-4">Analytical Next Steps</h4>
                     <ul className="space-y-4">
                       {(analysis.roadmap || []).map((step: string, i: number) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-[#d1d5db] bg-[#111318]/50 p-3 rounded-xl border border-emerald-500/20">
+                        <li key={i} className="flex items-start gap-3 text-sm text-white/60 bg-[#111]/50 p-3 rounded-xl border border-emerald-500/20">
                           <div className="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5 shadow-sm">{i+1}</div>
                           <span className="leading-relaxed">{step}</span>
                         </li>
@@ -480,19 +480,19 @@ export default function MarketResearchPage() {
 
               {/* Competitor List Side Bar */}
               <div className="space-y-6">
-                <h3 className="font-display font-bold text-[#f0f2f8] px-2">Top Competitors</h3>
+                <h3 className="font-display font-bold text-white px-2">Top Competitors</h3>
                 {(analysis.competitors || []).map((comp: any) => (
                   <Card key={comp.id || comp.name} className="p-5 hover:border-primary-500/40 transition-colors cursor-default group">
                     <div className="flex justify-between items-start mb-3">
                       <div>
-                        <h4 className="font-bold text-[#f0f2f8] group-hover:text-primary-500 transition-colors">{comp.name}</h4>
+                        <h4 className="font-bold text-white group-hover:text-[#2563EB] transition-colors">{comp.name}</h4>
                         <div className="flex items-center gap-2 mt-1">
                           <div className="flex text-amber-500">
                             {Array.from({ length: 5 }).map((_, i) => (
                               <Star key={i} className={`w-3 h-3 ${i < Math.floor(comp.rating || 0) ? 'fill-current' : 'opacity-30'}`} />
                             ))}
                           </div>
-                          <span className="text-xs font-bold text-[#8b91a7]">{comp.rating || 0}</span>
+                          <span className="text-xs font-bold text-white/50">{comp.rating || 0}</span>
                         </div>
                       </div>
                       <Badge variant="secondary" className="text-[10px]">{comp.distance > 0 ? `${comp.distance}km away` : 'National Rival'}</Badge>
@@ -517,7 +517,7 @@ export default function MarketResearchPage() {
                 
                  <Card className="p-6 bg-gradient-to-br from-primary-500/20 to-indigo-500/20 text-white border-none">
                    <h4 className="font-bold mb-2">Ready to grow?</h4>
-                   <p className="text-xs text-[#d1d5db]/70 mb-4">Export this analysis as a PDF report for your business plan.</p>
+                   <p className="text-xs text-white/60/70 mb-4">Export this analysis as a PDF report for your business plan.</p>
                    <Button variant="secondary" className="w-full bg-white/10 text-white font-bold hover:bg-white/20 border-white/20">
                      Export Analysis
                    </Button>
@@ -530,3 +530,4 @@ export default function MarketResearchPage() {
     </div>
   )
 }
+

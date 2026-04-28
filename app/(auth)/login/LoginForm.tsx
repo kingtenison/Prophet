@@ -15,13 +15,13 @@ export function LoginForm({
   const [state, formAction] = useActionState(action, {})
 
   return (
-    <div className="min-h-screen bg-[#0a0b0f] flex items-center justify-center p-6 relative overflow-hidden">
-      {/* Ambient background */}
+    <div className="min-h-screen bg-black flex items-center justify-center p-6 relative overflow-hidden">
+      {/* Ambient background with electric blue gradients */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-[#4f8ef7] opacity-[0.05] blur-[120px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-[#7c5cfc] opacity-[0.05] blur-[120px]" />
-        {/* Grid */}
-        <div className="absolute inset-0 opacity-[0.02]" style={{
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-[#2563EB] opacity-[0.06] blur-[120px]" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-[#1D4ED8] opacity-[0.05] blur-[120px]" />
+        {/* Subtle grid pattern */}
+        <div className="absolute inset-0 opacity-[0.015]" style={{
           backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
           backgroundSize: '60px 60px'
         }} />
@@ -58,14 +58,14 @@ export function LoginForm({
             )}
 
             <div className="flex items-center justify-between text-sm pt-1">
-              <label className="flex items-center gap-2 text-[#8b91a7] cursor-pointer select-none">
+              <label className="flex items-center gap-2 text-white/50 cursor-pointer select-none">
                 <input
                   type="checkbox"
-                  className="w-3.5 h-3.5 rounded border-white/20 bg-[#16191f] text-[#4f8ef7] focus:ring-[#4f8ef7] focus:ring-offset-[#111318]"
+                  className="w-3.5 h-3.5 rounded border-white/20 bg-[#111] text-[#2563EB] focus:ring-[rgba(37,99,235,0.25)] focus:ring-offset-0"
                 />
                 Remember me
               </label>
-              <a href="#" className="text-[#4f8ef7] hover:text-[#7aadff] font-medium transition-colors">
+              <a href="#" className="text-[#2563EB] hover:text-[#60A5FA] transition-colors font-medium">
                 Forgot password?
               </a>
             </div>
@@ -78,10 +78,10 @@ export function LoginForm({
           {/* Divider */}
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-white/[0.07]" />
+              <div className="w-full border-t border-white/10" />
             </div>
             <div className="relative flex justify-center">
-              <span className="px-3 bg-[#111318] text-xs text-[#4b5162]">Or continue with</span>
+              <span className="px-3 bg-[#111] text-xs text-white/40">Or continue with</span>
             </div>
           </div>
 
@@ -111,7 +111,7 @@ export function LoginForm({
               <button
                 key={s.label}
                 type="button"
-                className="flex items-center justify-center gap-2 px-4 py-2.5 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm font-medium text-[#d1d5db] hover:bg-white/[0.08] hover:border-white/[0.14] transition-all"
+                className="flex items-center justify-center gap-2 px-4 py-2.5 bg-white/4 border border-white/10 rounded-xl text-sm font-medium text-white/70 hover:bg-white/8 hover:border-white/20 transition-all"
               >
                 {s.icon}
                 {s.label}
@@ -119,9 +119,9 @@ export function LoginForm({
             ))}
           </div>
 
-          <p className="mt-6 text-center text-sm text-[#4b5162]">
+          <p className="mt-6 text-center text-sm text-white/40">
             Don&apos;t have an account?{' '}
-            <Link href="/signup" className="font-semibold text-[#4f8ef7] hover:text-[#7aadff] transition-colors">
+            <Link href="/signup" className="font-semibold text-[#2563EB] hover:text-[#60A5FA] transition-colors">
               Sign up free
             </Link>
           </p>

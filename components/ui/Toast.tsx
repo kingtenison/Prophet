@@ -19,17 +19,17 @@ const icons = {
 }
 
 const styles: Record<ToastType, string> = {
-  info: 'bg-[#0a0b0f] border-primary-500/40 text-[#f0f2f8]',
-  success: 'bg-[#0a0b0f] border-emerald-500/40 text-[#f0f2f8]',
-  warning: 'bg-[#0a0b0f] border-amber-500/40 text-[#f0f2f8]',
-  error: 'bg-[#0a0b0f] border-rose-500/40 text-[#f0f2f8]'
+  info:    'bg-[#111] border-[#2563EB]/40 text-white',
+  success: 'bg-[#111] border-emerald-500/40 text-white',
+  warning: 'bg-[#111] border-amber-500/40 text-white',
+  error:   'bg-[#111] border-rose-500/40 text-white'
 }
 
 const iconStyles: Record<ToastType, string> = {
-  info: 'text-primary-500',
-  success: 'text-emerald-500',
-  warning: 'text-amber-500',
-  error: 'text-rose-500'
+  info:    'text-[#2563EB]',
+  success: 'text-emerald-400',
+  warning: 'text-amber-400',
+  error:   'text-rose-400'
 }
 
 export function Toast({ type = 'info', title, message, onClose }: ToastProps) {
@@ -38,7 +38,7 @@ export function Toast({ type = 'info', title, message, onClose }: ToastProps) {
   return (
     <div
       className={cn(
-        'flex items-start gap-3 p-4 rounded-xl border shadow-soft animate-slide-up',
+        'flex items-start gap-3 p-4 rounded-xl border shadow-lg animate-slide-up',
         styles[type]
       )}
       role="alert"
