@@ -208,18 +208,18 @@ export default function DatasetDetailPage() {
           <Link href="/dashboard">
             <Button variant="ghost">Back</Button>
           </Link>
-        </div>
-      </div>
+         </div>
+       </div>
 
-      {/* Column Overview */}
-      <Card>
-        <div className="px-6 py-4 border-b border-secondary-100">
-          <h2 className="font-semibold text-secondary-900">Columns</h2>
-          <p className="text-sm text-secondary-500 mt-0.5">
-            Rename or drop columns. Cleaning actions apply to the stored dataset.
-          </p>
-        </div>
-        <div className="divide-y divide-secondary-100">
+       {/* Column Overview */}
+       <Card hoverable raised>
+         <div className="px-6 py-4 border-b border-secondary-100">
+           <h2 className="font-semibold text-secondary-900">Columns</h2>
+           <p className="text-sm text-secondary-500 mt-0.5">
+             Rename or drop columns. Cleaning actions apply to the stored dataset.
+           </p>
+         </div>
+         <div className="divide-y divide-secondary-100">
           {dataset.columns.map(col => {
             const nullCount = nullCounts[col.name] || 0
             const nullPct = ((nullCount / cleanedData.length) * 100).toFixed(1)

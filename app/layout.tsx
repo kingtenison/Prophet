@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter, Playfair_Display } from 'next/font/google'
+import { Inter, Syne } from 'next/font/google'
 import './globals.css'
 import Providers from '@/components/Providers'
 
@@ -7,17 +7,19 @@ const inter = Inter({
   subsets: ['latin'],
   variable: '--font-sans',
   display: 'swap',
+  weight: ['300', '400', '500', '600', '700', '800'],
 })
 
-const playfair = Playfair_Display({
+const syne = Syne({
   subsets: ['latin'],
   variable: '--font-display',
   display: 'swap',
+  weight: ['600', '700', '800'],
 })
 
 export const metadata: Metadata = {
-  title: 'Power BI Lite — Business Intelligence, Simplified',
-  description: 'Upload your data, create beautiful charts, share interactive dashboards — all without installation.',
+  title: 'PROPHET — AI Market Intelligence Platform',
+  description: 'Upload your data, run competitor audits, create beautiful charts, and share interactive dashboards — all in one place.',
 }
 
 export default function RootLayout({
@@ -26,8 +28,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={`${inter.variable} ${playfair.variable} font-sans antialiased bg-secondary-50`}>
+    <html lang="en" className="dark">
+      <body className={`${inter.variable} ${syne.variable} font-sans antialiased bg-[#0a0b0f] text-[#f0f2f8]`}>
         <Providers>{children}</Providers>
       </body>
     </html>

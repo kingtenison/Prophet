@@ -104,44 +104,50 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Stats overview */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="stat-card">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-lg bg-primary-50 text-primary-600">
-              <Database className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-secondary-900">{datasets.length}</p>
-              <p className="text-sm text-secondary-500">Datasets</p>
-            </div>
-          </div>
-        </div>
-        <div className="stat-card">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-lg bg-accent-teal/10 text-accent-teal">
-              <BarChart3 className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-secondary-900">
-                {dashboards.reduce((acc, d) => acc + (d.layout ? Object.keys(d.layout).length : 0), 0)}
-              </p>
-              <p className="text-sm text-secondary-500">Charts</p>
-            </div>
-          </div>
-        </div>
-        <div className="stat-card">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-lg bg-accent-indigo/10 text-accent-indigo">
-              <LayoutDashboard className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-secondary-900">{dashboards.length}</p>
-              <p className="text-sm text-secondary-500">Dashboards</p>
-            </div>
-          </div>
-        </div>
-      </div>
+       {/* Stats overview */}
+       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+         <div className="stat-card">
+           <Card hoverable raised>
+             <div className="flex items-center gap-3">
+               <div className="p-2.5 rounded-lg bg-primary-50 text-primary-600">
+                 <Database className="w-5 h-5" />
+               </div>
+               <div>
+                 <p className="text-2xl font-bold text-secondary-900">{datasets.length}</p>
+                 <p className="text-sm text-secondary-500">Datasets</p>
+               </div>
+             </div>
+           </Card>
+         </div>
+         <div className="stat-card">
+           <Card hoverable raised>
+             <div className="flex items-center gap-3">
+               <div className="p-2.5 rounded-lg bg-accent-teal/10 text-accent-teal">
+                 <BarChart3 className="w-5 h-5" />
+               </div>
+               <div>
+                 <p className="text-2xl font-bold text-secondary-900">
+                   {dashboards.reduce((acc, d) => acc + (d.layout ? Object.keys(d.layout).length : 0), 0)}
+                 </p>
+                 <p className="text-sm text-secondary-500">Charts</p>
+               </div>
+             </div>
+           </Card>
+         </div>
+         <div className="stat-card">
+           <Card hoverable raised>
+             <div className="flex items-center gap-3">
+               <div className="p-2.5 rounded-lg bg-accent-indigo/10 text-accent-indigo">
+                 <LayoutDashboard className="w-5 h-5" />
+               </div>
+               <div>
+                 <p className="text-2xl font-bold text-secondary-900">{dashboards.length}</p>
+                 <p className="text-sm text-secondary-500">Dashboards</p>
+               </div>
+             </div>
+           </Card>
+         </div>
+       </div>
 
       {/* Datasets Section */}
       <section className="space-y-4">
@@ -166,117 +172,114 @@ export default function DashboardPage() {
               </Link>
             }
           />
-        ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {datasets.slice(0, 6).map(dataset => (
-              <Card key={dataset.id} hoverable className="group">
-                <div className="flex items-start justify-between">
-                  <div className="p-3 rounded-xl bg-primary-50 text-primary-600">
-                    <Database className="w-6 h-6" />
-                  </div>
-                  <button className="p-1.5 text-secondary-400 hover:text-secondary-600 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
-                    <MoreHorizontal className="w-5 h-5" />
-                  </button>
-                </div>
-                <div className="mt-4">
-                  <h3 className="font-semibold text-secondary-900 truncate">{dataset.name}</h3>
-                  <div className="mt-2 flex items-center gap-4 text-xs text-secondary-500">
-                    <span>{dataset.row_count.toLocaleString()} rows</span>
-                    <span>•</span>
-                    <span>{dataset.columns.length} columns</span>
-                  </div>
-                  <p className="mt-2 text-xs text-secondary-400">
-                    Uploaded {formatDate(dataset.created_at)}
-                  </p>
-                </div>
-                <div className="mt-4 pt-4 border-t border-secondary-100 flex gap-2">
-                  <Link href={`/datasets/${dataset.id}`} className="flex-1">
-                    <Button variant="secondary" size="sm" className="w-full">
-                      View
-                    </Button>
-                  </Link>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleDeleteDataset(dataset.id)}
-                    className="text-rose-600 hover:text-rose-700"
-                  >
-                    Delete
-                  </Button>
-                </div>
-              </Card>
-            ))}
-          </div>
-        )}
-      </section>
-
-      {/* Dashboards Section */}
-      <section className="space-y-4 pb-8">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-secondary-900">Dashboards</h2>
-          <Link href="/dashboards/new" className="text-sm text-primary-600 hover:text-primary-700 font-medium">
-            View all
-          </Link>
-        </div>
-
-        {dashboards.length === 0 ? (
-          <EmptyState
-            icon="dashboard"
-            title="No dashboards yet"
-            description="Create your first dashboard to organize your visualisations"
-            action={
-              <Link href="/dashboards/new">
-                <Button>
-                  <LayoutDashboard className="w-4 h-4 mr-2" />
-                  Create Dashboard
-                </Button>
-              </Link>
-            }
-          />
-        ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {dashboards.slice(0, 6).map(dashboard => (
-              <Card key={dashboard.id} hoverable className="group">
-                <div className="flex items-start justify-between">
-                  <div className="p-3 rounded-xl bg-accent-indigo/10 text-accent-indigo">
-                    <LayoutDashboard className="w-6 h-6" />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {dashboard.is_public && (
-                      <span className="px-2 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full">
-                        Public
-                      </span>
-                    )}
-                    <button className="p-1.5 text-secondary-400 hover:text-secondary-600 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {datasets.slice(0, 6).map(dataset => (
+                <Card key={dataset.id} hoverable raised className="group">
+                  <div className="flex items-start justify-between">
+                    <div className="p-4 rounded-xl bg-primary-50 text-primary-600">
+                      <Database className="w-6 h-6" />
+                    </div>
+                    <button className="p-2 text-secondary-400 hover:text-secondary-600 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
                       <MoreHorizontal className="w-5 h-5" />
                     </button>
                   </div>
-                </div>
-                <div className="mt-4">
-                  <h3 className="font-semibold text-secondary-900 truncate">{dashboard.title}</h3>
-                  <div className="mt-2 flex items-center gap-4 text-xs text-secondary-500">
-                    <span>{Object.keys(dashboard.layout || {}).length} widgets</span>
-                    <span>•</span>
-                    <span>Updated {formatDate(dashboard.updated_at)}</span>
+                  <div className="mt-4">
+                    <h3 className="font-semibold text-secondary-900 truncate">{dataset.name}</h3>
+                    <div className="mt-2 flex items-center gap-4 text-xs text-secondary-500">
+                      <span>{dataset.row_count.toLocaleString()} rows</span>
+                      <span>•</span>
+                      <span>{dataset.columns.length} columns</span>
+                    </div>
+                    <p className="mt-2 text-xs text-secondary-400">
+                      Uploaded {formatDate(dataset.created_at)}
+                    </p>
                   </div>
-                </div>
-                <div className="mt-4 pt-4 border-t border-secondary-100 flex gap-2">
-                  <Link href={`/dashboards/${dashboard.id}/edit`} className="flex-1">
-                    <Button variant="secondary" size="sm" className="w-full">
-                      Edit
+                  <div className="mt-6 pt-4 border-t border-secondary-100 flex gap-2">
+                    <Link href={`/datasets/${dataset.id}`} className="flex-1">
+                      <Button variant="secondary" size="sm" className="w-full">
+                        View
+                      </Button>
+                    </Link>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDeleteDataset(dataset.id)}
+                      className="text-rose-600 hover:text-rose-700"
+                    >
+                      Delete
                     </Button>
-                  </Link>
-                  <Link href={`/dashboards/${dashboard.id}/view`} className="flex-1">
-                    <Button variant="ghost" size="sm" className="w-full">
-                      View
-                    </Button>
-                  </Link>
-                </div>
-              </Card>
-            ))}
+                  </div>
+                </Card>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* Dashboards Section */}
+        <section className="space-y-4 pb-8">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-secondary-900">Dashboards</h2>
+            <Link href="/dashboards/new" className="text-sm text-primary-600 hover:text-primary-700 font-medium">
+              View all
+            </Link>
           </div>
-        )}
-      </section>
-    </div>
-  )
-}
+
+          {dashboards.length === 0 ? (
+            <EmptyState
+              icon="dashboard"
+              title="No dashboards yet"
+              description="Create your first dashboard to organize your visualisations"
+              action={
+                <Link href="/dashboards/new">
+                  <Button>
+                    <LayoutDashboard className="w-4 h-4 mr-2" />
+                    Create Dashboard
+                  </Button>
+                </Link>
+              }
+            />
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {dashboards.slice(0, 6).map(dashboard => (
+                <Card key={dashboard.id} hoverable raised className="group">
+                  <div className="flex items-start justify-between">
+                    <div className="p-4 rounded-xl bg-accent-indigo/10 text-accent-indigo">
+                      <LayoutDashboard className="w-6 h-6" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {dashboard.is_public && (
+                        <span className="px-2 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full">
+                          Public
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <h3 className="font-semibold text-secondary-900 truncate">{dashboard.title}</h3>
+                    <div className="mt-2 flex items-center gap-4 text-xs text-secondary-500">
+                      <span>{Object.keys(dashboard.layout || {}).length} widgets</span>
+                      <span>•</span>
+                      <span>Updated {formatDate(dashboard.updated_at)}</span>
+                    </div>
+                  </div>
+                  <div className="mt-6 pt-4 border-t border-secondary-100 flex gap-2">
+                    <Link href={`/dashboards/${dashboard.id}/edit`} className="flex-1">
+                      <Button variant="secondary" size="sm" className="w-full">
+                        Edit
+                      </Button>
+                    </Link>
+                    <Link href={`/dashboards/${dashboard.id}/view`} className="flex-1">
+                      <Button variant="ghost" size="sm" className="w-full">
+                        View
+                      </Button>
+                    </Link>
+                  </div>
+                </Card>
+              ))}
+             </div>
+           )}
+         </section>
+       </div>
+     )
+   }
