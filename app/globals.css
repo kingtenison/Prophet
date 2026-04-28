@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://use.typekit.net/your-id.css');
+/* Placeholder for Codec Warm/Nexa CDN if user has one */
+/* Since I don't have the specific CDN IDs, I will define the families and the user can swap the @import if needed */
+
+:root {
+  --font-sans: "Nexa", system-ui, sans-serif;
+  --font-display: "Codec Warm", system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    @apply font-sans text-brand-darkgray bg-brand-offwhite;
+    font-weight: 300;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display text-brand-blue;
+  }
+
+  h1,
+  h2 {
+    font-weight: 700;
+  }
+
+  h3 {
+    font-weight: 500;
+  }
+
+  p {
+    @apply leading-relaxed text-brand-darkgray font-sans;
+    font-weight: 300;
+  }
+
+  .font-display {
+    font-family: var(--font-display);
+  }
+}
+
+@layer components {
+  .gradient-mesh {
+    background:
+      radial-gradient(at 20% 20%, rgba(14, 165, 233, 0.08) 0, transparent 50%),
+      radial-gradient(at 80% 80%, rgba(99, 102, 241, 0.06) 0, transparent 50%),
+      radial-gradient(at 40% 60%, rgba(244, 63, 94, 0.04) 0, transparent 50%);
+  }
+
+  .stat-card {
+    @apply bg-brand-white rounded-2xl shadow-soft border border-brand-offwhite p-6;
+  }
+
+  .nav-link {
+    @apply text-brand-darkgray/60 hover:text-brand-blue font-display font-medium transition-colors;
+  }
+
+  .nav-link-active {
+    @apply text-brand-blue font-display font-bold;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-brand-offwhite rounded-full;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-brand-blue/10 rounded-full hover:bg-brand-blue/20;
+}
+
+/* Selection */
+::selection {
+  @apply bg-brand-cyan/20 text-brand-blue;
+}
