@@ -115,8 +115,8 @@ export default function UploadDatasetPage() {
   return (
     <div className="max-w-5xl mx-auto space-y-8">
       <div>
-        <h1 className="text-3xl font-display font-bold text-secondary-900">Upload dataset</h1>
-        <p className="text-secondary-600 mt-2">
+        <h1 className="text-3xl font-display font-bold text-[#f0f2f8]">Upload dataset</h1>
+        <p className="text-[#8b91a7] mt-2">
           Upload a CSV or Excel file. Your file will be processed entirely in your browser.
         </p>
       </div>
@@ -130,11 +130,11 @@ export default function UploadDatasetPage() {
       {parsedData.length > 0 && (
         <div className="space-y-4 animate-fade-in">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-secondary-900">
+            <h2 className="text-lg font-semibold text-[#f0f2f8]">
               Preview — {file?.name}
             </h2>
             <div className="flex items-center gap-3">
-              <span className="text-sm text-secondary-500">
+              <span className="text-sm text-[#8b91a7]">
                 {parsedData.length.toLocaleString()} rows × {columns.length} columns
               </span>
               <Button
@@ -153,9 +153,9 @@ export default function UploadDatasetPage() {
             <PreviewTable data={parsedData} columns={columns} />
           )}
 
-          <div className="flex items-start gap-2 p-3 bg-amber-50 rounded-xl border border-amber-200">
-            <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-            <p className="text-sm text-amber-800">
+          <div className="flex items-start gap-2 p-3 bg-amber-500/10 rounded-xl border border-amber-500/20">
+            <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+            <p className="text-sm text-amber-300">
               Make sure your column names are clean. They will be used as field names in charts.
             </p>
           </div>
@@ -180,12 +180,12 @@ export default function UploadDatasetPage() {
       >
         <div className="space-y-3 py-2">
           <div className="flex items-center gap-3 text-sm">
-            <div className="p-2 rounded-lg bg-primary-50 text-primary-600">
+            <div className="p-2 rounded-lg bg-primary-500/20 text-primary-500">
               <Upload className="w-4 h-4" />
             </div>
-            <span className="font-medium">{file?.name}</span>
+            <span className="font-medium text-[#f0f2f8]">{file?.name}</span>
           </div>
-          <div className="flex items-center justify-between text-sm text-secondary-600">
+          <div className="flex items-center justify-between text-sm text-[#8b91a7]">
             <span>{columns.length} columns detected</span>
             <span>{parsedData.length.toLocaleString()} rows</span>
           </div>

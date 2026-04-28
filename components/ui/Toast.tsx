@@ -19,17 +19,17 @@ const icons = {
 }
 
 const styles: Record<ToastType, string> = {
-  info: 'bg-primary-50 border-primary-200 text-primary-900',
-  success: 'bg-emerald-50 border-emerald-200 text-emerald-900',
-  warning: 'bg-amber-50 border-amber-200 text-amber-900',
-  error: 'bg-rose-50 border-rose-200 text-rose-900',
+  info: 'bg-[#0a0b0f] border-primary-500/40 text-[#f0f2f8]',
+  success: 'bg-[#0a0b0f] border-emerald-500/40 text-[#f0f2f8]',
+  warning: 'bg-[#0a0b0f] border-amber-500/40 text-[#f0f2f8]',
+  error: 'bg-[#0a0b0f] border-rose-500/40 text-[#f0f2f8]'
 }
 
 const iconStyles: Record<ToastType, string> = {
-  info: 'text-primary-600',
-  success: 'text-emerald-600',
-  warning: 'text-amber-600',
-  error: 'text-rose-600',
+  info: 'text-primary-500',
+  success: 'text-emerald-500',
+  warning: 'text-amber-500',
+  error: 'text-rose-500'
 }
 
 export function Toast({ type = 'info', title, message, onClose }: ToastProps) {

@@ -82,10 +82,10 @@ function ToastContainer({ toasts, removeToast }: { toasts: Toast[]; removeToast:
 
 function getColor(type: string) {
   switch (type) {
-    case 'success': return { bg: '#ecfdf5', border: '#10b981', text: '#065f46' }
-    case 'error': return { bg: '#fef2f2', border: '#ef4444', text: '#991b1b' }
-    case 'warning': return { bg: '#fffbeb', border: '#f59e0b', text: '#92400e' }
-    default: return { bg: '#eff6ff', border: '#3b82f6', text: '#1e40af' }
+    case 'success': return { bg: 'rgba(52, 211, 153, 0.12)', border: '#34d399', text: '#34d399' }
+    case 'error': return { bg: 'rgba(251, 113, 133, 0.12)', border: '#fb7185', text: '#fb7185' }
+    case 'warning': return { bg: 'rgba(251, 191, 36, 0.12)', border: '#fbbf24', text: '#fbbf24' }
+    default: return { bg: 'rgba(79, 142, 247, 0.12)', border: '#4f8ef7', text: '#4f8ef7' }
   }
 }
 

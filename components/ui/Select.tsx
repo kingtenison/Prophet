@@ -9,12 +9,13 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
 
 export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
   ({ className, label, error, options, id, ...props }, ref) => {
-    const selectId = id || `select-${Math.random().toString(36).substr(2, 9)}`
+    const generatedId = React.useId()
+    const selectId = id || `select-${generatedId.replace(/:/g, '-')}`
 
     return (
       <div className="w-full">
         {label && (
-          <label htmlFor={selectId} className="block text-sm font-medium text-secondary-700 mb-1.5">
+          <label htmlFor={selectId} className="block text-sm font-medium text-[#8b91a7] mb-1.5">
             {label}
           </label>
         )}
@@ -23,9 +24,9 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           id={selectId}
           className={cn(
             'w-full px-3.5 py-2.5 text-sm border rounded-xl transition-all duration-200',
-            'bg-white border-secondary-200 text-secondary-900',
+            'bg-[#111318] border-white/[0.08] text-[#f0f2f8]',
             'focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500',
-            'hover:border-secondary-300',
+            'hover:border-white/[0.14]',
             error && 'border-rose-500 focus:ring-rose-500/20 focus:border-rose-500',
             className
           )}
@@ -74,7 +75,7 @@ export function MultiSelect<T extends string>({
   return (
     <div className="w-full">
       {label && (
-        <label className="block text-sm font-medium text-secondary-700 mb-2">
+        <label className="block text-sm font-medium text-[#8b91a7] mb-2">
           {label}
         </label>
       )}
@@ -89,14 +90,14 @@ export function MultiSelect<T extends string>({
               'px-3 py-1.5 text-sm rounded-lg border transition-all duration-200',
               value.includes(opt.value)
                 ? 'bg-primary-600 text-white border-primary-600 shadow-sm'
-                : 'bg-white border-secondary-200 text-secondary-700 hover:border-secondary-300'
+                : 'bg-[#111318] border-white/[0.08] text-[#f0f2f8] hover:border-white/[0.14]'
             )}
           >
             {opt.label}
           </button>
         ))}
       </div>
-      {error && <p className="mt-1.5 text-xs text-rose-600">{error}</p>}
+      {error && <p className="mt-1.5 text-xs text-rose-400">{error}</p>}
     </div>
   )
 }

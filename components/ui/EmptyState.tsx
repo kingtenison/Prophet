@@ -22,17 +22,17 @@ export function EmptyState({ icon, title, description, action }: EmptyStateProps
   return (
     <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
       {IconComponent && (
-        <div className="p-4 rounded-full bg-secondary-100 text-secondary-400 mb-5">
+        <div className="p-4 rounded-full bg-[#111318] border border-white/[0.07] text-[#4b5162] mb-5">
           <IconComponent className="w-10 h-10" />
         </div>
       )}
       {typeof icon === 'object' && icon}
 
-      <h3 className="text-xl font-display font-semibold text-secondary-900 mt-4 mb-2">
+      <h3 className="text-xl font-display font-semibold text-[#f0f2f8] mt-4 mb-2">
         {title}
       </h3>
       {description && (
-        <p className="max-w-md text-secondary-500 leading-relaxed mb-6">
+        <p className="max-w-md text-[#8b91a7] leading-relaxed mb-6">
           {description}
         </p>
       )}
@@ -50,7 +50,7 @@ export function DataTableEmpty({ onUpload }: { onUpload?: () => void }) {
       action={
         <button
           onClick={onUpload}
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 text-white font-medium rounded-xl hover:bg-primary-700 transition-colors shadow-sm"
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#4f8ef7] to-[#7c5cfc] text-white font-medium rounded-xl hover:opacity-90 transition-opacity shadow-[0_4px_24px_rgba(79,142,247,0.25)]"
         >
           <Upload className="w-4 h-4" />
           Upload Dataset
@@ -69,7 +69,7 @@ export function DashboardEmpty({ onCreate }: { onCreate?: () => void }) {
       action={
         <button
           onClick={onCreate}
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 text-white font-medium rounded-xl hover:bg-primary-700 transition-colors shadow-sm"
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#4f8ef7] to-[#7c5cfc] text-white font-medium rounded-xl hover:opacity-90 transition-opacity shadow-[0_4px_24px_rgba(79,142,247,0.25)]"
         >
           <LayoutDashboard className="w-4 h-4" />
           Create Dashboard
