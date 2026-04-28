@@ -21,9 +21,9 @@ export default function DashboardViewClient({
   if (widgets.length === 0) {
     return (
       <div className="text-center py-20">
-        <BarChart3 className="w-16 h-16 text-secondary-200 mx-auto mb-4" />
-        <h3 className="text-xl font-semibold text-secondary-600">Empty dashboard</h3>
-        <p className="text-secondary-400 mt-1">This dashboard has no widgets yet.</p>
+        <BarChart3 className="w-16 h-16 text-white/20 mx-auto mb-4" />
+        <h3 className="text-xl font-semibold text-white/60">Empty dashboard</h3>
+        <p className="text-white/40 mt-1">This dashboard has no widgets yet.</p>
       </div>
     )
   }
@@ -31,10 +31,10 @@ export default function DashboardViewClient({
   return (
     <div className="space-y-6">
       <div className="text-center mb-10">
-        <h1 className="text-3xl font-display font-bold text-secondary-900 leading-tight">
+        <h1 className="text-3xl font-display font-bold text-white leading-tight">
           {dashboard.title}
         </h1>
-        <p className="text-secondary-500 mt-2">
+        <p className="text-white/50 mt-2">
           {widgets.length} visualisation{widgets.length !== 1 ? 's' : ''}
         </p>
       </div>
@@ -60,14 +60,14 @@ export default function DashboardViewClient({
       >
         {widgets.map(widget => (
           <div key={widget.id} className="h-full group">
-            <Card className="p-5 h-full flex flex-col shadow-soft hover:shadow-lg transition-shadow border-secondary-200/60 bg-white overflow-hidden">
+            <Card className="p-5 h-full flex flex-col shadow-soft hover:shadow-lg transition-shadow border-white/20/60 bg-[#111] overflow-hidden">
               {(widget.config.title || widget.type !== 'kpi') && (
                 <div className="mb-4 flex-shrink-0">
-                  <h3 className="font-display font-semibold text-secondary-900 truncate">
+                  <h3 className="font-display font-semibold text-white truncate">
                     {widget.config.title || `${widget.type.charAt(0).toUpperCase()}${widget.type.slice(1)} Chart`}
                   </h3>
                   {widget.dataset && (
-                    <p className="text-[10px] text-secondary-400 uppercase tracking-wider font-medium mt-0.5">
+                    <p className="text-[10px] text-white/40 uppercase tracking-wider font-medium mt-0.5">
                       {(widget.dataset as any).name}
                     </p>
                   )}
@@ -84,13 +84,13 @@ export default function DashboardViewClient({
 
       {/* AI Insights Section */}
       {widgets.filter(w => w.config?.x_col && w.config?.y_col).length > 0 && (
-        <div className="mt-12 pt-12 border-t border-secondary-200">
+        <div className="mt-12 pt-12 border-t border-white/20">
           <div className="flex items-center gap-3 mb-8">
-            <div className="h-px flex-1 bg-secondary-200" />
-            <span className="text-xs font-bold text-secondary-400 uppercase tracking-[0.2em] px-4">
+            <div className="h-px flex-1 bg-white/10" />
+            <span className="text-xs font-bold text-white/40 uppercase tracking-[0.2em] px-4">
               AI-Powered Insights
             </span>
-            <div className="h-px flex-1 bg-secondary-200" />
+            <div className="h-px flex-1 bg-white/10" />
           </div>
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
             {widgets.filter(w => w.config?.x_col && w.config?.y_col).map(w => {

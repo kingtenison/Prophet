@@ -35,10 +35,6 @@ export default function Providers({ children, ...props }: { children: React.Reac
     document.documentElement.style.colorScheme = newTheme
   }
 
-  if (!mounted) {
-    return <>{children}</>
-  }
-
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
       <ToastProvider>{children}</ToastProvider>

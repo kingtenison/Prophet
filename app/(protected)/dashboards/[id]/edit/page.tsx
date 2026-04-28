@@ -175,7 +175,7 @@ export default function DashboardEditPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           {isEditingTitle ? (
             <div className="flex items-center gap-2">
@@ -189,20 +189,20 @@ export default function DashboardEditPage() {
               />
               <button
                 onClick={() => setIsEditingTitle(false)}
-                className="p-1 text-secondary-400 hover:text-secondary-600"
+                className="p-1 text-white/40 hover:text-white/60"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
           ) : (
             <div className="flex items-center gap-2 cursor-pointer group" onClick={() => setIsEditingTitle(true)}>
-              <h1 className="text-2xl font-display font-bold text-secondary-900">
+              <h1 className="text-2xl font-display font-bold text-white">
                 {dashboard?.title || 'Untitled Dashboard'}
               </h1>
-              <Edit3 className="w-4 h-4 text-secondary-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <Edit3 className="w-4 h-4 text-white/40 opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
           )}
-          <p className="text-secondary-600 text-sm mt-1">
+          <p className="text-white/60 text-sm mt-1">
             {widgets.length} widget{widgets.length !== 1 ? 's' : ''}
             {dashboard?.is_public && (
               <span className="ml-2">
@@ -212,7 +212,7 @@ export default function DashboardEditPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 md:gap-3 w-full md:w-auto mt-4 md:mt-0">
           <Button variant="secondary" onClick={handleShareToggle}>
             <Share2 className="w-4 h-4 mr-2" />
             {dashboard?.is_public ? 'Public' : 'Share'}
@@ -233,8 +233,8 @@ export default function DashboardEditPage() {
 
       {/* Add Widget Bar */}
       <Card className="p-4">
-        <div className="flex items-center gap-4">
-          <span className="text-sm font-medium text-secondary-700">Add widget:</span>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full">
+          <span className="text-sm font-medium text-white/70">Add widget:</span>
           <select
             onChange={(e) => {
               if (e.target.value) {
@@ -243,7 +243,7 @@ export default function DashboardEditPage() {
               }
             }}
             defaultValue=""
-            className="flex-1 px-3 py-2 border border-secondary-200 rounded-lg bg-white text-sm"
+            className="flex-1 px-3 py-2 border border-white/20 rounded-lg bg-[#111] text-sm"
           >
             <option value="">Select a dataset...</option>
             {datasets.map(ds => (
@@ -257,7 +257,7 @@ export default function DashboardEditPage() {
       {widgets.length > 0 ? (
         <div className="relative">
           {saving && (
-            <div className="absolute -top-10 right-0 flex items-center text-sm text-secondary-500">
+            <div className="absolute -top-10 right-0 flex items-center text-sm text-white/50">
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
               Saving layout...
             </div>
@@ -293,29 +293,29 @@ export default function DashboardEditPage() {
                           e.stopPropagation();
                           handleDeleteWidget(widget.id);
                         }}
-                        className="p-1.5 text-secondary-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
+                        className="p-1.5 text-white/40 hover:text-rose-600 hover:bg-rose-50 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
 
-                    <div className="flex-1 min-h-0 bg-white rounded-xl border border-secondary-100/50 relative">
+                    <div className="flex-1 min-h-0 bg-[#111] rounded-xl border border-white/10/50 relative">
                       {widget.config.x_col && widget.config.y_col ? (
                         <DashboardWidget widget={widget} />
                       ) : (
                         <div className="h-full flex flex-col items-center justify-center">
-                          <Icon className="w-10 h-10 text-primary-300 mb-2" />
-                          <span className="text-xs text-secondary-400 font-medium">Configure to view chart</span>
+                          <Icon className="w-10 h-10 text-[#60A5FA] mb-2" />
+                          <span className="text-xs text-white/40 font-medium">Configure to view chart</span>
                         </div>
                       )}
                     </div>
 
                     <div className="flex-shrink-0 pb-2">
-                      <h3 className="font-semibold text-secondary-900 truncate">
+                      <h3 className="font-semibold text-white truncate">
                         {widget.config.title || 'Untitled Chart'}
                       </h3>
                       <div className="flex items-center justify-between mt-1">
-                        <p className="text-xs text-secondary-500 truncate pr-2">
+                        <p className="text-xs text-white/50 truncate pr-2">
                           {dataset?.name || 'Unknown dataset'}
                         </p>
                         <Link href={`/charts/new?edit=${widget.id}`} onMouseDown={(e) => e.stopPropagation()}>
@@ -359,7 +359,7 @@ export default function DashboardEditPage() {
           <div className="mt-8 space-y-6">
             <div className="flex items-center gap-3">
               <div className="h-px flex-1 bg-secondary-100" />
-              <span className="text-xs font-semibold text-secondary-400 uppercase tracking-wider px-2">AI-Powered Insights</span>
+              <span className="text-xs font-semibold text-white/40 uppercase tracking-wider px-2">AI-Powered Insights</span>
               <div className="h-px flex-1 bg-secondary-100" />
             </div>
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
@@ -387,8 +387,8 @@ export default function DashboardEditPage() {
 function DashboardSkeleton() {
   return (
     <div className="space-y-6">
-      <div className="h-12 bg-secondary-200 rounded-lg w-1/3" />
-      <div className="grid grid-cols-3 gap-6">
+      <div className="h-12 bg-white/10 rounded-lg w-1/3" />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {[1, 2, 3].map(i => (
           <Skeleton key={i} height={300} />
         ))}

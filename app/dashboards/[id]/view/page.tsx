@@ -43,7 +43,7 @@ export default async function DashboardViewPage({
   }
 
   return (
-    <div className="min-h-screen bg-secondary-50">
+    <div className="min-h-screen bg-black">
       <ViewNavbar title={dashboard.title} isPublic={isPublic} isOwner={isOwner} />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <DashboardViewClient
@@ -57,16 +57,16 @@ export default async function DashboardViewPage({
 
 function ViewNavbar({ title, isPublic, isOwner }: { title: string; isPublic: boolean; isOwner: boolean }) {
   return (
-    <nav className="bg-white border-b border-secondary-100 sticky top-0 z-40">
+    <nav className="bg-[#111] border-b border-white/10 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <div className="flex items-center gap-2">
-            <BarChart3 className="w-6 h-6 text-primary-600" />
-            <span className="font-display font-bold text-lg text-secondary-900">
+            <BarChart3 className="w-6 h-6 text-[#2563EB]" />
+            <span className="font-display font-bold text-sm sm:text-lg text-white hidden sm:inline">
               Power BI Lite
             </span>
-            <span className="text-secondary-300 mx-2">|</span>
-            <span className="text-secondary-600 font-medium truncate max-w-[200px] sm:max-w-none">
+            <span className="text-white/30 mx-2 hidden sm:inline">|</span>
+            <span className="text-white/60 font-medium truncate max-w-[150px] sm:max-w-none">
               {title}
             </span>
           </div>
