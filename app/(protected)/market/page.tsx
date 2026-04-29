@@ -320,206 +320,220 @@ export default function MarketResearchPage() {
                   </Card>
                 ) : (
                   <>
-                    {/* Visual Analysis */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      <Card className="p-6">
-                        <h3 className="font-bold text-white mb-4 flex items-center gap-2">
-                          <DollarSign className="w-4 h-4 text-[#2563EB]" /> Price vs Rating Landscape
-                        </h3>
-                        <div className="h-64">
-                          <ResponsiveContainer width="100%" height="100%">
-                            <ScatterChart margin={{ top: 10, right: 20, bottom: 20, left: 0 }}>
-                              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#374151" />
-                              <XAxis type="number" dataKey="priceIndex" name="Price" unit="$" tick={{ fontSize: 10, fill: '#8b91a7' }} label={{ value: 'Price Level', position: 'insideBottom', offset: -10, fontSize: 10, fill: '#8b91a7' }} />
-                              <YAxis type="number" dataKey="rating" name="Rating" domain={[0, 5]} tick={{ fontSize: 10, fill: '#8b91a7' }} label={{ value: 'User Rating', angle: -90, position: 'insideLeft', fontSize: 10, fill: '#8b91a7' }} />
-                              <ZAxis type="number" dataKey="digitalPresence" range={[50, 400]} name="Digital Reach" />
-                              <Tooltip cursor={{ strokeDasharray: '3 3' }} content={({ active, payload }) => {
-                                if (active && payload && payload.length) {
-                                  return (
-                                    <div className="bg-[#111] border border-white/10 rounded-lg p-2 text-xs text-white/60">
-                                      <p>{payload[0].payload.name}</p>
-                                      <p>Rating: {payload[0].payload.rating}</p>
-                                      <p>Price: ${payload[0].payload.priceIndex}</p>
-                                    </div>
-                                  )
-                                }
-                                return null
-                              }} />
-                              <Scatter name="Competitors" data={analysis.competitors || []} fill="#6366f1">
-                                {(analysis.competitors || []).map((entry: any, index: number) => (
-                                  <Cell key={`cell-${index}`} fill={index === 0 ? '#0ea5e9' : '#6366f1'} />
-                                ))}
-                              </Scatter>
-                            </ScatterChart>
-                          </ResponsiveContainer>
-                        </div>
-                      </Card>
-
-                      <Card className="p-6">
-                        <h3 className="font-bold text-white mb-4 flex items-center gap-2">
-                          <Zap className="w-4 h-4 text-amber-500" /> Digital Visibility Index
-                        </h3>
-                        <div className="h-64">
-                          <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={analysis.competitors || []} layout="vertical">
-                              <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#374151" />
-                              <XAxis type="number" domain={[0, 100]} hide />
-                              <YAxis dataKey="name" type="category" width={100} tick={{ fontSize: 9, fill: '#8b91a7' }} />
-                              <Tooltip content={({ active, payload }) => {
-                                if (active && payload && payload.length) {
-                                  return (
-                                    <div className="bg-[#111] border border-white/10 rounded-lg p-2 text-xs text-white/60">
-                                      <p>{payload[0].payload.name}</p>
-                                      <p>Digital Presence: {payload[0].value}%</p>
-                                    </div>
-                                  )
-                                }
-                                return null
-                              }} />
-                              <Bar dataKey="digitalPresence" fill="#0ea5e9" radius={[0, 4, 4, 0]} barSize={20} />
-                            </BarChart>
-                          </ResponsiveContainer>
-                        </div>
-                      </Card>
-                    </div>
                   </>
                 )}
 
-                {/* Organization Audit & SWOT */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <Card className="p-6 border-primary-500/20 bg-[#111]">
-                    <h3 className="font-bold text-white mb-4 flex items-center gap-2">
-                      <ShieldCheck className="w-5 h-5 text-[#2563EB]" /> Digital Footprint Audit
+                {/* AI Strategic Overview */}
+                <Card className="p-8 border-primary-500/30 bg-gradient-to-br from-[#111] to-primary-900/10 relative overflow-hidden shadow-2xl">
+                  <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
+                    <Compass className="w-48 h-48" />
+                  </div>
+                  <div className="relative z-10">
+                    <h3 className="text-2xl font-display font-bold text-white mb-4 flex items-center gap-3">
+                      <Zap className="w-6 h-6 text-primary-500" /> Executive AI Strategic Overview
                     </h3>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between p-3 bg-[#111] rounded-xl border border-white/5">
-                        <span className="text-sm text-white/50">Web Presence</span>
-                        <Badge variant={analysis.userAudit?.website ? 'success' : 'danger'}>
-                          {analysis.userAudit?.website ? 'Detected' : 'Missing'}
-                        </Badge>
-                      </div>
-                      <div className="flex items-center justify-between p-3 bg-[#111] rounded-xl border border-white/5">
-                        <span className="text-sm text-white/50">Search Visibility</span>
-                        <div className="flex items-center gap-2">
-                          <div className="w-24 h-1.5 bg-white/5 rounded-full overflow-hidden">
-                            <div className="h-full bg-primary-500" style={{ width: `${analysis.userAudit?.digitalPresence || 0}%` }} />
-                          </div>
-                          <span className="text-xs font-bold text-white/60">{analysis.userAudit?.digitalPresence || 0}%</span>
+                    <div className="prose prose-invert max-w-none text-white/70 text-sm md:text-base">
+                      {analysis.aiOverview?.split('\n\n').map((paragraph: string, idx: number) => (
+                        <p key={idx} className="mb-4 leading-relaxed" dangerouslySetInnerHTML={{__html: paragraph.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>')}} />
+                      ))}
+                    </div>
+                  </div>
+                </Card>
+
+                {/* BCG & SPACE Matrices */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <Card className="p-6 bg-[#111] border-white/5">
+                    <h3 className="font-bold text-white mb-6 flex items-center gap-2">
+                      <Target className="w-5 h-5 text-[#2563EB]" /> BCG Matrix Position
+                    </h3>
+                    <div className="grid grid-cols-2 gap-2 h-48">
+                      {['Stars', 'Question Marks', 'Cash Cows', 'Dogs'].map((cat) => (
+                        <div key={cat} className={`flex items-center justify-center p-4 rounded-xl border text-center text-sm transition-all duration-500 ${analysis.matrices?.bcg?.category === cat ? 'bg-primary-500/20 border-primary-500 text-primary-400 font-bold shadow-[0_0_15px_rgba(37,99,235,0.2)]' : 'bg-white/5 border-white/10 text-white/30'}`}>
+                          {cat}
                         </div>
-                      </div>
-                      <p className="text-xs text-white/30 italic px-1">
-                        "{(analysis.userAudit?.snippet || 'No public data found').substring(0, 120)}..."
-                      </p>
+                      ))}
                     </div>
                   </Card>
 
-                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                     {[
-                       { label: 'Strengths', items: analysis.swot?.strengths || [], color: 'emerald', icon: Zap },
-                       { label: 'Weaknesses', items: analysis.swot?.weaknesses || [], color: 'rose', icon: TrendingUp },
-                       { label: 'Opportunities', items: analysis.swot?.opportunities || [], color: 'primary', icon: Target },
-                       { label: 'Threats', items: analysis.swot?.threats || [], color: 'amber', icon: ShieldCheck },
-                     ].map((quad) => (
-                       <div key={quad.label} className={`p-4 rounded-2xl border bg-[#111] border-white/5`}>
-                         <div className="flex items-center gap-2 mb-2">
-                           <quad.icon className={`w-3.5 h-3.5 text-white/50`} />
-                           <h4 className="text-xs font-bold uppercase tracking-wider text-white">{quad.label}</h4>
-                         </div>
-                         <ul className="space-y-1.5">
-                           {quad.items.slice(0, 2).map((item: string, i: number) => (
-                             <li key={i} className="text-[10px] leading-tight text-white/60 flex items-start gap-1.5">
-                               <div className={`w-1 h-1 rounded-full bg-[#4b5162] shrink-0 mt-1`} />
-                               {item}
-                             </li>
-                           ))}
-                         </ul>
-                       </div>
-                     ))}
-                   </div>
-                 </div>
+                  <Card className="p-6 bg-[#111] border-white/5">
+                    <h3 className="font-bold text-white mb-6 flex items-center gap-2">
+                      <Compass className="w-5 h-5 text-emerald-500" /> SPACE Matrix
+                    </h3>
+                    <div className="flex items-center justify-center h-48">
+                      <div className="relative w-40 h-40">
+                        {/* Grid lines */}
+                        <div className="absolute inset-0 flex items-center justify-center"><div className="w-full h-px bg-white/20" /></div>
+                        <div className="absolute inset-0 flex items-center justify-center"><div className="h-full w-px bg-white/20" /></div>
+                        {/* Labels */}
+                        <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full text-[10px] text-white/50 pb-1">FS</span>
+                        <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full text-[10px] text-white/50 pt-1">ES</span>
+                        <span className="absolute right-0 top-1/2 translate-x-full -translate-y-1/2 text-[10px] text-white/50 pl-1">IS</span>
+                        <span className="absolute left-0 top-1/2 -translate-x-full -translate-y-1/2 text-[10px] text-white/50 pr-1">CA</span>
+                        
+                        {/* Quadrant Highlights */}
+                        <div className={`absolute top-0 right-0 w-1/2 h-1/2 transition-colors duration-500 ${analysis.matrices?.space?.profile === 'Aggressive' ? 'bg-emerald-500/20 shadow-[inset_0_0_10px_rgba(16,185,129,0.2)]' : ''}`} />
+                        <div className={`absolute bottom-0 right-0 w-1/2 h-1/2 transition-colors duration-500 ${analysis.matrices?.space?.profile === 'Competitive' ? 'bg-blue-500/20 shadow-[inset_0_0_10px_rgba(59,130,246,0.2)]' : ''}`} />
+                        <div className={`absolute bottom-0 left-0 w-1/2 h-1/2 transition-colors duration-500 ${analysis.matrices?.space?.profile === 'Defensive' ? 'bg-rose-500/20 shadow-[inset_0_0_10px_rgba(244,63,94,0.2)]' : ''}`} />
+                        <div className={`absolute top-0 left-0 w-1/2 h-1/2 transition-colors duration-500 ${analysis.matrices?.space?.profile === 'Conservative' ? 'bg-amber-500/20 shadow-[inset_0_0_10px_rgba(245,158,11,0.2)]' : ''}`} />
+                        
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                          <div className="bg-white text-black text-[10px] font-bold px-2 py-0.5 rounded-full z-10 shadow-lg animate-in zoom-in duration-500 delay-300">
+                            {analysis.matrices?.space?.profile}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                </div>
 
-                {/* Competitive Advantage Roadmap */}
-                <Card className="p-8 border-emerald-500/20 bg-emerald-500/10">
-                  <h3 className="text-xl font-display font-bold text-white mb-6 flex items-center gap-3">
-                    <Target className="w-6 h-6 text-emerald-500" /> Nationwide Strategic Roadmap
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-[#111] p-5 rounded-2xl border border-emerald-500/20 text-left">
-                      <h4 className="font-bold text-emerald-400 mb-2 flex items-center gap-2">
-                        <Users className="w-4 h-4" /> Market Benchmark
-                      </h4>
-                      <p className="text-sm text-white/50 leading-relaxed">
-                        The average digital presence in this sector is <strong className="text-white/60">{analysis.metrics?.avgDigital || 0}%</strong>. 
-                        Your current position is <strong className="text-white/60">{analysis.metrics?.digitalGap >= 0 ? '+' : ''}{analysis.metrics?.digitalGap || 0}%</strong> relative to the benchmark.
-                      </p>
+                {/* IFE & EFE Matrices */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <Card className="p-6 bg-[#111] border-white/5">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="font-bold text-white flex items-center gap-2">
+                        <Building2 className="w-4 h-4 text-emerald-500" /> Internal Factor (IFE)
+                      </h3>
+                      <Badge variant="secondary" className="font-mono bg-emerald-500/10 text-emerald-400 border-emerald-500/20">{analysis.matrices?.ife?.total?.toFixed(2)}</Badge>
                     </div>
-                    <div className="bg-[#111] p-5 rounded-2xl border border-emerald-500/20 text-left">
-                      <h4 className="font-bold text-emerald-400 mb-2 flex items-center gap-2">
-                        <DollarSign className="w-4 h-4" /> Competitive Pricing
-                      </h4>
-                      <p className="text-sm text-white/50 leading-relaxed">
-                        The average Price Index is <strong className="text-white/60">{analysis.metrics?.avgPrice || 0}</strong>. 
-                        A <strong className="text-white/60">{(analysis.metrics?.avgPrice || 0) > 70 ? 'Premium' : 'Value-Driven'}</strong> strategy is currently dominant in your national market.
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-8 pt-8 border-t border-emerald-500/20">
-                    <h4 className="text-sm font-bold text-white uppercase tracking-widest mb-4">Analytical Next Steps</h4>
-                    <ul className="space-y-4">
-                      {(analysis.roadmap || []).map((step: string, i: number) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-white/60 bg-[#111]/50 p-3 rounded-xl border border-emerald-500/20">
-                          <div className="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5 shadow-sm">{i+1}</div>
-                          <span className="leading-relaxed">{step}</span>
-                        </li>
+                    <div className="space-y-3">
+                      {analysis.matrices?.ife?.factors?.map((f: any, i: number) => (
+                        <div key={i} className="flex justify-between items-center text-sm p-2.5 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
+                          <span className={f.type === 'Strength' ? 'text-emerald-400 font-medium' : 'text-rose-400 font-medium'}>{f.name}</span>
+                          <div className="flex items-center gap-3">
+                            <span className="text-[10px] text-white/30 uppercase">Score</span>
+                            <span className="text-white/70 font-mono text-xs bg-[#000] px-1.5 py-0.5 rounded border border-white/10">{(f.weight * f.rating).toFixed(2)}</span>
+                          </div>
+                        </div>
                       ))}
-                    </ul>
-                  </div>
-                </Card>
+                    </div>
+                  </Card>
+                  
+                  <Card className="p-6 bg-[#111] border-white/5">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="font-bold text-white flex items-center gap-2">
+                        <Globe className="w-4 h-4 text-amber-500" /> External Factor (EFE)
+                      </h3>
+                      <Badge variant="secondary" className="font-mono bg-amber-500/10 text-amber-400 border-amber-500/20">{analysis.matrices?.efe?.total?.toFixed(2)}</Badge>
+                    </div>
+                    <div className="space-y-3">
+                      {analysis.matrices?.efe?.factors?.map((f: any, i: number) => (
+                        <div key={i} className="flex justify-between items-center text-sm p-2.5 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
+                          <span className={f.type === 'Opportunity' ? 'text-blue-400 font-medium' : 'text-amber-400 font-medium'}>{f.name}</span>
+                          <div className="flex items-center gap-3">
+                            <span className="text-[10px] text-white/30 uppercase">Score</span>
+                            <span className="text-white/70 font-mono text-xs bg-[#000] px-1.5 py-0.5 rounded border border-white/10">{(f.weight * f.rating).toFixed(2)}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </Card>
+                </div>
+
+                {/* CPM & QSPM Matrices */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <Card className="p-6 bg-[#111] border-white/5">
+                    <h3 className="font-bold text-white mb-6 flex items-center gap-2">
+                      <Users className="w-4 h-4 text-indigo-500" /> Competitive Profile Matrix (CPM)
+                    </h3>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm text-left">
+                        <thead>
+                          <tr className="text-white/40 border-b border-white/10">
+                            <th className="pb-3 font-medium text-xs uppercase tracking-wider">Critical Success Factor</th>
+                            <th className="pb-3 font-medium text-center text-primary-400">You</th>
+                            {analysis.matrices?.cpm?.competitors?.map((c: any, i: number) => (
+                              <th key={i} className="pb-3 font-medium text-center truncate max-w-[80px]" title={c.name}>{c.name}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-white/5">
+                          {analysis.matrices?.cpm?.factors?.map((factor: string, i: number) => (
+                            <tr key={i} className="hover:bg-white/[0.02] transition-colors">
+                              <td className="py-3.5 text-white/70 font-medium">{factor}</td>
+                              <td className="py-3.5 text-center font-mono text-primary-400 font-bold bg-primary-500/5">{analysis.matrices?.cpm?.user[i]}</td>
+                              {analysis.matrices?.cpm?.competitors?.map((c: any, j: number) => (
+                                <td key={j} className="py-3.5 text-center font-mono text-white/50">{c.scores[i]}</td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </Card>
+                  
+                  <Card className="p-6 bg-[#111] border-white/5">
+                    <h3 className="font-bold text-white mb-2 flex items-center gap-2">
+                      <TrendingUp className="w-4 h-4 text-rose-500" /> QSPM Strategy Selection
+                    </h3>
+                    <p className="text-xs text-white/40 mb-6">Quantitative evaluation of strategic alternatives based on internal and external factors.</p>
+                    <div className="space-y-4">
+                      {analysis.matrices?.qspm?.strategies?.map((strategy: string, i: number) => {
+                        const score = analysis.matrices?.qspm?.scores[i];
+                        const isWinner = score === Math.max(...analysis.matrices?.qspm?.scores);
+                        return (
+                          <div key={i} className={`p-4 rounded-xl border transition-all duration-500 ${isWinner ? 'bg-primary-500/10 border-primary-500/50 scale-[1.02]' : 'bg-white/5 border-white/10 opacity-70 grayscale'}`}>
+                            <div className="flex justify-between items-center mb-3">
+                              <span className={`font-semibold text-sm ${isWinner ? 'text-primary-400' : 'text-white/70'}`}>{strategy}</span>
+                              <Badge variant={isWinner ? 'primary' : 'secondary'} className="font-mono bg-[#000] border-white/10">{score?.toFixed(2)}</Badge>
+                            </div>
+                            <div className="w-full h-2 bg-[#000] rounded-full overflow-hidden border border-white/5">
+                              <div className={`h-full transition-all duration-1000 ease-out ${isWinner ? 'bg-gradient-to-r from-primary-600 to-primary-400' : 'bg-white/20'}`} style={{ width: `${(score / 5) * 100}%` }} />
+                            </div>
+                            {isWinner && (
+                              <p className="text-[10px] text-primary-400/80 mt-2 font-medium flex items-center gap-1 uppercase tracking-wider">
+                                <Star className="w-3 h-3" /> Recommended Strategy
+                              </p>
+                            )}
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </Card>
+                </div>
               </div>
 
-              {/* Competitor List Side Bar */}
+              {/* Prophet's Strategic Solutions Side Bar */}
               <div className="space-y-6">
-                <h3 className="font-display font-bold text-white px-2">Top Competitors</h3>
-                {(analysis.competitors || []).map((comp: any) => (
-                  <Card key={comp.id || comp.name} className="p-5 hover:border-primary-500/40 transition-colors cursor-default group">
-                    <div className="flex justify-between items-start mb-3">
-                      <div>
-                        <h4 className="font-bold text-white group-hover:text-[#2563EB] transition-colors">{comp.name}</h4>
-                        <div className="flex items-center gap-2 mt-1">
-                          <div className="flex text-amber-500">
-                            {Array.from({ length: 5 }).map((_, i) => (
-                              <Star key={i} className={`w-3 h-3 ${i < Math.floor(comp.rating || 0) ? 'fill-current' : 'opacity-30'}`} />
-                            ))}
-                          </div>
-                          <span className="text-xs font-bold text-white/50">{comp.rating || 0}</span>
-                        </div>
-                      </div>
-                      <Badge variant="secondary" className="text-[10px]">{comp.distance > 0 ? `${comp.distance}km away` : 'National Rival'}</Badge>
-                    </div>
-                    
-                    <div className="space-y-3">
-                      <div>
-                        <p className="text-[10px] font-bold text-emerald-400 uppercase mb-1">Strengths</p>
-                        <div className="flex flex-wrap gap-1">
-                          {(comp.strengths || []).map((s: string) => <Badge key={s} variant="default" className="text-[9px] bg-emerald-500/10 border-emerald-500/20 text-emerald-400">{s}</Badge>)}
-                        </div>
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-bold text-rose-400 uppercase mb-1">Opportunities for You</p>
-                        <div className="flex flex-wrap gap-1">
-                          {(comp.weaknesses || []).map((w: string) => <Badge key={w} variant="default" className="text-[9px] bg-rose-500/10 border-rose-500/20 text-rose-400">{w}</Badge>)}
-                        </div>
+                <div className="flex items-center gap-3 px-2 mb-2">
+                  <div className="p-2 bg-primary-500/20 rounded-lg border border-primary-500/30">
+                    <Compass className="w-5 h-5 text-primary-400" />
+                  </div>
+                  <div>
+                    <h3 className="font-display font-bold text-white text-lg">Prophet's Solutions</h3>
+                    <p className="text-[10px] text-white/50 uppercase tracking-wider">Actionable Strategic Advice</p>
+                  </div>
+                </div>
+
+                {(analysis.propheticSolutions || []).map((solution: any, idx: number) => (
+                  <Card key={idx} className="p-6 border-white/10 bg-[#111] hover:border-primary-500/40 transition-colors group relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-primary-500/10 to-transparent rounded-bl-full pointer-events-none" />
+                    <div className="relative z-10">
+                      <Badge variant="secondary" className="mb-3 bg-primary-500/10 text-primary-400 border-primary-500/20">{solution.category}</Badge>
+                      <h4 className="font-bold text-white text-lg mb-2 group-hover:text-[#2563EB] transition-colors">{solution.title}</h4>
+                      <p className="text-sm text-white/60 mb-5 leading-relaxed">{solution.description}</p>
+                      
+                      <div className="space-y-3">
+                        <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest border-b border-white/10 pb-1">Recommended Tactics</p>
+                        <ul className="space-y-2.5">
+                          {solution.tactics.map((tactic: string, i: number) => (
+                            <li key={i} className="text-xs text-white/70 flex items-start gap-2.5 leading-relaxed">
+                              <div className="w-4 h-4 rounded bg-primary-500/10 border border-primary-500/30 flex items-center justify-center shrink-0 mt-0.5">
+                                <ArrowRight className="w-2.5 h-2.5 text-primary-400" />
+                              </div>
+                              {tactic}
+                            </li>
+                          ))}
+                        </ul>
                       </div>
                     </div>
                   </Card>
                 ))}
                 
-                 <Card className="p-6 bg-gradient-to-br from-primary-500/20 to-indigo-500/20 text-white border-none">
-                   <h4 className="font-bold mb-2">Ready to grow?</h4>
-                   <p className="text-xs text-white/60/70 mb-4">Export this analysis as a PDF report for your business plan.</p>
-                   <Button variant="secondary" className="w-full bg-white/10 text-white font-bold hover:bg-white/20 border-white/20">
-                     Export Analysis
+                 <Card className="p-6 bg-gradient-to-br from-primary-500/20 to-indigo-500/20 text-white border-none mt-8">
+                   <h4 className="font-bold mb-2">Ready to execute?</h4>
+                   <p className="text-xs text-white/60/70 mb-4">Export these solutions to your strategic execution team.</p>
+                   <Button variant="secondary" className="w-full bg-white/10 text-white font-bold hover:bg-white/20 border-white/20 shadow-lg">
+                     Export Strategy Deck
                    </Button>
                  </Card>
                </div>

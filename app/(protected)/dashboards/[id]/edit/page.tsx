@@ -53,6 +53,14 @@ export default function DashboardEditPage() {
   const [saving, setSaving] = useState(false)
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [tempTitle, setTempTitle] = useState('')
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   useEffect(() => {
     fetchDashboard()
@@ -272,8 +280,9 @@ export default function DashboardEditPage() {
             rowHeight={120}
             onDragStop={handleLayoutChange}
             onResizeStop={handleLayoutChange}
-            isDraggable={true}
-            isResizable={true}
+            isDraggable={!isMobile}
+            isResizable={!isMobile}
+            draggableHandle=".cursor-move"
             margin={[24, 24]}
           >
             {widgets.map((widget) => {

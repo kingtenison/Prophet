@@ -529,7 +529,7 @@ export default function ChartBuilderPage() {
                 </div>
               </div>
             ) : (
-              <ResponsiveContainer width="100%" height={420}>
+              <ResponsiveContainer width="100%" height={420} className="pointer-events-none lg:pointer-events-auto">
                 {renderChart()}
               </ResponsiveContainer>
             )}

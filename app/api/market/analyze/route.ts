@@ -78,6 +78,10 @@ export async function POST(request: NextRequest) {
     const swot = generateSWOTFromData(userAudit, competitors, metrics)
     const roadmap = generateRoadmapFromData(userAudit, competitors, metrics, businessType)
 
+    const matrices = generateMatrices(userAudit, competitors, metrics)
+    const aiOverview = generateAIOverview(userAudit, competitors, metrics, matrices, businessType)
+    const propheticSolutions = generatePropheticSolutions(userAudit, metrics, matrices, businessType)
+
     return NextResponse.json({
       summary: `Nationwide intelligence audit for ${businessName} in the ${businessType} sector.`,
       userAudit,
@@ -85,6 +89,9 @@ export async function POST(request: NextRequest) {
       metrics,
       swot,
       roadmap,
+      matrices,
+      aiOverview,
+      propheticSolutions,
       location: { name: displayName || location }
     })
   } catch (err) {
@@ -201,4 +208,218 @@ function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
   const dLon = (lon2 - lon1) * Math.PI / 180
   const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2)
   return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)))
+}
+
+function generateMatrices(user: any, comps: any[], m: any) {
+  const ife = {
+    factors: [
+      { type: 'Strength', name: 'Digital Reach', weight: 0.3, rating: user.digitalPresence >= 50 ? 4 : (user.digitalPresence >= 20 ? 3 : 2) },
+      { type: 'Strength', name: 'Market Sentiment (Rating)', weight: 0.3, rating: user.rating >= 4.5 ? 4 : (user.rating >= 4 ? 3 : 2) },
+      { type: 'Weakness', name: 'Digital Gap to Competitors', weight: 0.2, rating: m.digitalGap < 0 ? 1 : 2 },
+      { type: 'Weakness', name: 'Pricing Competitiveness', weight: 0.2, rating: user.priceIndex === 0 ? 1 : 2 }
+    ]
+  };
+  ife.total = ife.factors.reduce((sum, f) => sum + (f.weight * f.rating), 0);
+
+  const efe = {
+    factors: [
+      { type: 'Opportunity', name: 'Underserved Market Segments', weight: 0.25, rating: comps.filter(c => c.rating < 3.5).length > 0 ? 4 : 2 },
+      { type: 'Opportunity', name: 'High Local Demand Density', weight: 0.25, rating: comps.length >= 4 ? 4 : 2 },
+      { type: 'Threat', name: 'Established Top-Tier Rivals', weight: 0.30, rating: comps.some(c => c.rating >= 4.5) ? 2 : 4 },
+      { type: 'Threat', name: 'Digital Market Saturation', weight: 0.20, rating: m.avgDigital > 60 ? 1 : 3 }
+    ]
+  };
+  efe.total = efe.factors.reduce((sum, f) => sum + (f.weight * f.rating), 0);
+
+  const topComps = [...comps].sort((a,b) => b.rating - a.rating).slice(0, 2);
+  const cpm = {
+    factors: ['Market Sentiment', 'Digital Infrastructure', 'Price Value Proposition'],
+    weights: [0.4, 0.4, 0.2],
+    user: [user.rating >= 4.5 ? 4 : (user.rating >= 3.5 ? 3 : 2), user.digitalPresence >= 50 ? 4 : (user.digitalPresence >= 30 ? 3 : 1), user.priceIndex > 0 ? 3 : 1],
+    competitors: topComps.map(c => ({
+      name: c.name,
+      scores: [c.rating >= 4.5 ? 4 : (c.rating >= 3.5 ? 3 : 2), c.digitalPresence >= 50 ? 4 : (c.digitalPresence >= 30 ? 3 : 1), c.priceIndex > 0 ? 3 : 1]
+    }))
+  };
+
+  const caScore = user.rating >= 4.5 ? -1 : (user.rating >= 3.5 ? -3 : -5);
+  const isScore = comps.length >= 4 ? 5 : 3;
+  const esScore = m.avgRating >= 4 ? -4 : -2;
+  const fsScore = user.priceIndex >= 60 ? 5 : (user.priceIndex >= 30 ? 3 : 2);
+  
+  const space = {
+    x: caScore + isScore,
+    y: fsScore + esScore,
+    profile: (caScore+isScore) > 0 ? ((fsScore+esScore) > 0 ? 'Aggressive' : 'Competitive') : ((fsScore+esScore) > 0 ? 'Conservative' : 'Defensive')
+  };
+
+  const topCompDigital = Math.max(...comps.map(c => c.digitalPresence), 10);
+  const relativeMarketShare = user.digitalPresence / topCompDigital;
+  const marketGrowthRate = comps.length;
+  let bcgCategory = 'Dogs';
+  if (relativeMarketShare >= 1 && marketGrowthRate >= 3) bcgCategory = 'Stars';
+  else if (relativeMarketShare < 1 && marketGrowthRate >= 3) bcgCategory = 'Question Marks';
+  else if (relativeMarketShare >= 1 && marketGrowthRate < 3) bcgCategory = 'Cash Cows';
+
+  const bcg = {
+    relativeMarketShare,
+    marketGrowthRate,
+    category: bcgCategory
+  };
+
+  const qspm = {
+    strategies: ['Aggressive Digital Marketing', 'Product/Service Quality Enhancement'],
+    scores: [
+      (ife.total * 0.6 + efe.total * 0.4 + (m.digitalGap < 0 ? 0.5 : 0)),
+      (ife.total * 0.4 + efe.total * 0.6 + (m.ratingGap < 0 ? 0.5 : 0))
+    ]
+  };
+
+  return { ife, efe, cpm, space, bcg, qspm };
+}
+
+function generateAIOverview(user: any, comps: any[], m: any, matrices: any, type: string) {
+  const profile = matrices.space.profile;
+  const bcg = matrices.bcg.category;
+  const winningStrategy = matrices.qspm.scores[0] > matrices.qspm.scores[1] ? matrices.qspm.strategies[0] : matrices.qspm.strategies[1];
+  
+  let overview = `Based on a comprehensive audit of real-time web and registry data for ${comps.length} local competitors, your organization currently holds a **${bcg}** position in the ${type} market. `
+  
+  if (profile === 'Aggressive') {
+    overview += `The SPACE matrix indicates excellent financial and industry strength, allowing for an **Aggressive** strategic posture. You should leverage your internal strengths (IFE Score: ${matrices.ife.total.toFixed(2)}) to maximize external opportunities. `
+  } else if (profile === 'Competitive') {
+    overview += `The SPACE matrix suggests a **Competitive** posture. While industry strength is solid, you face environmental instability or financial constraints. You must focus on differentiating your services. `
+  } else if (profile === 'Conservative') {
+    overview += `The SPACE matrix reveals a **Conservative** posture. The market is stable but growth is slow. Focus on product development and market penetration. `
+  } else {
+    overview += `The SPACE matrix points to a **Defensive** posture. You must immediately address internal weaknesses (IFE Score: ${matrices.ife.total.toFixed(2)}) and avoid external threats. `
+  }
+
+  overview += `\n\n**Strategic Recommendation:** Quantitative Strategic Planning (QSPM) modeling suggests that your highest-yield strategic initiative is **${winningStrategy}**. `
+  
+  if (winningStrategy === 'Aggressive Digital Marketing') {
+    overview += `This is primarily driven by your digital reach deficit (${m.digitalGap}% below market average). By investing in your online footprint, you can rapidly capture market share from competitors who lack robust digital infrastructure.`
+  } else {
+    overview += `This is driven by market sentiment gaps. Your priority must be improving actual service delivery to elevate your rating (currently ${user.rating}) above the local average (${m.avgRating}).`
+  }
+
+  return overview;
+}
+
+function generatePropheticSolutions(user: any, m: any, matrices: any, type: string) {
+  const profile = matrices.space.profile;
+  const bcg = matrices.bcg.category;
+  
+  const solutions = [];
+
+  // Core Generic Strategy based on SPACE
+  if (profile === 'Aggressive') {
+    solutions.push({
+      category: 'Market Penetration & Dominance',
+      title: 'Aggressive Market Capture',
+      description: `Your strong financial and industry position allows you to outmaneuver local ${type} rivals.`,
+      tactics: [
+        'Launch aggressive digital ad campaigns targeting competitor keywords.',
+        'Acquire weaker competitors or open new branches in underserved local segments.',
+        'Expand product/service lines to capture adjacent market share.'
+      ]
+    });
+  } else if (profile === 'Competitive') {
+    solutions.push({
+      category: 'Product Differentiation',
+      title: 'Value Proposition Enhancement',
+      description: `The market is highly competitive. You must differentiate your ${type} offerings beyond price.`,
+      tactics: [
+        'Invest heavily in customer experience to boost your rating from ' + user.rating + ' to ' + (m.avgRating + 0.5) + '.',
+        'Introduce premium or specialized services that your local rivals cannot easily replicate.',
+        'Form strategic alliances with complementary local businesses.'
+      ]
+    });
+  } else if (profile === 'Conservative') {
+    solutions.push({
+      category: 'Cost Leadership & Optimization',
+      title: 'Margin Protection & Steady Growth',
+      description: `The market is stable but slow. Focus on internal efficiency rather than aggressive expansion.`,
+      tactics: [
+        'Optimize your supply chain and reduce operational waste.',
+        'Implement loyalty programs to retain your existing customer base.',
+        'Avoid high-risk investments; focus on highly profitable core services.'
+      ]
+    });
+  } else {
+    // Defensive
+    solutions.push({
+      category: 'Turnaround & Survival',
+      title: 'Defensive Restructuring',
+      description: `You are facing significant internal weaknesses and external threats in the ${type} sector.`,
+      tactics: [
+        'Immediately resolve negative customer feedback to fix your ' + user.rating + ' rating.',
+        'Divest or eliminate unprofitable services/products.',
+        'Focus entirely on your most loyal customer segment to stabilize cash flow.'
+      ]
+    });
+  }
+
+  // Digital Strategy based on Gap
+  if (m.digitalGap < 0) {
+    solutions.push({
+      category: 'Digital Transformation',
+      title: 'Close the Digital Reach Deficit',
+      description: `You are ${Math.abs(m.digitalGap)}% less visible online than the market average.`,
+      tactics: [
+        'Claim and fully optimize your Google Business and Apple Maps profiles.',
+        user.website ? 'Implement local SEO strategies on your existing website.' : 'Urgently launch a professional website; you are currently invisible to web-first customers.',
+        'Deploy targeted social media marketing to recapture local mindshare.'
+      ]
+    });
+  } else {
+    solutions.push({
+      category: 'Digital Moat Building',
+      title: 'Expand Digital Dominance',
+      description: `You have a ${m.digitalGap}% digital visibility advantage over the average competitor.`,
+      tactics: [
+        'Invest in advanced content marketing and establish thought leadership.',
+        'Develop a proprietary mobile app or highly integrated online booking/sales platform.',
+        'Automate customer review generation to crush competitors in search rankings.'
+      ]
+    });
+  }
+
+  // BCG Strategy
+  if (bcg === 'Dogs') {
+     solutions.push({
+      category: 'Portfolio Management',
+      title: 'Divest or Pivot',
+      description: `Your position as a "Dog" (low relative share, low growth) requires decisive action.`,
+      tactics: [
+        'Pivot your core offering to a more specialized niche where you can dominate.',
+        'Minimize further capital investment in stagnant product lines.',
+        'Consider a strategic rebrand if the current market perception is irreversibly poor.'
+      ]
+    });
+  } else if (bcg === 'Cash Cows') {
+    solutions.push({
+      category: 'Portfolio Management',
+      title: 'Milk & Defend',
+      description: `As a "Cash Cow" (high share, slow growth), you generate strong steady revenue.`,
+      tactics: [
+        'Use excess cash flow to invest in new technological innovations or marketing.',
+        'Defend your market share aggressively against new, smaller entrants.',
+        'Maximize profit margins by incrementally raising prices or cutting costs.'
+      ]
+    });
+  } else if (bcg === 'Stars') {
+    solutions.push({
+      category: 'Portfolio Management',
+      title: 'Invest for Dominance',
+      description: `As a "Star" (high share, high growth), you are the market leader in a booming sector.`,
+      tactics: [
+        'Reinvest all profits back into the business to sustain rapid growth.',
+        'Erect massive barriers to entry (exclusive contracts, patents, massive ad spend).',
+        'Prepare for long-term transition to a "Cash Cow" as the market eventually matures.'
+      ]
+    });
+  }
+
+  return solutions;
 }
