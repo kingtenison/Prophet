@@ -474,7 +474,7 @@ export default function MarketResearchPage() {
                           <div key={i} className={`p-4 rounded-xl border transition-all duration-500 ${isWinner ? 'bg-primary-500/10 border-primary-500/50 scale-[1.02]' : 'bg-white/5 border-white/10 opacity-70 grayscale'}`}>
                             <div className="flex justify-between items-center mb-3">
                               <span className={`font-semibold text-sm ${isWinner ? 'text-primary-400' : 'text-white/70'}`}>{strategy}</span>
-                              <Badge variant={isWinner ? 'primary' : 'secondary'} className="font-mono bg-[#000] border-white/10">{score?.toFixed(2)}</Badge>
+                              <Badge variant={isWinner ? 'default' : 'secondary'} className="font-mono bg-[#000] border-white/10">{score?.toFixed(2)}</Badge>
                             </div>
                             <div className="w-full h-2 bg-[#000] rounded-full overflow-hidden border border-white/5">
                               <div className={`h-full transition-all duration-1000 ease-out ${isWinner ? 'bg-gradient-to-r from-primary-600 to-primary-400' : 'bg-white/20'}`} style={{ width: `${(score / 5) * 100}%` }} />
