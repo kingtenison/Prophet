@@ -211,7 +211,7 @@ function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
 }
 
 function generateMatrices(user: any, comps: any[], m: any) {
-  const ife = {
+  const ife: any = {
     factors: [
       { type: 'Strength', name: 'Digital Reach', weight: 0.3, rating: user.digitalPresence >= 50 ? 4 : (user.digitalPresence >= 20 ? 3 : 2) },
       { type: 'Strength', name: 'Market Sentiment (Rating)', weight: 0.3, rating: user.rating >= 4.5 ? 4 : (user.rating >= 4 ? 3 : 2) },
@@ -219,17 +219,17 @@ function generateMatrices(user: any, comps: any[], m: any) {
       { type: 'Weakness', name: 'Pricing Competitiveness', weight: 0.2, rating: user.priceIndex === 0 ? 1 : 2 }
     ]
   };
-  ife.total = ife.factors.reduce((sum, f) => sum + (f.weight * f.rating), 0);
+  ife.total = ife.factors.reduce((sum: number, f: any) => sum + (f.weight * f.rating), 0);
 
-  const efe = {
+  const efe: any = {
     factors: [
-      { type: 'Opportunity', name: 'Underserved Market Segments', weight: 0.25, rating: comps.filter(c => c.rating < 3.5).length > 0 ? 4 : 2 },
+      { type: 'Opportunity', name: 'Underserved Market Segments', weight: 0.25, rating: comps.filter((c: any) => c.rating < 3.5).length > 0 ? 4 : 2 },
       { type: 'Opportunity', name: 'High Local Demand Density', weight: 0.25, rating: comps.length >= 4 ? 4 : 2 },
-      { type: 'Threat', name: 'Established Top-Tier Rivals', weight: 0.30, rating: comps.some(c => c.rating >= 4.5) ? 2 : 4 },
+      { type: 'Threat', name: 'Established Top-Tier Rivals', weight: 0.30, rating: comps.some((c: any) => c.rating >= 4.5) ? 2 : 4 },
       { type: 'Threat', name: 'Digital Market Saturation', weight: 0.20, rating: m.avgDigital > 60 ? 1 : 3 }
     ]
   };
-  efe.total = efe.factors.reduce((sum, f) => sum + (f.weight * f.rating), 0);
+  efe.total = efe.factors.reduce((sum: number, f: any) => sum + (f.weight * f.rating), 0);
 
   const topComps = [...comps].sort((a,b) => b.rating - a.rating).slice(0, 2);
   const cpm = {
