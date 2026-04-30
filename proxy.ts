@@ -8,9 +8,13 @@ export async function proxy(request: NextRequest) {
     },
   })
 
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return response
+  }
+
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
       cookies: {
         getAll() {
@@ -31,8 +35,6 @@ export async function proxy(request: NextRequest) {
     }
   )
 
-  const { data: { user } } = await supabase.auth.getUser()
-
   const requestedUrl = request.nextUrl.clone()
   const pathname = requestedUrl.pathname
 
@@ -46,6 +48,16 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith('/datasets') ||
     pathname.startsWith('/charts') ||
     (pathname.startsWith('/dashboards') && !isPublicDashboard)
+
+  // Skip auth check for public routes if you want, but refresh is good.
+  // Let's do it safely.
+  let user = null
+  try {
+    const { data } = await supabase.auth.getUser()
+    user = data?.user
+  } catch (e) {
+    console.error('Middleware auth error:', e)
+  }
 
   // Redirect to login if accessing protected route without session
   if (isProtectedRoute && !user && !publicRoutes.includes(pathname) && !isPublicDashboard) {
