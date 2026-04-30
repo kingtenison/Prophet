@@ -81,8 +81,13 @@ export default function UploadDatasetPage() {
       
       if (results.data.length === 0) throw new Error('No data found in Google Sheet')
       
-      setParsedData(results.data)
-      setColumns(Object.keys(results.data[0] || {}))
+      setParsedData(results.data as Record<string, unknown>[])
+      const row = (results.data[0] as Record<string, unknown>) || {}
+      setColumns(Object.keys(row).map(key => ({
+        id: key,
+        name: key,
+        type: typeof row[key] === 'number' ? 'numeric' : 'categorical'
+      } as any)))
       setFile(new File([csvText], "google_sheet.csv", { type: 'text/csv' }))
       setStep('clean')
     } catch (err: any) {

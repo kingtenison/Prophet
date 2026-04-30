@@ -12,7 +12,7 @@ interface PDFReportData {
 
 export const generateStrategicPDF = async (data: PDFReportData) => {
   const doc = new jsPDF()
-  const primaryColor = [37, 99, 235] // Prophet Blue
+  const primaryColor: [number, number, number] = [37, 99, 235] // Prophet Blue
 
   // PAGE 1: COVER
   doc.setFillColor(10, 10, 10)

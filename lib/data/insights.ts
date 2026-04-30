@@ -38,6 +38,7 @@ export interface AnalysisResult {
     trend: 'up' | 'down' | 'stable'
     trendStrength: number // 0-1
     growthRate: number // percentage
+    seasonality?: any
   }
   narrative: string
 }

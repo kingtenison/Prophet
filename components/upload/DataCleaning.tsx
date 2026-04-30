@@ -68,24 +68,24 @@ export function DataCleaning() {
           <div className="flex flex-wrap gap-2">
             <Button 
               variant="secondary" 
-              size="xs" 
-              className="flex-1 min-w-[80px]"
+              size="sm" 
+              className="flex-1 min-w-[80px] text-xs py-1.5 h-auto"
               onClick={() => handleMissingValues('drop')}
             >
               Drop Rows
             </Button>
             <Button 
               variant="secondary" 
-              size="xs" 
-              className="flex-1 min-w-[80px]"
+              size="sm" 
+              className="flex-1 min-w-[80px] text-xs py-1.5 h-auto"
               onClick={() => handleMissingValues('fill-zero')}
             >
               Fill Zero
             </Button>
             <Button 
               variant="secondary" 
-              size="xs" 
-              className="flex-1 min-w-[80px]"
+              size="sm" 
+              className="flex-1 min-w-[80px] text-xs py-1.5 h-auto"
               onClick={() => handleMissingValues('fill-mean')}
             >
               Fill Mean

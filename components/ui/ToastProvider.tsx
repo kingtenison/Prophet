@@ -8,6 +8,7 @@ interface Toast {
   type: 'info' | 'success' | 'warning' | 'error'
   title: string
   message?: string
+  description?: string
 }
 
 interface ToastContextType {
@@ -66,7 +67,7 @@ function ToastContainer({ toasts, removeToast }: { toasts: Toast[]; removeToast:
             <div className="mt-0.5">{getIcon(t.type)}</div>
             <div className="flex-1">
               <p className="font-semibold text-sm">{t.title}</p>
-              {t.message && <p className="mt-1 text-sm opacity-90">{t.message}</p>}
+              {(t.message || t.description) && <p className="mt-1 text-sm opacity-90">{t.message || t.description}</p>}
             </div>
             <button
               onClick={() => removeToast(t.id)}
