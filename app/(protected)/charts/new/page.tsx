@@ -701,7 +701,7 @@ export default function ChartBuilderPage() {
       default:
         return (
           <div className="h-96 flex items-center justify-center text-white/50">
-            {chartType.toUpperCase()} chart preview coming soon
+            {String(chartType).toUpperCase()} chart preview coming soon
           </div>
         )
     }
