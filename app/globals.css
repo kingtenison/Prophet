@@ -450,7 +450,7 @@
   --tw-gradient-via: rgba(15,23,42,0.08) !important;
 }
 
-/* ── bg-primary-*/10 boxes in light mode ────────────────────── */
+/* ── bg-primary-X/10 boxes in light mode ────────────────────── */
 [data-theme='light'] .bg-primary-500\/10 {
   background-color: rgba(var(--primary-color-rgb, 37 99 235) / 0.08) !important;
 }
