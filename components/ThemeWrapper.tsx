@@ -1,7 +1,7 @@
 'use client'
 
 import { useThemeStore } from '@/store/useThemeStore'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function ThemeWrapper({ children }: { children: React.ReactNode }) {
   const primaryColor = useThemeStore((state) => state.primaryColor)

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter, Syne } from 'next/font/google'
+import Script from 'next/script'
 import './globals.css'
 import Providers from '@/components/Providers'
 import ThemeWrapper from '@/components/ThemeWrapper'
@@ -30,7 +31,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head />
+      <head>
+        <Script src="/theme-init.js" strategy="beforeInteractive" />
+      </head>
       <body className={`${inter.variable} ${syne.variable} font-sans antialiased`}>
         <Providers>
           <ThemeWrapper>
