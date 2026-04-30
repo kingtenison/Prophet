@@ -638,6 +638,66 @@ export default function ChartBuilderPage() {
           </ScatterChart>
         )
 
+      case 'kpi': {
+        const val = chartData.reduce((acc, d) => acc + (d.value || 0), 0)
+        return (
+          <div className="h-96 flex items-center justify-center p-8">
+            <div className="text-center bg-white/5 rounded-3xl p-10 border border-white/10 w-full max-w-sm shadow-2xl">
+              <p className="text-sm font-semibold text-[#2563EB] uppercase tracking-[0.2em] mb-4">
+                {title || yColumn}
+              </p>
+              <p className="text-6xl lg:text-7xl font-bold text-white tracking-tighter">
+                {val.toLocaleString()}
+              </p>
+              <div className="flex items-center justify-center gap-3 mt-8">
+                <span className="text-xs px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 font-medium">
+                  {aggregation?.toUpperCase()}
+                </span>
+                <span className="text-xs text-white/30">
+                  based on {xColumn}
+                </span>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      case 'table': {
+        const cols = Object.keys(rawData[0] || {})
+        const displayData = rawData.slice(0, 10)
+        return (
+          <div className="h-96 overflow-auto rounded-2xl border border-white/10 bg-[#0a0a0a] custom-scrollbar">
+            <table className="w-full text-sm text-left border-collapse">
+              <thead className="sticky top-0 bg-[#111] z-10">
+                <tr className="border-b border-white/10">
+                  {cols.map(c => (
+                    <th key={c} className="px-4 py-3 font-semibold text-[#2563EB] uppercase tracking-wider whitespace-nowrap">
+                      {c}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {displayData.map((row, i) => (
+                  <tr key={i} className="hover:bg-white/[0.02] transition-colors">
+                    {cols.map(c => (
+                      <td key={c} className="px-4 py-3 text-white/60 font-mono text-xs whitespace-nowrap">
+                        {String(row[c] ?? '')}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {rawData.length > 10 && (
+              <div className="p-4 text-center text-white/30 text-xs border-t border-white/5 bg-white/[0.01]">
+                Previewing first 10 rows of {rawData.length.toLocaleString()}
+              </div>
+            )}
+          </div>
+        )
+      }
+
       default:
         return (
           <div className="h-96 flex items-center justify-center text-white/50">
@@ -647,3 +707,4 @@ export default function ChartBuilderPage() {
     }
   }
 }
+

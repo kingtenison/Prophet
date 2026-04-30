@@ -149,6 +149,11 @@ export function analyzeData(
   const growthRate = firstHalfMean !== 0
     ? ((secondHalfMean - firstHalfMean) / Math.abs(firstHalfMean)) * 100
     : 0
+  
+  const data = xLabels.map((label, i) => ({
+    name: label,
+    value: yValues[i] || 0
+  }))
 
   // ─── Build Insights ───────────────────────────────────────────────────────
   const insights: Insight[] = []
@@ -300,54 +305,97 @@ export function analyzeData(
       trend,
       trendStrength,
       growthRate,
+      seasonality: detectSeasonality(data, yCol)
     },
-    narrative: generateNarrative({ insights, summary: { total, average: avg, min: minVal, max: maxVal, count: yValues.length, stdDev: sd, trend, trendStrength, growthRate }, xCol, yCol }, xLabels)
+    narrative: generateRealReport({ 
+      insights, 
+      summary: { 
+        total, 
+        average: avg, 
+        min: minVal, 
+        max: maxVal, 
+        count: yValues.length, 
+        stdDev: sd, 
+        trend, 
+        trendStrength, 
+        growthRate,
+        seasonality: detectSeasonality(data, yCol)
+      }, 
+      xCol, 
+      yCol,
+      correlations: detectCorrelations(rows, Object.keys(rows[0] || {}).filter(k => typeof rows[0][k] === 'number'))
+    }, xLabels)
   }
 }
 
-function generateNarrative(result: { insights: Insight[], summary: AnalysisResult['summary'], xCol: string, yCol: string }, xLabels: string[]): string {
-  const { summary, insights, yCol } = result
-  const sentences: string[] = []
+function detectSeasonality(data: any[], yCol: string) {
+  if (data.length < 8) return { hasSeasonality: false };
+  const yValues = data.map(d => Number(d.value) || 0);
+  const mean = yValues.reduce((a, b) => a + b, 0) / yValues.length;
+  const peaks = data.filter(d => (Number(d.value) || 0) > mean * 1.5);
+  if (peaks.length > 0 && peaks.length < data.length * 0.4) {
+    return {
+      hasSeasonality: true,
+      peakSegments: peaks.map(p => p.name).slice(0, 3),
+      impact: peaks.length / data.length > 0.2 ? 'High' : 'Moderate'
+    };
+  }
+  return { hasSeasonality: false };
+}
 
-  // 1. Overview
-  sentences.push(`Here is an automated analysis of ${yCol} based on ${summary.count} data points.`)
-  sentences.push(`The total value across all categories is ${summary.total.toLocaleString()}, with an average of ${summary.average.toLocaleString(undefined, { maximumFractionDigits: 1 })}.`)
+function generateRealReport(result: { 
+  insights: Insight[], 
+  summary: AnalysisResult['summary'], 
+  xCol: string, 
+  yCol: string,
+  correlations: any[]
+}, xLabels: string[]): string {
+  const { summary, insights, yCol, xCol, correlations } = result
+  const sections: string[] = []
 
-  // 2. Trend
-  if (summary.trend !== 'stable') {
-    const dir = summary.trend === 'up' ? 'an upward' : 'a downward'
-    sentences.push(`We've detected ${dir} trend with a growth rate of ${summary.growthRate.toFixed(1)} percent.`)
-  } else {
-    sentences.push(`The overall trend is stable, showing consistent performance over time.`)
+  const volatility = (summary.stdDev / summary.average * 100);
+  const confidence = (summary.trendStrength * 100).toFixed(0);
+
+  // SECTION 1: EXECUTIVE AUDIT
+  sections.push(`### EXECUTIVE STRATEGIC AUDIT: ${yCol.toUpperCase()}\n`)
+  sections.push(`Our deterministic analysis of ${summary.count} data points reveals a **${summary.trend === 'up' ? 'Positive Growth Trajectory' : 'Market Contraction'}** phase. ` +
+                `The aggregate volume of ${summary.total.toLocaleString()} units maintains a mean density of ${summary.average.toLocaleString(undefined, { maximumFractionDigits: 1 })}. ` +
+                `With a Trend Confidence of ${confidence}%, this model indicates a ${summary.trendStrength > 0.8 ? 'highly stable' : 'dynamic'} environment.`)
+
+  // SECTION 2: PERFORMANCE BREAKDOWN
+  const top = insights.find(i => i.id === 'top-performer')
+  const bottom = insights.find(i => i.id === 'bottom-performer')
+  sections.push(`\n**Performance Metrics:**\n` +
+                `- **Benchmark Alpha:** ${top?.title.replace('🏆 Top Performer: ', '')} (${summary.max.toLocaleString()})\n` +
+                `- **Performance Floor:** ${bottom?.title.replace(' Lowest: ', '')} (${summary.min.toLocaleString()})\n` +
+                `- **Volatility Index:** ${volatility.toFixed(1)}% (Standard Deviation: ${summary.stdDev.toFixed(1)})`)
+
+  // SECTION 3: MULTI-DIMENSIONAL CORRELATIONS
+  if (correlations.length > 0) {
+    const best = correlations[0];
+    sections.push(`\n**Inter-Dependency Analysis:**\n` +
+                  `We detected a **${Math.abs(best.r) > 0.8 ? 'Primary' : 'Secondary'} ${best.r > 0 ? 'Positive' : 'Negative'} Correlation** between ${best.colA} and ${best.colB} (r=${best.r.toFixed(2)}). ` +
+                  `This suggests that shifts in ${best.colA} are a ${best.r > 0 ? 'leading indicator' : 'inverse driver'} for ${best.colB} performance.`)
   }
 
-  // 3. Outliers & Performance
+  // SECTION 4: ANOMALY & RISK ASSESSMENT
   const outlier = insights.find(i => i.category === 'outlier')
   if (outlier) {
-    sentences.push(`Significantly, we've identified an outlier: ${outlier.title.replace('⚠️ Outlier Detected: ', '')}. ${outlier.description}`)
+    sections.push(`\n**Risk Alert:** A critical anomaly was detected at **${outlier.title.replace('⚠️ Outlier Detected: ', '')}**. ` +
+                  `This point deviates ${outlier.value ? (Number(outlier.value) / summary.average).toFixed(1) : 'X'}x from the cohort mean, suggesting either a systemic breakthrough or a data integrity failure that requires immediate audit.`)
   }
 
-  const top = insights.find(i => i.id === 'top-performer')
-  if (top) {
-    sentences.push(`The top performer is ${top.title.replace('🏆 Top Performer: ', '')}, contributing ${summary.max.toLocaleString()}.`)
-  }
-
-  // 4. Forecast
-  const forecast = insights.find(i => i.category === 'forecast')
-  if (forecast) {
-    sentences.push(`Looking ahead, our model projects the next period to reach approximately ${forecast.value?.toLocaleString() || 'the forecasted value'}.`)
-  }
-
-  // 5. Conclusion
-  if (summary.trend === 'up' && summary.trendStrength > 0.6) {
-    sentences.push(`Overall, the data shows strong, predictable growth.`)
+  // SECTION 5: STRATEGIC ROADMAP (PROPHETIC SOLUTIONS)
+  sections.push(`\n**Strategic Roadmap:**\n`)
+  if (summary.trend === 'up' && summary.growthRate > 15) {
+    sections.push(`1. **Scale Operations:** Current momentum supports a 15-20% capacity increase.\n2. **Optimize Yield:** Focus on the ${top?.title.replace('🏆 Top Performer: ', '')} segment to maximize ROI.\n3. **Defensive Buffering:** Build reserves against the detected ${volatility > 30 ? 'high' : 'moderate'} volatility.`)
   } else if (summary.trend === 'down') {
-    sentences.push(`Caution is advised as the metrics are currently trending downwards.`)
+    sections.push(`1. **Contraction Protocol:** Reduce exposure in the ${bottom?.title.replace(' Lowest: ', '')} segment immediately.\n2. **Pivot Analysis:** Re-evaluate the correlation between ${yCol} and market drivers.\n3. **Stabilization:** Implement a floor of ${summary.average.toFixed(0)} to prevent further decay.`)
   } else {
-    sentences.push(`The data suggests a steady performance with manageable variance.`)
+    sections.push(`1. **Efficiency Gains:** Maintain the current stable posture while seeking 5% marginal gains.\n2. **Segment Migration:** Shift focus from low-yield areas towards the median.\n3. **Predictive Monitoring:** Watch for breaks in the ${confidence}% confidence channel.`)
   }
 
-  return sentences.join(' ')
+  return sections.join('\n')
 }
 
 // ─── Detect correlations between multiple numeric columns ────────────────────

@@ -4,6 +4,7 @@ module.exports = {
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
@@ -17,17 +18,17 @@ module.exports = {
 
         // Primary Royal Blue accent
         royalblue: {
-          DEFAULT: '#2563EB',
-          50:  '#EFF6FF',
-          100: '#DBEAFE',
-          200: '#BFDBFE',
-          300: '#93C5FD',
-          400: '#60A5FA',
-          500: '#3B82F6',
-          600: '#2563EB',
-          700: '#1D4ED8',
-          800: '#1E40AF',
-          900: '#1E3A8A',
+          DEFAULT: 'var(--accent-primary)',
+          50:  'rgba(var(--primary-color-rgb), 0.05)',
+          100: 'rgba(var(--primary-color-rgb), 0.1)',
+          200: 'rgba(var(--primary-color-rgb), 0.2)',
+          300: 'rgba(var(--primary-color-rgb), 0.3)',
+          400: 'var(--accent-light)',
+          500: 'var(--accent-primary)',
+          600: 'var(--accent-primary)',
+          700: 'var(--accent-dark)',
+          800: 'rgba(var(--primary-color-rgb), 0.8)',
+          900: 'rgba(var(--primary-color-rgb), 0.9)',
         },
 
         // Text colors
@@ -39,7 +40,7 @@ module.exports = {
 
         // Keep backwards compatibility for brand colors
         brand: {
-          blue:     '#2563EB',
+          blue:     'var(--accent-primary)',
           gold:     '#F59E0B',
           bronze:   '#f97316',
           cyan:     '#22d3ee',

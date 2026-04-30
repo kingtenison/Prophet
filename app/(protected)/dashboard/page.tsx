@@ -80,8 +80,8 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-display font-bold text-white tracking-tight">Your Workspace</h1>
-          <p className="text-white/50 mt-2 text-lg">Manage your datasets and interactive dashboards</p>
+          <h1 className="text-4xl font-display font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Your Workspace</h1>
+          <p className="mt-2 text-lg" style={{ color: 'var(--text-secondary)' }}>Manage your datasets and interactive dashboards</p>
         </div>
         <div className="flex gap-3">
           <Link href="/datasets/upload">
@@ -105,21 +105,21 @@ export default function DashboardPage() {
               <div className="absolute top-0 right-0 p-4 opacity-10 transform translate-x-4 -translate-y-4 group-hover:scale-110 group-hover:opacity-20 transition-all duration-500"><Database className="w-24 h-24 text-blue-500" /></div>
               <div className="relative z-10 flex items-center gap-4">
                 <div className="p-3 rounded-2xl bg-blue-500/10 text-blue-400 border border-blue-500/20"><Database className="w-6 h-6" /></div>
-                <div><p className="text-3xl font-display font-bold text-white">{datasets.length}</p><p className="text-sm font-medium text-white/50">Total Datasets</p></div>
+                <div><p className="text-3xl font-display font-bold" style={{ color: 'var(--text-primary)' }}>{datasets.length}</p><p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>Total Datasets</p></div>
               </div>
             </Card>
             <Card className="p-6 glass border-white/5 relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-4 opacity-10 transform translate-x-4 -translate-y-4 group-hover:scale-110 group-hover:opacity-20 transition-all duration-500"><BarChart3 className="w-24 h-24 text-cyan-400" /></div>
               <div className="relative z-10 flex items-center gap-4">
                 <div className="p-3 rounded-2xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20"><BarChart3 className="w-6 h-6" /></div>
-                <div><p className="text-3xl font-display font-bold text-white">{dashboards.reduce((acc, d) => acc + (d.layout ? Object.keys(d.layout).length : 0), 0)}</p><p className="text-sm font-medium text-white/50">Active Charts</p></div>
+                <div><p className="text-3xl font-display font-bold" style={{ color: 'var(--text-primary)' }}>{dashboards.reduce((acc, d) => acc + (d.layout ? Object.keys(d.layout).length : 0), 0)}</p><p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>Active Charts</p></div>
               </div>
             </Card>
             <Card className="p-6 glass border-white/5 relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-4 opacity-10 transform translate-x-4 -translate-y-4 group-hover:scale-110 group-hover:opacity-20 transition-all duration-500"><LayoutDashboard className="w-24 h-24 text-indigo-400" /></div>
               <div className="relative z-10 flex items-center gap-4">
                 <div className="p-3 rounded-2xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20"><LayoutDashboard className="w-6 h-6" /></div>
-                <div><p className="text-3xl font-display font-bold text-white">{dashboards.length}</p><p className="text-sm font-medium text-white/50">Dashboards</p></div>
+                <div><p className="text-3xl font-display font-bold" style={{ color: 'var(--text-primary)' }}>{dashboards.length}</p><p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>Dashboards</p></div>
               </div>
             </Card>
           </div>
@@ -129,7 +129,7 @@ export default function DashboardPage() {
             <div className="p-6 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-indigo-500/10"><LayoutDashboard className="w-5 h-5 text-indigo-400" /></div>
-                <h2 className="text-xl font-display font-semibold text-white">Recent Dashboards</h2>
+                <h2 className="text-xl font-display font-semibold" style={{ color: 'var(--text-primary)' }}>Recent Dashboards</h2>
               </div>
               <Link href="/dashboards/new" className="text-sm text-blue-400 hover:text-blue-300 transition-colors font-medium">View all</Link>
             </div>
@@ -141,7 +141,7 @@ export default function DashboardPage() {
                   {dashboards.slice(0, 4).map(dashboard => (
                     <div key={dashboard.id} className="group p-5 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/10 transition-all">
                       <div className="flex items-start justify-between mb-4">
-                        <h3 className="font-semibold text-white truncate text-lg group-hover:text-blue-400 transition-colors">{dashboard.title}</h3>
+                        <h3 className="font-semibold truncate text-lg group-hover:text-blue-400 transition-colors" style={{ color: 'var(--text-primary)' }}>{dashboard.title}</h3>
                         {dashboard.is_public && <span className="px-2 py-0.5 text-[10px] font-medium bg-emerald-500/15 text-emerald-400 rounded-full uppercase tracking-wider">Public</span>}
                       </div>
                       <div className="flex items-center gap-4 text-xs text-white/40 mb-5">
@@ -166,7 +166,7 @@ export default function DashboardPage() {
             <div className="p-6 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-blue-500/10"><Database className="w-5 h-5 text-blue-400" /></div>
-                <h2 className="text-lg font-display font-semibold text-white">Datasets</h2>
+                <h2 className="text-lg font-display font-semibold" style={{ color: 'var(--text-primary)' }}>Datasets</h2>
               </div>
             </div>
             

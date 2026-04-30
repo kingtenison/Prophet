@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter, Syne } from 'next/font/google'
 import './globals.css'
 import Providers from '@/components/Providers'
+import ThemeWrapper from '@/components/ThemeWrapper'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -28,9 +29,24 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${inter.variable} ${syne.variable} font-sans antialiased bg-black text-white`}>
-        <Providers>{children}</Providers>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function() {
+            try {
+              var theme = localStorage.getItem('theme') || 'dark';
+              document.documentElement.setAttribute('data-theme', theme);
+              document.documentElement.classList.toggle('dark', theme === 'dark');
+            } catch (e) {}
+          })()
+        ` }} />
+      </head>
+      <body className={`${inter.variable} ${syne.variable} font-sans antialiased`}>
+        <Providers>
+          <ThemeWrapper>
+            {children}
+          </ThemeWrapper>
+        </Providers>
       </body>
     </html>
   )

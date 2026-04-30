@@ -19,14 +19,14 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-sm font-medium text-white mb-2 uppercase tracking-wider"
+            className="block text-sm font-medium text-[var(--text-primary)] mb-2 uppercase tracking-wider"
           >
             {label}
           </label>
         )}
         <div className="relative">
           {icon && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none transition-colors focus-within:text-[#2563EB]">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-primary)]/40 pointer-events-none transition-colors focus-within:text-[#2563EB]">
               {icon}
             </div>
           )}
@@ -34,7 +34,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             id={inputId}
             className={cn(
-              'w-full bg-[#111] border border-white/8 rounded-lg text-white placeholder:text-white/30',
+              'w-full bg-[var(--bg-tertiary)] border border-[var(--border)] rounded-lg text-[var(--text-primary)] placeholder:text-[var(--text-muted)]',
               'transition-all duration-200 outline-none',
               'px-4 py-3 min-h-[48px]',
               'focus:border-[#2563EB] focus:ring-2 focus:ring-[rgba(37,99,235,0.25)] focus:ring-offset-0',
@@ -47,7 +47,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           />
         </div>
         {error && <p className="mt-1.5 text-xs text-red-400 flex items-center gap-1">⚠ {error}</p>}
-        {hint && !error && <p className="mt-1.5 text-xs text-white/40">{hint}</p>}
+        {hint && !error && <p className="mt-1.5 text-xs text-[var(--text-primary)]/40">{hint}</p>}
       </div>
     )
   }

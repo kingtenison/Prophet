@@ -12,8 +12,9 @@ import { createClient } from '@/lib/supabase/client'
 import {
   TrendingUp, TrendingDown, Minus, AlertTriangle, Zap,
   BarChart3, GitBranch, Eye, ChevronDown, ChevronUp, RefreshCw,
-  Volume2, Square, Play, Sparkles
+  Volume2, Square, Play, Sparkles, MessageSquare
 } from 'lucide-react'
+import { DataChatbot } from './DataChatbot'
 
 interface InsightsPanelProps {
   dataset: {
@@ -28,10 +29,10 @@ interface InsightsPanelProps {
 }
 
 const SEVERITY_STYLES: Record<InsightSeverity, string> = {
-  info: 'border-sky-500/20 bg-sky-500/100/10 text-sky-400',
-  success: 'border-emerald-500/20 bg-emerald-500/100/10 text-emerald-400',
-  warning: 'border-amber-500/20 bg-amber-500/100/10 text-amber-400',
-  critical: 'border-rose-500/20 bg-rose-500/100/10 text-rose-400',
+  info: 'border-sky-500/20 bg-sky-500/10 text-sky-400',
+  success: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-400',
+  warning: 'border-amber-500/20 bg-amber-500/10 text-amber-400',
+  critical: 'border-rose-500/20 bg-rose-500/10 text-rose-400',
 }
 
 const SEVERITY_DOT: Record<InsightSeverity, string> = {
@@ -83,8 +84,9 @@ export function InsightsPanel({ dataset, xCol, yCol, title }: InsightsPanelProps
   const [correlations, setCorrelations] = useState<ReturnType<typeof detectCorrelations>>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<'insights' | 'forecast' | 'correlations' | 'narrative'>('narrative')
+  const [activeTab, setActiveTab] = useState<'insights' | 'forecast' | 'correlations' | 'narrative' | 'whatif'>('narrative')
   const [isSpeaking, setIsSpeaking] = useState(false)
+  const [rows, setRows] = useState<any[]>([])
 
   useEffect(() => {
     if (!dataset?.file_path || !xCol || !yCol) return
@@ -134,6 +136,7 @@ export function InsightsPanel({ dataset, xCol, yCol, title }: InsightsPanelProps
 
       const analysisResult = analyzeData(rows, xCol, yCol)
       setResult(analysisResult)
+      setRows(rows)
 
       const numericCols = dataset.columns
         .filter(c => c.type === 'number')
@@ -174,7 +177,7 @@ export function InsightsPanel({ dataset, xCol, yCol, title }: InsightsPanelProps
 
   if (loading) {
     return (
-      <div className="rounded-2xl border border-white/20 bg-[#111] p-6 shadow-soft">
+      <div className="rounded-2xl border border-white/20 bg-[var(--bg-tertiary)] p-6 shadow-soft">
         <div className="flex items-center gap-3 mb-4">
           <Zap className="w-5 h-5 text-[#3B82F6] animate-pulse" />
           <h3 className="font-display font-bold text-lg text-white">Analyzing data...</h3>
@@ -206,12 +209,12 @@ export function InsightsPanel({ dataset, xCol, yCol, title }: InsightsPanelProps
   const trendColor = summary.trend === 'up' ? 'text-emerald-500' : summary.trend === 'down' ? 'text-rose-500' : 'text-white/40'
 
   return (
-    <div className="rounded-2xl border border-white/20 bg-[#111] shadow-soft overflow-hidden">
+    <div className="rounded-2xl border border-white/20 bg-[var(--bg-tertiary)] shadow-soft overflow-hidden">
       {/* Header */}
       <div className="px-6 py-4 border-b border-white/10 bg-gradient-to-r from-primary-50/50 to-indigo-50/50 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-primary-500/20 rounded-lg flex items-center justify-center">
-            <Zap className="w-4 h-4 text-[#2563EB]" />
+            <Zap className="w-4 h-4 text-royalblue-600" />
           </div>
           <div>
             <h3 className="font-display font-bold text-white">Auto Insights</h3>
@@ -234,16 +237,17 @@ export function InsightsPanel({ dataset, xCol, yCol, title }: InsightsPanelProps
       </div>
 
       {/* KPI Summary Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-y sm:divide-y-0 divide-secondary-100 border-b border-white/10">
+      <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-y md:divide-y-0 divide-white/5 border-b border-white/10">
         {[
-          { label: 'Total', value: summary.total.toLocaleString(undefined, { maximumFractionDigits: 0 }) },
-          { label: 'Average', value: summary.average.toLocaleString(undefined, { maximumFractionDigits: 1 }) },
-          { label: 'Max', value: summary.max.toLocaleString(undefined, { maximumFractionDigits: 0 }) },
-          { label: 'Min', value: summary.min.toLocaleString(undefined, { maximumFractionDigits: 0 }) },
+          { label: 'Total Volume', value: summary.total.toLocaleString(undefined, { maximumFractionDigits: 0 }), sub: 'Aggregate Sum' },
+          { label: 'Mean Average', value: summary.average.toLocaleString(undefined, { maximumFractionDigits: 1 }), sub: 'Segment Average' },
+          { label: 'Peak Performance', value: summary.max.toLocaleString(undefined, { maximumFractionDigits: 0 }), sub: 'Dataset Max' },
+          { label: 'Performance Floor', value: summary.min.toLocaleString(undefined, { maximumFractionDigits: 0 }), sub: 'Dataset Min' },
         ].map(stat => (
-          <div key={stat.label} className="px-4 py-3 text-center">
-            <p className="text-xs text-white/50 uppercase tracking-wide font-medium">{stat.label}</p>
-            <p className="font-bold text-white mt-0.5 text-sm sm:text-base">{stat.value}</p>
+          <div key={stat.label} className="px-6 py-5 text-left hover:bg-white/[0.02] transition-colors group">
+            <p className="text-[10px] text-white/30 uppercase tracking-[0.15em] font-bold mb-1">{stat.label}</p>
+            <p className="font-display font-bold text-white text-xl lg:text-2xl tracking-tight group-hover:text-blue-400 transition-colors">{stat.value}</p>
+            <p className="text-[10px] text-white/20 mt-1">{stat.sub}</p>
           </div>
         ))}
       </div>
@@ -270,6 +274,7 @@ export function InsightsPanel({ dataset, xCol, yCol, title }: InsightsPanelProps
             { key: 'insights', label: 'Insights', icon: Eye, count: insights.length },
             { key: 'forecast', label: 'Forecast', icon: TrendingUp },
             { key: 'correlations', label: 'Correlations', icon: GitBranch, count: correlations.length },
+            { key: 'whatif', label: 'What-If', icon: Play },
           ].map(tab => (
             <button
               key={tab.key}
@@ -298,27 +303,31 @@ export function InsightsPanel({ dataset, xCol, yCol, title }: InsightsPanelProps
           <div className="space-y-4">
             <div className="bg-primary-500/10 rounded-xl p-5 border border-primary-500/20 relative overflow-hidden">
               <div className="absolute top-0 right-0 p-3 opacity-10">
-                <Sparkles className="w-12 h-12 text-[#2563EB]" />
+                <Sparkles className="w-12 h-12 text-royalblue-600" />
               </div>
               <h4 className="text-sm font-bold text-primary-400 mb-3 flex items-center gap-2">
                 <Sparkles className="w-4 h-4" />
                 Data Narrative
               </h4>
-              <p className="text-white/70 leading-relaxed text-sm italic">
-                "{result.narrative}"
-              </p>
+              <div className="space-y-4 text-white/70 leading-relaxed text-sm">
+                {result.narrative.split('\n').map((line, i) => (
+                  <p key={i} dangerouslySetInnerHTML={{ 
+                    __html: line.replace(new RegExp('\\*\\*(.*?)\\*\\*', 'g'), '<strong class="text-white font-bold">$1</strong>')
+                  }} />
+                ))}
+              </div>
               <div className="mt-4 flex justify-end">
                 <button
                   onClick={handleSpeak}
-                  className="text-xs font-bold text-[#2563EB] hover:text-primary-400 flex items-center gap-1.5 px-3 py-1.5 bg-[#111] rounded-full shadow-sm border border-primary-500/20 transition-all hover:shadow-md"
+                  className="text-xs font-bold text-[#2563EB] hover:text-primary-400 flex items-center gap-1.5 px-4 py-2 bg-[var(--bg-tertiary)] rounded-full shadow-lg border border-primary-500/20 transition-all hover:scale-105 active:scale-95"
                 >
-                  {isSpeaking ? <Square className="w-3 h-3 fill-current" /> : <Play className="w-3 h-3 fill-current" />}
-                  {isSpeaking ? "Stop Reading" : "Read Aloud"}
+                  {isSpeaking ? <Square className="w-3 h-3 fill-current" /> : <Sparkles className="w-3 h-3" />}
+                  {isSpeaking ? "Stop Reading" : "Read Strategic Audit"}
                 </button>
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div className="p-4 rounded-xl border border-white/10 bg-white/5/30">
+              <div className="p-4 rounded-xl border border-white/10 bg-white/5">
                 <p className="text-[10px] uppercase tracking-wider font-bold text-white/40 mb-1">Trend Strength</p>
                 <div className="flex items-center gap-2">
                   <div className="flex-1 h-2 bg-white/20 rounded-full overflow-hidden">
@@ -342,9 +351,9 @@ export function InsightsPanel({ dataset, xCol, yCol, title }: InsightsPanelProps
 
         {/* INSIGHTS TAB */}
         {activeTab === 'insights' && (
-          <div className="space-y-2.5">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {insights.length === 0 && (
-              <p className="text-white/40 text-sm text-center py-4">No significant patterns detected.</p>
+              <p className="col-span-full text-white/40 text-sm text-center py-12 border border-dashed border-white/10 rounded-2xl">No significant patterns detected in current slice.</p>
             )}
             {insights.map(insight => (
               <InsightCard key={insight.id} insight={insight} />
@@ -413,38 +422,117 @@ export function InsightsPanel({ dataset, xCol, yCol, title }: InsightsPanelProps
 
         {/* CORRELATIONS TAB */}
         {activeTab === 'correlations' && (
-          <div className="space-y-2.5">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {correlations.length === 0 ? (
-              <div className="text-center py-6">
+              <div className="col-span-full text-center py-12 border border-dashed border-white/10 rounded-2xl">
                 <GitBranch className="w-8 h-8 text-white/20 mx-auto mb-2" />
-                <p className="text-white/40 text-sm">No strong correlations found between numeric columns.</p>
-                <p className="text-white/30 text-xs mt-1">Correlations above 0.6 will appear here.</p>
+                <p className="text-white/40 text-sm">No strong multi-dimensional correlations found.</p>
+                <p className="text-white/30 text-xs mt-1">Direct dependencies above 0.6 will be mapped here.</p>
               </div>
             ) : (
               correlations.map((corr, i) => (
-                <div key={i} className="rounded-xl border border-white/20 bg-white/5/50 px-4 py-3">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm font-semibold text-white/80">
-                      {corr.colA} ↔ {corr.colB}
-                    </span>
-                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${corr.r > 0 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'
+                <div key={i} className="rounded-2xl border border-[var(--border)] bg-white/[0.02] px-5 py-4 hover:border-blue-500/30 transition-all group">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                       <GitBranch className="w-3.5 h-3.5 text-blue-400" />
+                       <span className="text-sm font-bold text-white/80 tracking-tight group-hover:text-blue-400 transition-colors">
+                        {corr.colA} <span className="text-white/20 px-1">×</span> {corr.colB}
+                       </span>
+                    </div>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${corr.r > 0 ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'
                       }`}>
-                      r = {corr.r.toFixed(2)}
+                      R = {corr.r.toFixed(2)}
                     </span>
                   </div>
                   {/* Correlation bar */}
-                  <div className="relative h-1.5 bg-white/20 rounded-full overflow-hidden mt-2">
+                  <div className="relative h-1.5 bg-white/5 rounded-full overflow-hidden mt-4">
                     <div
-                      className={`absolute top-0 h-full rounded-full transition-all ${corr.r > 0 ? 'bg-emerald-400' : 'bg-rose-400'}`}
+                      className={`absolute top-0 h-full rounded-full transition-all duration-1000 ${corr.r > 0 ? 'bg-emerald-400' : 'bg-rose-400'}`}
                       style={{ width: `${Math.abs(corr.r) * 100}%`, left: corr.r < 0 ? `${(1 - Math.abs(corr.r)) * 100}%` : 0 }}
                     />
                   </div>
-                  <p className="text-xs text-white/50 mt-2">{corr.description}</p>
+                  <p className="text-xs text-white/40 mt-4 leading-relaxed">{corr.description}</p>
                 </div>
               ))
             )}
           </div>
         )}
+
+        {/* WHAT-IF TAB */}
+        {activeTab === 'whatif' && (
+          <ScenarioSandbox summary={summary} yCol={yCol} />
+        )}
+      </div>
+
+      {/* Prophet Chatbot Integration */}
+      <DataChatbot 
+        datasetName={dataset.name} 
+        analysis={result} 
+        xCol={xCol} 
+        yCol={yCol} 
+        rawRows={rows} 
+      />
+    </div>
+  )
+}
+function ScenarioSandbox({ summary, yCol }: { summary: any, yCol: string }) {
+  const [multiplier, setMultiplier] = useState(10) // +10%
+
+  const simulatedTotal = summary.total * (1 + multiplier / 100)
+  const simulatedAvg = summary.average * (1 + multiplier / 100)
+  const impact = simulatedTotal - summary.total
+
+  return (
+    <div className="space-y-6 animate-in fade-in zoom-in-95 duration-500">
+      <div className="p-5 rounded-2xl bg-indigo-500/10 border border-indigo-500/20">
+        <h4 className="font-bold text-indigo-400 flex items-center gap-2 mb-4">
+          <Play className="w-4 h-4" /> Scenario Modeling Sandbox
+        </h4>
+        
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-white/70">Adjust {yCol} variable</span>
+            <span className={`text-sm font-bold ${multiplier >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+              {multiplier > 0 ? '+' : ''}{multiplier}% impact
+            </span>
+          </div>
+          <input 
+            type="range" 
+            min="-50" 
+            max="100" 
+            value={multiplier}
+            onChange={(e) => setMultiplier(parseInt(e.target.value))}
+            className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+          />
+          <div className="flex justify-between text-[10px] text-white/30 font-bold uppercase">
+            <span>-50% Contraction</span>
+            <span>+100% Growth</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="p-4 rounded-xl border border-[var(--border)] bg-white/[0.02]">
+          <p className="text-[10px] uppercase font-bold text-white/30 mb-1">Simulated Total</p>
+          <div className="flex items-baseline gap-2">
+            <span className="text-2xl font-bold text-white">{simulatedTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+            <span className={`text-xs font-bold ${multiplier >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+              ({multiplier > 0 ? '+' : ''}{impact.toLocaleString(undefined, { maximumFractionDigits: 0 })})
+            </span>
+          </div>
+        </div>
+        <div className="p-4 rounded-xl border border-[var(--border)] bg-white/[0.02]">
+          <p className="text-[10px] uppercase font-bold text-white/30 mb-1">Simulated Average</p>
+          <span className="text-2xl font-bold text-white">{simulatedAvg.toLocaleString(undefined, { maximumFractionDigits: 1 })}</span>
+        </div>
+      </div>
+
+      <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex items-start gap-3">
+        <Sparkles className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" />
+        <p className="text-xs text-white/60 leading-relaxed">
+          Prophet AI predicts that a **{multiplier}%** adjustment to the **{yCol}** index would result in a {multiplier > 0 ? 'net gain' : 'net loss'} of **{Math.abs(impact).toLocaleString()} units**. 
+          This would move your current {summary.trend} trend into a {multiplier > 0 ? 'accelerated growth' : 'managed contraction'} phase.
+        </p>
       </div>
     </div>
   )

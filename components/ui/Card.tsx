@@ -15,7 +15,7 @@ export const Card = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        'bg-[#111] border border-white/8 rounded-xl',
+        'bg-[var(--bg-tertiary)] border border-[var(--border)] rounded-xl',
         hoverable && [
           'transition-all duration-300',
           'hover:border-[rgba(37,99,235,0.35)]',
@@ -49,9 +49,9 @@ export const ResponsiveCard = ({
   const paddingMap = { small: 'p-3', normal: 'p-4', large: 'p-6' }
   const radiusMap = { small: 'rounded-lg', normal: 'rounded-xl', large: 'rounded-2xl' }
   const variantMap = {
-    default:   'bg-[#111] border border-white/8',
-    elevated:  'bg-[#111] border border-white/8 shadow-[0_8px_40px_rgba(0,0,0,0.4)]',
-    outline:   'bg-transparent border-2 border-[#2563EB]/30 text-white',
+    default:   'bg-[var(--bg-tertiary)] border border-[var(--border)]',
+    elevated:  'bg-[var(--bg-tertiary)] border border-[var(--border)] shadow-lg',
+    outline:   'bg-transparent border-2 border-[var(--accent-primary)]/30 text-[var(--text-primary)]',
     ghost:     'bg-transparent border-none',
     accent:    'bg-[rgba(223,255,0,0.04)] border border-[rgba(223,255,0,0.2)] text-white',
   }

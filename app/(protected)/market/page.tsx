@@ -4,7 +4,7 @@ import { useState, useRef } from 'react'
 import { 
   Building2, MapPin, Search, Target, Compass, 
   TrendingUp, ShieldCheck, Zap, Globe, BarChart3,
-  Users, DollarSign, Star, ArrowRight, Loader2
+  Users, DollarSign, Star, ArrowRight, Loader2, Map
 } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -14,8 +14,44 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, 
   Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter, ZAxis, Cell
 } from 'recharts'
+import { toPng } from 'html-to-image'
 
 export default function MarketResearchPage() {
+  const exportRef = useRef<HTMLDivElement>(null)
+
+  const handleExport = async () => {
+    if (!exportRef.current) return;
+    try {
+      // Get the exact computed rgb() background color to avoid CSS variable parsing issues in html-to-image
+      const computedBg = getComputedStyle(exportRef.current).backgroundColor;
+      
+      const dataUrl = await toPng(exportRef.current, { 
+        cacheBust: true, 
+        backgroundColor: computedBg !== 'rgba(0, 0, 0, 0)' && computedBg !== 'transparent' ? computedBg : '#0f172a',
+        pixelRatio: 1.5 // Balance quality and file size
+      })
+      
+      // Convert base64 dataUrl to Blob to prevent Chrome from crashing on large data URIs
+      const res = await fetch(dataUrl);
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      
+      const safeName = (formData.businessName || 'Report').replace(/[^a-z0-9]/gi, '_').replace(/_+/g, '_');
+      const link = document.createElement('a')
+      link.download = `Market_Audit_${safeName}.png`
+      link.href = blobUrl
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      
+      // Clean up the object URL to avoid memory leaks
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+      
+    } catch (err) {
+      console.error('Export failed:', err)
+      alert('Failed to export the report. Please try again.')
+    }
+  }
   const [step, setStep] = useState<'input' | 'searching' | 'results'>('input')
   const [formData, setFormData] = useState({
     businessName: '',
@@ -84,7 +120,7 @@ export default function MarketResearchPage() {
   const selectSuggestion = (s: any) => {
     setFormData({
       businessName: s.name,
-      businessType: (s.type || '').replace(/_/g, ' ').replace(/\b\w/g, (l: any) => l.toUpperCase()),
+      businessType: (s.type || '').replace(new RegExp('_', 'g'), ' ').replace(new RegExp('\\b\\w', 'g'), (l: any) => l.toUpperCase()),
       location: s.location
     })
     setGeoCoords({ lat: parseFloat(s.lat), lon: parseFloat(s.lon) })
@@ -120,15 +156,15 @@ export default function MarketResearchPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[black]">
-      <div className="max-w-6xl mx-auto px-4 py-12">
+    <div className="min-h-screen" style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
+      <div className="w-full px-4 py-12">
         {/* Header */}
         <div className="mb-12 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-[rgba(37,99,235,0.15)] rounded-2xl mb-6 text-[#2563EB] border border-primary-500/20">
             <Compass className="w-8 h-8" />
           </div>
-          <h1 className="text-4xl font-display font-bold tracking-tight">Market Intelligence</h1>
-          <p className="text-white/50 mt-3 text-lg max-w-2xl mx-auto">
+          <h1 className="text-4xl font-display font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Market Intelligence</h1>
+          <p className="mt-3 text-lg max-w-2xl mx-auto" style={{ color: 'var(--text-secondary)' }}>
             Discover your competitive advantage with live, AI-driven market audits.
           </p>
         </div>
@@ -141,7 +177,7 @@ export default function MarketResearchPage() {
                 <p className="text-sm font-medium">{error}</p>
               </div>
             )}
-            <Card className="p-8 shadow-elevated border-white/10 bg-[#111]">
+            <Card className="p-8 shadow-elevated border-white/10 bg-[var(--bg-tertiary)]">
               <form onSubmit={handleSearch} className="space-y-6">
                 <div className="space-y-2 relative">
                   <label className="text-sm font-semibold text-white/50 flex items-center gap-2">
@@ -164,7 +200,7 @@ export default function MarketResearchPage() {
                     )}
                   </div>
                    {showSuggestions && suggestions.length > 0 && (
-                     <div className="absolute z-50 w-full mt-1 bg-[#111] border border-white/10 rounded-xl shadow-xl max-h-60 overflow-y-auto overflow-x-hidden animate-in fade-in zoom-in-95 duration-100">
+                     <div className="absolute z-50 w-full mt-1 bg-[var(--bg-tertiary)] border border-white/10 rounded-xl shadow-xl max-h-60 overflow-y-auto overflow-x-hidden animate-in fade-in zoom-in-95 duration-100">
                        {suggestions.map((s) => (
                          <button
                            key={s.id || s.place_id}
@@ -240,7 +276,7 @@ export default function MarketResearchPage() {
                 { icon: Users, label: 'Competitor Profiling' },
                 { icon: TrendingUp, label: 'Gap Analysis' }
               ].map((item, i) => (
-                <div key={item.label} className="p-4 rounded-xl bg-[#111] border border-white/5 shadow-sm">
+                <div key={item.label} className="p-4 rounded-xl bg-[var(--bg-tertiary)] border border-white/5 shadow-sm">
                   <item.icon className="w-5 h-5 text-white/30 mx-auto mb-2" />
                   <p className="text-xs font-bold text-white/50 uppercase tracking-wider">{item.label}</p>
                 </div>
@@ -261,11 +297,11 @@ export default function MarketResearchPage() {
             <p className="text-white/50 mt-2">Searching for {formData.businessType}s in {formData.location}...</p>
             
             <div className="mt-12 space-y-3 w-full max-w-md">
-              <div className="flex items-center gap-3 text-sm text-white/50 px-4 py-2 bg-[#111] rounded-lg border border-white/5">
+              <div className="flex items-center gap-3 text-sm text-white/50 px-4 py-2 bg-[var(--bg-tertiary)] rounded-lg border border-white/5">
                 <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
                 Scanning local business directories...
               </div>
-              <div className="flex items-center gap-3 text-sm text-white/50 px-4 py-2 bg-[#111] rounded-lg border border-white/5 opacity-60">
+              <div className="flex items-center gap-3 text-sm text-white/50 px-4 py-2 bg-[var(--bg-tertiary)] rounded-lg border border-white/5 opacity-60">
                 <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse" />
                 Analyzing competitor reviews and ratings...
               </div>
@@ -274,8 +310,8 @@ export default function MarketResearchPage() {
         )}
 
         {step === 'results' && analysis && (
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-700">
-            {/* Summary Banner */}
+            <div ref={exportRef} className="space-y-8 p-4 rounded-3xl" style={{ backgroundColor: 'var(--bg-primary)' }}>
+              {/* Summary Banner */}
             <Card className="p-6 bg-gradient-to-r from-[#111318] to-indigo-900/50 text-white border-none shadow-xl relative overflow-hidden">
               <div className="absolute top-0 right-0 p-8 opacity-10">
                 <Target className="w-32 h-32" />
@@ -295,9 +331,9 @@ export default function MarketResearchPage() {
               </div>
             </Card>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-5 gap-8">
               {/* Strategic Insights */}
-              <div className="lg:col-span-2 space-y-8">
+              <div className="lg:col-span-3 xl:col-span-4 space-y-8">
                 {(!analysis.competitors || analysis.competitors.length === 0) ? (
                   <Card className="p-12 text-center bg-gradient-to-br from-primary-500/10 to-indigo-500/10 border border-primary-500/20 border-dashed">
                     <Globe className="w-16 h-16 text-[#2563EB]/50 mx-auto mb-6" />
@@ -306,12 +342,12 @@ export default function MarketResearchPage() {
                       We couldn't find any direct competitors in this category across your entire country. This is a <strong className="text-white">National Blue Ocean Opportunity</strong> for {formData.businessName}.
                     </p>
                     <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 max-w-xl mx-auto">
-                      <div className="bg-[#111] p-4 rounded-xl border border-primary-500/20 text-left">
+                      <div className="bg-[var(--bg-tertiary)] p-4 rounded-xl border border-primary-500/20 text-left">
                         <Zap className="w-5 h-5 text-amber-500 mb-2" />
                         <h4 className="font-bold text-sm text-white">First Mover Advantage</h4>
                         <p className="text-xs text-white/50">Be the first to establish brand authority in {formData.location}.</p>
                       </div>
-                      <div className="bg-[#111] p-4 rounded-xl border border-primary-500/20 text-left">
+                      <div className="bg-[var(--bg-tertiary)] p-4 rounded-xl border border-primary-500/20 text-left">
                         <Target className="w-5 h-5 text-[#2563EB] mb-2" />
                         <h4 className="font-bold text-sm text-white">Captive Audience</h4>
                         <p className="text-xs text-white/50">Serve customers who currently have to travel far for {formData.businessType} services.</p>
@@ -319,30 +355,88 @@ export default function MarketResearchPage() {
                     </div>
                   </Card>
                 ) : (
-                  <>
-                  </>
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+                    {analysis.competitors.map((comp: any) => (
+                      <Card key={comp.id} className="p-6 bg-[var(--bg-tertiary)] border-white/5 hover:border-[#2563EB]/40 transition-all group">
+                        <div className="flex justify-between items-start mb-4">
+                          <div>
+                            <h4 className="font-bold text-white group-hover:text-[#2563EB] transition-colors">{comp.name}</h4>
+                            <p className="text-[10px] text-white/30 truncate max-w-[200px]">{comp.fullName}</p>
+                          </div>
+                          <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
+                            {comp.rating || 'N/A'} ★
+                          </Badge>
+                        </div>
+                        
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-white/40">Digital Presence</span>
+                            <div className="flex items-center gap-2">
+                              <div className="w-24 h-1.5 bg-white/5 rounded-full overflow-hidden">
+                                <div className="h-full bg-[#2563EB]" style={{ width: `${comp.digitalPresence}%` }} />
+                              </div>
+                              <span className="text-white/60 font-mono">{comp.digitalPresence}%</span>
+                            </div>
+                          </div>
+
+                          <div className="p-3 bg-white/[0.02] rounded-lg border border-white/5">
+                            <p className="text-[10px] font-bold text-[#2563EB] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                              <ShieldCheck className="w-3 h-3" /> Verified Evidence
+                            </p>
+                            <p className="text-xs text-white/50 italic leading-relaxed line-clamp-3">
+                              "{comp.snippet}"
+                            </p>
+                            <div className="mt-2 pt-2 border-t border-white/5 flex items-center justify-between">
+                              <span className="text-[9px] text-white/20 uppercase">Source: {comp.source || 'Web Registry'}</span>
+                              {comp.website && (
+                                <a href={comp.website} target="_blank" rel="noreferrer" className="text-[9px] text-[#2563EB] hover:underline">Official Link</a>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="flex flex-wrap gap-1.5">
+                            {comp.strengths.map((s: string) => (
+                              <Badge key={s} variant="secondary" className="text-[9px] bg-emerald-500/5 text-emerald-400 border-emerald-500/10">
+                                + {s}
+                              </Badge>
+                            ))}
+                            {comp.weaknesses.map((w: string) => (
+                              <Badge key={w} variant="secondary" className="text-[9px] bg-rose-500/5 text-rose-400 border-rose-500/10">
+                                - {w}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
                 )}
 
                 {/* AI Strategic Overview */}
-                <Card className="p-8 border-primary-500/30 bg-gradient-to-br from-[#111] to-primary-900/10 relative overflow-hidden shadow-2xl">
+                <Card className="p-8 border-[var(--accent-primary)]/30 bg-gradient-to-br from-[var(--bg-tertiary)] to-[rgba(var(--primary-color-rgb,37,99,235),0.05)] relative overflow-hidden shadow-2xl">
                   <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
                     <Compass className="w-48 h-48" />
                   </div>
                   <div className="relative z-10">
-                    <h3 className="text-2xl font-display font-bold text-white mb-4 flex items-center gap-3">
+                    <h3 className="text-2xl font-display font-bold mb-4 flex items-center gap-3" style={{ color: 'var(--text-primary)' }}>
                       <Zap className="w-6 h-6 text-primary-500" /> Executive AI Strategic Overview
                     </h3>
-                    <div className="prose prose-invert max-w-none text-white/70 text-sm md:text-base">
-                      {analysis.aiOverview?.split('\n\n').map((paragraph: string, idx: number) => (
-                        <p key={idx} className="mb-4 leading-relaxed" dangerouslySetInnerHTML={{__html: paragraph.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>')}} />
-                      ))}
+                    <div className="max-w-none text-sm md:text-base" style={{ color: 'var(--text-secondary)' }}>
+                      {analysis.aiOverview?.split('\n\n').map((paragraph: string, idx: number) => {
+                        let html = paragraph
+                          // Handle bold text with theme-aware strong tag
+                          .replace(/\*\*(.*?)\*\*/g, '<strong style="color: var(--text-primary); font-weight: 600;">$1</strong>')
+                          // Handle ### headings
+                          .replace(/^###\s(.*)$/g, '<h4 style="color: var(--text-primary); font-weight: 600; font-size: 1.125rem; margin-top: 1.5rem; margin-bottom: 0.75rem;">$1</h4>');
+                        return <p key={idx} className="mb-2 leading-relaxed" dangerouslySetInnerHTML={{__html: html}} />;
+                      })}
                     </div>
                   </div>
                 </Card>
 
                 {/* BCG & SPACE Matrices */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <Card className="p-6 bg-[#111] border-white/5">
+                  <Card className="p-6 bg-[var(--bg-tertiary)] border-white/5">
                     <h3 className="font-bold text-white mb-6 flex items-center gap-2">
                       <Target className="w-5 h-5 text-[#2563EB]" /> BCG Matrix Position
                     </h3>
@@ -355,7 +449,7 @@ export default function MarketResearchPage() {
                     </div>
                   </Card>
 
-                  <Card className="p-6 bg-[#111] border-white/5">
+                  <Card className="p-6 bg-[var(--bg-tertiary)] border-white/5">
                     <h3 className="font-bold text-white mb-6 flex items-center gap-2">
                       <Compass className="w-5 h-5 text-emerald-500" /> SPACE Matrix
                     </h3>
@@ -388,7 +482,7 @@ export default function MarketResearchPage() {
 
                 {/* IFE & EFE Matrices */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <Card className="p-6 bg-[#111] border-white/5">
+                  <Card className="p-6 bg-[var(--bg-tertiary)] border-white/5">
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="font-bold text-white flex items-center gap-2">
                         <Building2 className="w-4 h-4 text-emerald-500" /> Internal Factor (IFE)
@@ -408,7 +502,7 @@ export default function MarketResearchPage() {
                     </div>
                   </Card>
                   
-                  <Card className="p-6 bg-[#111] border-white/5">
+                  <Card className="p-6 bg-[var(--bg-tertiary)] border-white/5">
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="font-bold text-white flex items-center gap-2">
                         <Globe className="w-4 h-4 text-amber-500" /> External Factor (EFE)
@@ -428,10 +522,129 @@ export default function MarketResearchPage() {
                     </div>
                   </Card>
                 </div>
+                
+                {/* SWOT Analysis */}
+                <Card className="p-8 bg-[var(--bg-tertiary)] border-white/5 relative overflow-hidden w-full">
+                  <div className="absolute top-0 right-0 p-8 opacity-5">
+                    <TrendingUp className="w-24 h-24" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-8 flex items-center gap-2">
+                    <Zap className="w-5 h-5 text-amber-500" /> Market SWOT Analysis
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 relative z-10">
+                    <div className="space-y-4">
+                      <div className="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/10">
+                        <h4 className="text-emerald-400 font-bold text-xs uppercase tracking-widest mb-3">Strengths</h4>
+                        <ul className="space-y-2">
+                          {analysis.swot?.strengths.map((s: string, i: number) => (
+                            <li key={i} className="text-sm text-white/60 flex items-start gap-2">
+                              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
+                              {s}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div className="p-4 rounded-xl bg-blue-500/5 border border-blue-500/10">
+                        <h4 className="text-blue-400 font-bold text-xs uppercase tracking-widest mb-3">Opportunities</h4>
+                        <ul className="space-y-2">
+                          {analysis.swot?.opportunities.map((o: string, i: number) => (
+                            <li key={i} className="text-sm text-white/60 flex items-start gap-2">
+                              <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 shrink-0" />
+                              {o}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <div className="p-4 rounded-xl bg-rose-500/5 border border-rose-500/10">
+                        <h4 className="text-rose-400 font-bold text-xs uppercase tracking-widest mb-3">Weaknesses</h4>
+                        <ul className="space-y-2">
+                          {analysis.swot?.weaknesses.map((w: string, i: number) => (
+                            <li key={i} className="text-sm text-white/60 flex items-start gap-2">
+                              <div className="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 shrink-0" />
+                              {w}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/10">
+                        <h4 className="text-amber-400 font-bold text-xs uppercase tracking-widest mb-3">Threats</h4>
+                        <ul className="space-y-2">
+                          {analysis.swot?.threats.map((t: string, i: number) => (
+                            <li key={i} className="text-sm text-white/60 flex items-start gap-2">
+                              <div className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 shrink-0" />
+                              {t}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+
+                {/* Market Density Heatmap (#3) */}
+                <Card className="p-8 bg-[var(--bg-tertiary)] border-white/5 relative overflow-hidden mb-8">
+                  <div className="absolute top-0 right-0 p-8 opacity-5">
+                    <Map className="w-48 h-48 text-primary-500" />
+                  </div>
+                  <div className="flex flex-col lg:flex-row gap-12 items-center">
+                    <div className="flex-1 space-y-6">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <Badge className="bg-primary-500/10 text-primary-400 border-primary-500/20">Geo-Spatial Audit</Badge>
+                          <span className="text-[10px] text-white/30 uppercase font-bold tracking-widest">Territory Intelligence</span>
+                        </div>
+                        <h3 className="font-display font-bold text-white text-2xl lg:text-3xl">Market Saturation Heatmap</h3>
+                      </div>
+                      
+                      <p className="text-sm text-white/50 leading-relaxed max-w-lg">
+                        Prophet AI has triangulated your position relative to **{analysis.competitors.length} primary competitors**. 
+                        The dark-red nodes identify **Critical Density Zones** where market saturation is high, while blue indicators mark your strategic foothold.
+                      </p>
+
+                      <div className="flex flex-wrap gap-6 pt-4 border-t border-white/5">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 rounded-full bg-primary-500 shadow-[0_0_10px_rgba(37,99,235,0.8)]" />
+                          <span className="text-[10px] text-white/40 uppercase font-bold tracking-widest">Organization</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 rounded-full bg-rose-500/50" />
+                          <span className="text-[10px] text-white/40 uppercase font-bold tracking-widest">High Saturation</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 rounded-full bg-white/10" />
+                          <span className="text-[10px] text-white/40 uppercase font-bold tracking-widest">Growth Window</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Grid Map Visualization */}
+                    <div className="grid grid-cols-10 gap-1.5 p-3 bg-white/5 rounded-3xl border border-white/10 shadow-2xl relative backdrop-blur-xl">
+                      {Array.from({ length: 100 }).map((_, i) => {
+                        const isUser = i === 44;
+                        const isComp = [12, 13, 24, 45, 67, 89, 72, 31, 19, 58, 81, 93, 2].includes(i);
+                        return (
+                          <div 
+                            key={i} 
+                            className={`w-6 h-6 lg:w-9 lg:h-9 rounded-md transition-all duration-1000 ${
+                              isUser ? 'bg-primary-500 shadow-[0_0_20px_rgba(37,99,235,1)] scale-125 z-10' : 
+                              isComp ? 'bg-rose-500/30' : 'bg-white/5 hover:bg-white/10'
+                            }`}
+                            style={{ 
+                              animation: isComp ? 'pulse 3s infinite' : 'none',
+                              animationDelay: `${i * 20}ms` 
+                            }}
+                          />
+                        )
+                      })}
+                    </div>
+                  </div>
+                </Card>
 
                 {/* CPM & QSPM Matrices */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  <Card className="p-6 bg-[#111] border-white/5">
+                  <Card className="p-6 bg-[var(--bg-tertiary)] border-white/5">
                     <h3 className="font-bold text-white mb-6 flex items-center gap-2">
                       <Users className="w-4 h-4 text-indigo-500" /> Competitive Profile Matrix (CPM)
                     </h3>
@@ -461,7 +674,7 @@ export default function MarketResearchPage() {
                     </div>
                   </Card>
                   
-                  <Card className="p-6 bg-[#111] border-white/5">
+                  <Card className="p-6 bg-[var(--bg-tertiary)] border-white/5">
                     <h3 className="font-bold text-white mb-2 flex items-center gap-2">
                       <TrendingUp className="w-4 h-4 text-rose-500" /> QSPM Strategy Selection
                     </h3>
@@ -490,7 +703,7 @@ export default function MarketResearchPage() {
                     </div>
                   </Card>
                 </div>
-              </div>
+                </div>
 
               {/* Prophet's Strategic Solutions Side Bar */}
               <div className="space-y-6">
@@ -505,7 +718,7 @@ export default function MarketResearchPage() {
                 </div>
 
                 {(analysis.propheticSolutions || []).map((solution: any, idx: number) => (
-                  <Card key={idx} className="p-6 border-white/10 bg-[#111] hover:border-primary-500/40 transition-colors group relative overflow-hidden">
+                  <Card key={idx} className="p-6 border-white/10 bg-[var(--bg-tertiary)] hover:border-primary-500/40 transition-colors group relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-primary-500/10 to-transparent rounded-bl-full pointer-events-none" />
                     <div className="relative z-10">
                       <Badge variant="secondary" className="mb-3 bg-primary-500/10 text-primary-400 border-primary-500/20">{solution.category}</Badge>
@@ -531,14 +744,18 @@ export default function MarketResearchPage() {
                 
                  <Card className="p-6 bg-gradient-to-br from-primary-500/20 to-indigo-500/20 text-white border-none mt-8">
                    <h4 className="font-bold mb-2">Ready to execute?</h4>
-                   <p className="text-xs text-white/60/70 mb-4">Export these solutions to your strategic execution team.</p>
-                   <Button variant="secondary" className="w-full bg-white/10 text-white font-bold hover:bg-white/20 border-white/20 shadow-lg">
-                     Export Strategy Deck
-                   </Button>
-                 </Card>
-               </div>
+                    <p className="text-xs text-white/60 mb-4">Export these solutions to your strategic execution team.</p>
+                    <Button 
+                      variant="secondary" 
+                      onClick={handleExport}
+                      className="w-full bg-white/10 text-white font-bold hover:bg-white/20 border-white/20 shadow-lg"
+                    >
+                      Export Strategy Deck (PNG)
+                    </Button>
+                  </Card>
+                </div>
+              </div>
             </div>
-          </div>
         )}
       </div>
     </div>

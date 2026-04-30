@@ -13,20 +13,21 @@
   /* Glass morphism tokens */
   --glass-bg:       rgba(10, 10, 10, 0.75);
   --glass-blur:     20px;
-  --glass-border:   rgba(255, 255, 255, 0.08);
-  --glass-highlight:rgba(255, 255, 255, 0.02);
+  --glass-border:   rgba(var(--text-primary-rgb) / 0.08);
+  --glass-highlight:rgba(var(--text-primary-rgb) / 0.02);
   
   /* Text hierarchy */
   --text-primary:   #FFFFFF;
+  --text-primary-rgb: 255 255 255;
   --text-secondary: rgba(255, 255, 255, 0.7);
   --text-muted:     rgba(255, 255, 255, 0.4);
   
   /* Royal Blue accent - primary brand color */
-  --accent-primary:  #2563EB;
-  --accent-light:    #60A5FA;
-  --accent-dark:     #1D4ED8;
-  --accent-glow:     rgba(37, 99, 235, 0.3);
-  --accent-glow-subtle: rgba(37, 99, 235, 0.15);
+  --accent-primary:  var(--primary-color, #2563EB);
+  --accent-light:    var(--primary-color-light, #60A5FA);
+  --accent-dark:     var(--primary-color-dark, #1D4ED8);
+  --accent-glow:     rgba(var(--primary-color-rgb, 37 99 235) / 0.3);
+  --accent-glow-subtle: rgba(var(--primary-color-rgb, 37 99 235) / 0.15);
   
   /* Secondary accent - soft white/gray */
   --secondary-primary: #f3f4f6;
@@ -35,14 +36,14 @@
   /* Borders */
   --border:           rgba(255,255,255,0.08);
   --border-hover:     rgba(255,255,255,0.15);
-  --border-accent:    rgba(37, 99, 235, 0.3);
-  --border-accent-hover: rgba(59, 130, 246, 0.4);
+  --border-accent:    rgba(var(--primary-color-rgb, 37 99 235) / 0.3);
+  --border-accent-hover: rgba(var(--primary-color-rgb, 37 99 235) / 0.4);
   
   /* Shadows */
   --shadow-sm:      0 2px 8px rgba(0,0,0,0.4);
   --shadow-md:      0 4px 20px rgba(0,0,0,0.4);
   --shadow-lg:      0 8px 40px rgba(0,0,0,0.5);
-  --shadow-glow:    0 0 60px rgba(37, 99, 235, 0.2);
+  --shadow-glow:    0 0 60px rgba(var(--primary-color-rgb, 37 99 235) / 0.2);
   
   /* Radius system */
   --radius-sm:    4px;
@@ -65,6 +66,420 @@
   --font-mono:    'JetBrains Mono', monospace;
   --font-sans:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
+
+[data-theme='light'] {
+  --bg-primary:   #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary:  #f1f5f9;
+  --bg-elevated:  #e2e8f0;
+  
+  --text-primary:   #0f172a;
+  --text-primary-rgb: 15 23 42;
+  --text-secondary: #475569;
+  --text-muted:     #94a3b8;
+  
+  --glass-bg:       rgba(255, 255, 255, 0.85);
+  --glass-border:   rgba(15, 23, 42, 0.08);
+  --glass-highlight:rgba(15, 23, 42, 0.02);
+  
+  --border:           rgba(15, 23, 42, 0.1);
+  --border-hover:     rgba(15, 23, 42, 0.2);
+  
+  --shadow-sm:      0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:      0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.04);
+  --shadow-lg:      0 10px 15px rgba(0,0,0,0.08), 0 4px 6px rgba(0,0,0,0.04);
+  --shadow-glow:    0 0 30px rgba(var(--primary-color-rgb, 37 99 235) / 0.1);
+  
+  --border-accent:    rgba(var(--primary-color-rgb, 37 99 235) / 0.15);
+  --border-accent-hover: rgba(var(--primary-color-rgb, 37 99 235) / 0.25);
+  --accent-glow:     rgba(var(--primary-color-rgb, 37 99 235) / 0.1);
+  --accent-glow-subtle: rgba(var(--primary-color-rgb, 37 99 235) / 0.05);
+}
+
+/* ── Light Theme: Force dark-mode Tailwind utilities to adapt ────────── */
+/* This block overrides ALL hardcoded text-white, bg-white/X, bg-black/X,
+   border-white/X classes that exist across every component file,
+   so we don't need to edit hundreds of individual TSX files. */
+
+[data-theme='light'] {
+  /* ── Body & page background ───────────────────────────────── */
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Kill the dark atmospheric gradient in light mode */
+[data-theme='light'] body::before {
+  background: 
+    radial-gradient(ellipse 85% 55% at 15% 20%, rgba(37,99,235,0.04) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 85% 80%, rgba(37,99,235,0.02) 0%, transparent 60%),
+    linear-gradient(180deg, #ffffff 0%, #f8fafc 40%, #f1f5f9 100%) !important;
+}
+
+/* ── Text color overrides ───────────────────────────────────── */
+[data-theme='light'] .text-white {
+  color: var(--text-primary) !important;
+}
+[data-theme='light'] .text-white\/90 {
+  color: var(--text-primary) !important;
+}
+[data-theme='light'] .text-white\/80 {
+  color: var(--text-secondary) !important;
+}
+[data-theme='light'] .text-white\/70 {
+  color: var(--text-secondary) !important;
+}
+[data-theme='light'] .text-white\/60 {
+  color: var(--text-secondary) !important;
+}
+[data-theme='light'] .text-white\/50 {
+  color: var(--text-muted) !important;
+}
+[data-theme='light'] .text-white\/40 {
+  color: var(--text-muted) !important;
+}
+[data-theme='light'] .text-white\/30 {
+  color: #64748b !important;
+}
+[data-theme='light'] .text-white\/20 {
+  color: #94a3b8 !important;
+}
+
+/* ── Background overrides ───────────────────────────────────── */
+/* bg-black variants → light backgrounds */
+[data-theme='light'] .bg-black {
+  background-color: var(--bg-primary) !important;
+}
+[data-theme='light'] .bg-black\/20 {
+  background-color: rgba(241, 245, 249, 0.6) !important;
+}
+[data-theme='light'] .bg-black\/40 {
+  background-color: rgba(241, 245, 249, 0.8) !important;
+}
+
+/* bg-[black] and bg-[#000] — Tailwind arbitrary value syntax */
+[data-theme='light'] .bg-\[black\] {
+  background-color: var(--bg-primary) !important;
+}
+[data-theme='light'] .bg-\[\#000\] {
+  background-color: var(--bg-elevated) !important;
+}
+[data-theme='light'] .bg-\[\#0a0a0a\]\/95 {
+  background-color: rgba(248, 250, 252, 0.97) !important;
+}
+
+/* bg-white/X variants → subtle dark tints in light mode */
+[data-theme='light'] .bg-white\/5 {
+  background-color: rgba(15, 23, 42, 0.04) !important;
+}
+[data-theme='light'] .bg-white\/\[0\.02\] {
+  background-color: rgba(15, 23, 42, 0.02) !important;
+}
+[data-theme='light'] .bg-white\/\[0\.04\] {
+  background-color: rgba(15, 23, 42, 0.04) !important;
+}
+[data-theme='light'] .bg-white\/10 {
+  background-color: rgba(15, 23, 42, 0.06) !important;
+}
+[data-theme='light'] .bg-white\/8 {
+  background-color: rgba(15, 23, 42, 0.05) !important;
+}
+
+/* Hardcoded dark hex backgrounds → light equivalents */
+[data-theme='light'] .bg-\[\#111\],
+[data-theme='light'] .bg-\[\#0a0a0a\],
+[data-theme='light'] .bg-\[\#0d0d0d\],
+[data-theme='light'] .bg-\[\#161616\] {
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* ── Border overrides ───────────────────────────────────────── */
+[data-theme='light'] .border-white\/5 {
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+[data-theme='light'] .border-white\/8 {
+  border-color: rgba(15, 23, 42, 0.1) !important;
+}
+[data-theme='light'] .border-white\/10 {
+  border-color: rgba(15, 23, 42, 0.1) !important;
+}
+[data-theme='light'] .border-white\/15 {
+  border-color: rgba(15, 23, 42, 0.12) !important;
+}
+[data-theme='light'] .border-white\/20 {
+  border-color: rgba(15, 23, 42, 0.15) !important;
+}
+
+/* ── Hover state overrides ──────────────────────────────────── */
+[data-theme='light'] .hover\:bg-white\/5:hover {
+  background-color: rgba(15, 23, 42, 0.04) !important;
+}
+[data-theme='light'] .hover\:bg-white\/10:hover {
+  background-color: rgba(15, 23, 42, 0.06) !important;
+}
+[data-theme='light'] .hover\:bg-white\/\[0\.04\]:hover {
+  background-color: rgba(15, 23, 42, 0.04) !important;
+}
+[data-theme='light'] .hover\:text-white:hover {
+  color: var(--text-primary) !important;
+}
+[data-theme='light'] .hover\:text-white\/80:hover {
+  color: var(--text-secondary) !important;
+}
+[data-theme='light'] .hover\:border-white\/10:hover {
+  border-color: rgba(15, 23, 42, 0.12) !important;
+}
+[data-theme='light'] .hover\:border-white\/20:hover {
+  border-color: rgba(15, 23, 42, 0.15) !important;
+}
+
+/* ── Placeholder overrides ──────────────────────────────────── */
+[data-theme='light'] .placeholder\:text-white\/30::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* ── Glass morphism for light mode ──────────────────────────── */
+[data-theme='light'] .glass {
+  background: rgba(255, 255, 255, 0.7) !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
+  backdrop-filter: blur(20px) !important;
+}
+[data-theme='light'] .glass-subtle {
+  background: rgba(255, 255, 255, 0.5) !important;
+  border-color: rgba(15, 23, 42, 0.05) !important;
+}
+[data-theme='light'] .glass-accent {
+  background: linear-gradient(135deg, 
+    rgba(37,99,235,0.05) 0%, 
+    rgba(255,255,255,0.9) 100%) !important;
+  border-color: rgba(37,99,235,0.1) !important;
+}
+
+/* ── Card system for light mode ─────────────────────────────── */
+[data-theme='light'] .card {
+  background: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04) !important;
+}
+[data-theme='light'] .card:hover {
+  border-color: rgba(var(--primary-color-rgb, 37 99 235) / 0.2) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04) !important;
+}
+
+/* ── Input / Form controls for light mode ───────────────────── */
+[data-theme='light'] .input {
+  background: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.15) !important;
+  color: var(--text-primary) !important;
+}
+[data-theme='light'] .input:focus {
+  border-color: var(--accent-primary) !important;
+  box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb, 37 99 235) / 0.1) !important;
+}
+
+/* ── Button overrides for light mode ────────────────────────── */
+[data-theme='light'] .btn-primary {
+  color: #ffffff !important;
+}
+[data-theme='light'] .btn-secondary {
+  border-color: rgba(15, 23, 42, 0.15) !important;
+  color: var(--text-primary) !important;
+}
+[data-theme='light'] .btn-secondary:hover {
+  border-color: var(--accent-primary) !important;
+  background: rgba(var(--primary-color-rgb, 37 99 235) / 0.05) !important;
+}
+
+/* ── Sidebar specific overrides ─────────────────────────────── */
+[data-theme='light'] aside {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+/* ── Scrollbar for light mode ───────────────────────────────── */
+[data-theme='light'] ::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+[data-theme='light'] ::-webkit-scrollbar-thumb {
+  background: rgba(15, 23, 42, 0.15);
+}
+[data-theme='light'] ::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-primary);
+}
+[data-theme='light'] * {
+  scrollbar-color: rgba(15, 23, 42, 0.15) var(--bg-primary);
+}
+
+/* ── Selection style for light mode ─────────────────────────── */
+[data-theme='light'] ::selection {
+  background: var(--accent-primary);
+  color: #ffffff;
+}
+
+/* ── Toast / Badge overrides ────────────────────────────────── */
+[data-theme='light'] .badge-default {
+  background: rgba(15, 23, 42, 0.06);
+  color: var(--text-secondary);
+  border-color: rgba(15, 23, 42, 0.1);
+}
+
+/* ── Heading colors in light mode ───────────────────────────── */
+/* Some pages use text-white on headings — force them dark */
+[data-theme='light'] h1,
+[data-theme='light'] h2,
+[data-theme='light'] h3,
+[data-theme='light'] h4,
+[data-theme='light'] h5,
+[data-theme='light'] h6 {
+  color: var(--text-primary) !important;
+}
+
+/* ── Label / small text contrast improvement ────────────────── */
+[data-theme='light'] label {
+  color: var(--text-secondary) !important;
+}
+[data-theme='light'] p {
+  color: var(--text-secondary);
+}
+
+/* ── Gradient dividers ───────────────────────────────────────── */
+/* The "via-white/5" gradient separator lines disappear in light mode */
+[data-theme='light'] .bg-gradient-to-r.from-transparent.via-white\/5 {
+  background-image: linear-gradient(to right, transparent, rgba(15,23,42,0.08), transparent) !important;
+}
+
+/* ── Recharts light mode ─────────────────────────────────────── */
+[data-theme='light'] .recharts-cartesian-grid-horizontal line,
+[data-theme='light'] .recharts-cartesian-grid-vertical line {
+  stroke: rgba(15, 23, 42, 0.08) !important;
+}
+[data-theme='light'] .recharts-text {
+  fill: var(--text-muted) !important;
+}
+[data-theme='light'] .recharts-tooltip-wrapper .recharts-default-tooltip {
+  background: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.1) !important;
+  color: var(--text-primary) !important;
+}
+
+/* ── Monospace / code badge overrides ───────────────────────── */
+[data-theme='light'] .font-mono {
+  color: var(--text-primary);
+}
+
+/* ── Specific bg-[#111] hardcoded in Recharts tooltip etc ───── */
+[data-theme='light'] [style*="background: rgb(17, 17, 17)"],
+[data-theme='light'] [style*="background-color: rgb(17, 17, 17)"],
+[data-theme='light'] [style*="background:#111"],
+[data-theme='light'] [style*="backgroundColor: '#111'"] {
+  background: #ffffff !important;
+  color: var(--text-primary) !important;
+  border-color: rgba(15, 23, 42, 0.1) !important;
+}
+
+/* ── DataChatbot in light mode ───────────────────────────────── */
+[data-theme='light'] .fixed.bottom-6.right-6 {
+  background: #ffffff !important;
+}
+
+/* ── Market Intelligence page specific ───────────────────────── */
+/* The min-h-screen bg-[black] container — covered by bg-\[black\] rule above.
+   But also override the outer layout's bg-black wrapper explicitly: */
+[data-theme='light'] .min-h-screen.bg-black,
+[data-theme='light'] .min-h-screen.bg-\[black\] {
+  background-color: var(--bg-primary) !important;
+}
+
+/* ── Input fields within market page ────────────────────────── */
+[data-theme='light'] input:not([type="color"]),
+[data-theme='light'] textarea,
+[data-theme='light'] select {
+  background-color: #ffffff !important;
+  color: var(--text-primary) !important;
+  border-color: rgba(15, 23, 42, 0.15) !important;
+}
+[data-theme='light'] input::placeholder,
+[data-theme='light'] textarea::placeholder {
+  color: var(--text-muted) !important;
+}
+[data-theme='light'] input:focus,
+[data-theme='light'] textarea:focus,
+[data-theme='light'] select:focus {
+  border-color: var(--accent-primary) !important;
+  outline-color: var(--accent-primary) !important;
+}
+
+/* ── Table headers / cells ───────────────────────────────────── */
+[data-theme='light'] th {
+  color: var(--text-primary) !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+[data-theme='light'] td {
+  color: var(--text-secondary) !important;
+  border-color: rgba(15, 23, 42, 0.06) !important;
+}
+[data-theme='light'] tr:hover {
+  background-color: rgba(15, 23, 42, 0.02) !important;
+}
+
+/* ── Insight & AI narrative panels ──────────────────────────── */
+[data-theme='light'] .rounded-2xl.border.border-white\/20 {
+  border-color: rgba(15, 23, 42, 0.12) !important;
+}
+
+/* ── bg-white/[0.02] and bg-white/[0.03] ─────────────────────── */
+[data-theme='light'] .bg-white\/\[0\.03\] {
+  background-color: rgba(15, 23, 42, 0.02) !important;
+}
+[data-theme='light'] .bg-white\/3 {
+  background-color: rgba(15, 23, 42, 0.02) !important;
+}
+[data-theme='light'] .bg-white\/\[0\.06\] {
+  background-color: rgba(15, 23, 42, 0.05) !important;
+}
+[data-theme='light'] .bg-white\/\[0\.08\] {
+  background-color: rgba(15, 23, 42, 0.06) !important;
+}
+
+/* ── Hover:bg-white/[0.02] etc ────────────────────────────────── */
+[data-theme='light'] .hover\:bg-white\/\[0\.02\]:hover {
+  background-color: rgba(15, 23, 42, 0.02) !important;
+}
+
+/* ── via-white/5 gradient separator visibility ───────────────── */
+[data-theme='light'] [class*="via-white\/5"] {
+  --tw-gradient-via: rgba(15,23,42,0.08) !important;
+}
+
+/* ── bg-primary-*/10 boxes in light mode ────────────────────── */
+[data-theme='light'] .bg-primary-500\/10 {
+  background-color: rgba(var(--primary-color-rgb, 37 99 235) / 0.08) !important;
+}
+[data-theme='light'] .bg-primary-500\/20 {
+  background-color: rgba(var(--primary-color-rgb, 37 99 235) / 0.12) !important;
+}
+
+/* ── Force text-white in buttons to stay white (buttons have colored bg) */
+[data-theme='light'] button.bg-blue-600,
+[data-theme='light'] button.bg-emerald-600,
+[data-theme='light'] button.bg-rose-600,
+[data-theme='light'] a.bg-blue-600 {
+  color: #ffffff !important;
+}
+
+/* ── Ghost button in light mode ─────────────────────────────── */
+[data-theme='light'] .btn-ghost {
+  color: var(--text-secondary) !important;
+}
+[data-theme='light'] .btn-ghost:hover {
+  color: var(--text-primary) !important;
+  background: rgba(15, 23, 42, 0.05) !important;
+}
+
+/* ── Animate-in doesn't cause flicker ───────────────────────── */
+[data-theme='light'] .animate-in {
+  color: inherit;
+}
+
 
 /* Reset & base box model */
 *, *::before, *::after {
@@ -116,7 +531,7 @@ body::before {
     radial-gradient(ellipse 60% 40% at 85% 80%, rgba(255,255,255,0.03) 0%, transparent 60%),
     /* Deep depth gradient */
     radial-gradient(ellipse 120% 80% at 50% 100%, rgba(18,18,18,0.4) 0%, transparent 70%),
-    linear-gradient(180deg, #000000 0%, #050505 40%, #0a0a0a 100%);
+    linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 40%, var(--bg-tertiary) 100%);
   pointer-events: none;
   z-index: -1;
   will-change: transform;
