@@ -10,18 +10,27 @@ export const metadata = {
 
 async function signInAction(prevState: { error?: string }, formData: FormData) {
   'use server'
-  const supabase = await createClient()
-  const email = formData.get('email') as string
-  const password = formData.get('password') as string
+  try {
+    const supabase = await createClient()
+    const email = formData.get('email') as string
+    const password = formData.get('password') as string
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password })
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
 
-  if (error) {
-    console.error('Signin error:', error.message)
-    return { error: error.message }
+    if (error) {
+      console.error('Signin error:', error.message)
+      return { error: error.message }
+    }
+
+    redirect('/dashboard')
+  } catch (err: any) {
+    // redirect() throws a NEXT_REDIRECT error — re-throw it so Next.js handles it
+    if (err?.digest?.includes('NEXT_REDIRECT')) {
+      throw err
+    }
+    console.error('Login server action crashed:', err)
+    return { error: `Server error: ${err?.message || String(err)}` }
   }
-
-  redirect('/dashboard')
   return {}
 }
 
