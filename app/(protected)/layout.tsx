@@ -1,7 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { Navbar } from '@/components/layout/Navbar'
-import Providers from '@/components/Providers'
+
+export const dynamic = 'force-dynamic'
 
 export default async function ProtectedLayout({
   children,
@@ -9,9 +10,10 @@ export default async function ProtectedLayout({
   children: React.ReactNode
 }) {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data, error } = await supabase.auth.getUser()
+  const user = data?.user
 
-  if (!user) {
+  if (!user || error) {
     redirect('/login')
   }
 
