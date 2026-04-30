@@ -155,7 +155,7 @@ export default function DashboardViewPage() {
           </div>
           <div className="text-right">
              <p className="text-[10px] text-white/20 uppercase tracking-widest">Confidential</p>
-             <p className="text-xs text-white/40">{new Date().toLocaleDateString()}</p>
+             <p className="text-xs text-white/40">Dashboard Snapshot</p>
           </div>
         </div>
 

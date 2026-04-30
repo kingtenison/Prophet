@@ -121,11 +121,16 @@ export default function LandingPage() {
                         </tr>
                       </thead>
                       <tbody>
-                        {['Jan','Feb','Mar','Apr'].map((m,i)=>(
+                        {[
+                          { m: 'Jan', rev: '42,500', g: '+14' },
+                          { m: 'Feb', rev: '51,200', g: '+22' },
+                          { m: 'Mar', rev: '48,900', g: '-4' },
+                          { m: 'Apr', rev: '56,400', g: '+18' }
+                        ].map((row, i) => (
                           <tr key={i} className="border-b border-white/5">
-                            <td className="px-4 py-3 text-white/70">{m}</td>
-                            <td className="px-4 py-3 font-mono text-white/70">${(Math.random()*50000+10000).toFixed(0)}</td>
-                            <td className="px-4 py-3 text-[#2563EB]">+{Math.floor(Math.random()*30+10)}%</td>
+                            <td className="px-4 py-3 text-white/70">{row.m}</td>
+                            <td className="px-4 py-3 font-mono text-white/70">${row.rev}</td>
+                            <td className={`px-4 py-3 ${row.g.startsWith('-') ? 'text-rose-500' : 'text-[#2563EB]'}`}>{row.g}%</td>
                           </tr>
                         ))}
                       </tbody>
