@@ -2,6 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { LoginForm } from './LoginForm'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
   title: 'Sign in — Power BI Lite',
 }
