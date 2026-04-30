@@ -26,8 +26,8 @@
   --accent-primary:  var(--primary-color, #2563EB);
   --accent-light:    var(--primary-color-light, #60A5FA);
   --accent-dark:     var(--primary-color-dark, #1D4ED8);
-  --accent-glow:     rgba(var(--primary-color-rgb, 37 99 235) / 0.3);
-  --accent-glow-subtle: rgba(var(--primary-color-rgb, 37 99 235) / 0.15);
+  --accent-glow:     rgb(var(--primary-color-rgb, 37 99 235) / 0.3);
+  --accent-glow-subtle: rgb(var(--primary-color-rgb, 37 99 235) / 0.15);
   
   /* Secondary accent - soft white/gray */
   --secondary-primary: #f3f4f6;
@@ -36,14 +36,14 @@
   /* Borders */
   --border:           rgba(255,255,255,0.08);
   --border-hover:     rgba(255,255,255,0.15);
-  --border-accent:    rgba(var(--primary-color-rgb, 37 99 235) / 0.3);
-  --border-accent-hover: rgba(var(--primary-color-rgb, 37 99 235) / 0.4);
+  --border-accent:    rgb(var(--primary-color-rgb, 37 99 235) / 0.3);
+  --border-accent-hover: rgb(var(--primary-color-rgb, 37 99 235) / 0.4);
   
   /* Shadows */
   --shadow-sm:      0 2px 8px rgba(0,0,0,0.4);
   --shadow-md:      0 4px 20px rgba(0,0,0,0.4);
   --shadow-lg:      0 8px 40px rgba(0,0,0,0.5);
-  --shadow-glow:    0 0 60px rgba(var(--primary-color-rgb, 37 99 235) / 0.2);
+  --shadow-glow:    0 0 60px rgb(var(--primary-color-rgb, 37 99 235) / 0.2);
   
   /* Radius system */
   --radius-sm:    4px;
@@ -88,12 +88,12 @@
   --shadow-sm:      0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
   --shadow-md:      0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.04);
   --shadow-lg:      0 10px 15px rgba(0,0,0,0.08), 0 4px 6px rgba(0,0,0,0.04);
-  --shadow-glow:    0 0 30px rgba(var(--primary-color-rgb, 37 99 235) / 0.1);
+  --shadow-glow:    0 0 30px rgb(var(--primary-color-rgb, 37 99 235) / 0.1);
   
-  --border-accent:    rgba(var(--primary-color-rgb, 37 99 235) / 0.15);
-  --border-accent-hover: rgba(var(--primary-color-rgb, 37 99 235) / 0.25);
-  --accent-glow:     rgba(var(--primary-color-rgb, 37 99 235) / 0.1);
-  --accent-glow-subtle: rgba(var(--primary-color-rgb, 37 99 235) / 0.05);
+  --border-accent:    rgb(var(--primary-color-rgb, 37 99 235) / 0.15);
+  --border-accent-hover: rgb(var(--primary-color-rgb, 37 99 235) / 0.25);
+  --accent-glow:     rgb(var(--primary-color-rgb, 37 99 235) / 0.1);
+  --accent-glow-subtle: rgb(var(--primary-color-rgb, 37 99 235) / 0.05);
 }
 
 /* ── Light Theme: Force dark-mode Tailwind utilities to adapt ────────── */
@@ -261,7 +261,7 @@
   box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04) !important;
 }
 [data-theme='light'] .card:hover {
-  border-color: rgba(var(--primary-color-rgb, 37 99 235) / 0.2) !important;
+  border-color: rgb(var(--primary-color-rgb, 37 99 235) / 0.2) !important;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04) !important;
 }
 
@@ -273,7 +273,7 @@
 }
 [data-theme='light'] .input:focus {
   border-color: var(--accent-primary) !important;
-  box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb, 37 99 235) / 0.1) !important;
+  box-shadow: 0 0 0 3px rgb(var(--primary-color-rgb, 37 99 235) / 0.1) !important;
 }
 
 /* ── Button overrides for light mode ────────────────────────── */
@@ -286,7 +286,7 @@
 }
 [data-theme='light'] .btn-secondary:hover {
   border-color: var(--accent-primary) !important;
-  background: rgba(var(--primary-color-rgb, 37 99 235) / 0.05) !important;
+  background: rgb(var(--primary-color-rgb, 37 99 235) / 0.05) !important;
 }
 
 /* ── Sidebar specific overrides ─────────────────────────────── */
@@ -452,10 +452,10 @@
 
 /* ── bg-primary-X/10 boxes in light mode ────────────────────── */
 [data-theme='light'] .bg-primary-500\/10 {
-  background-color: rgba(var(--primary-color-rgb, 37 99 235) / 0.08) !important;
+  background-color: rgb(var(--primary-color-rgb, 37 99 235) / 0.08) !important;
 }
 [data-theme='light'] .bg-primary-500\/20 {
-  background-color: rgba(var(--primary-color-rgb, 37 99 235) / 0.12) !important;
+  background-color: rgb(var(--primary-color-rgb, 37 99 235) / 0.12) !important;
 }
 
 /* ── Force text-white in buttons to stay white (buttons have colored bg) */

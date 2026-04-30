@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   // Next.js 16: use serverExternalPackages for external dependencies in Server Components
-  serverExternalPackages: ['xlsx', 'papaparse'],
+  serverExternalPackages: ['xlsx', 'papaparse', 'cheerio'],
 }
 
 module.exports = nextConfig

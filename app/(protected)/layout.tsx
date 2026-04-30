@@ -23,7 +23,7 @@ export default async function ProtectedLayout({
         {/* Top bar spacer for mobile */}
         <div className="h-14 md:hidden" />
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-10 py-8">
-          <Providers>{children}</Providers>
+          {children}
         </div>
         {/* Bottom nav spacer for mobile */}
         <div className="h-20 md:hidden" />

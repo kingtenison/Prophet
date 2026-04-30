@@ -193,7 +193,7 @@ export default function DatasetDetailPage() {
             <Badge variant="secondary">{dataset.row_count.toLocaleString()} rows</Badge>
           </div>
           <p className="text-secondary-500 text-sm mt-1">
-            Uploaded {new Date(dataset.created_at).toLocaleDateString()}
+            Uploaded {dataset.created_at.split('T')[0]}
           </p>
         </div>
         <div className="flex items-center gap-2">

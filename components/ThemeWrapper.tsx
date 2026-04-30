@@ -5,8 +5,10 @@ import { useEffect } from 'react'
 
 export default function ThemeWrapper({ children }: { children: React.ReactNode }) {
   const primaryColor = useThemeStore((state) => state.primaryColor)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
     // Apply primary color to CSS variable
     document.documentElement.style.setProperty('--primary-color', primaryColor)
     
@@ -31,6 +33,10 @@ export default function ThemeWrapper({ children }: { children: React.ReactNode }
     const db = Math.max(0, b - 40)
     document.documentElement.style.setProperty('--primary-color-dark', `rgb(${dr}, ${dg}, ${db})`)
   }, [primaryColor])
+
+  if (!mounted) {
+    return <div style={{ visibility: 'hidden' }}>{children}</div>
+  }
 
   return <>{children}</>
 }
