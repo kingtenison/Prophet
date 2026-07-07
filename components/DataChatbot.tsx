@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
@@ -11,8 +11,6 @@ import {
   Sparkles, 
   Loader2, 
   Database,
-  TrendingUp,
-  AlertCircle
 } from 'lucide-react'
 import { AnalysisResult } from '@/lib/data/insights'
 
@@ -49,6 +47,37 @@ export function DataChatbot({ datasetName, analysis, xCol, yCol, rawRows }: Data
     }
   }, [messages, isTyping])
 
+  const topSegments = useMemo(() => {
+    if (!rawRows.length || !xCol || !yCol) return []
+    return [...rawRows]
+      .sort((a, b) => Number(b[yCol] || 0) - Number(a[yCol] || 0))
+      .slice(0, 3)
+  }, [rawRows, xCol, yCol])
+
+  const bottomSegments = useMemo(() => {
+    if (!rawRows.length || !xCol || !yCol) return []
+    return [...rawRows]
+      .sort((a, b) => Number(a[yCol] || 0) - Number(b[yCol] || 0))
+      .slice(0, 3)
+  }, [rawRows, xCol, yCol])
+
+  const allValues = useMemo(() => {
+    return rawRows.map(r => Number(r[yCol])).filter(v => !isNaN(v))
+  }, [rawRows, yCol])
+
+  const median = useMemo(() => {
+    if (!allValues.length) return 0
+    const sorted = [...allValues].sort((a, b) => a - b)
+    const mid = Math.floor(sorted.length / 2)
+    return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2
+  }, [allValues])
+
+  const stdDev = useMemo(() => {
+    if (allValues.length < 2) return 0
+    const mean = allValues.reduce((a, b) => a + b, 0) / allValues.length
+    return Math.sqrt(allValues.reduce((sq, v) => sq + (v - mean) ** 2, 0) / allValues.length)
+  }, [allValues])
+
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!input.trim()) return
@@ -58,65 +87,128 @@ export function DataChatbot({ datasetName, analysis, xCol, yCol, rawRows }: Data
     setMessages(prev => [...prev, { role: 'user', content: userMsg, timestamp: new Date() }])
     setIsTyping(true)
 
-    // Simulate AI thinking
     setTimeout(() => {
       const response = processQuery(userMsg.toLowerCase())
       setMessages(prev => [...prev, { role: 'assistant', content: response, timestamp: new Date() }])
       setIsTyping(false)
-    }, 1000)
+    }, 800)
   }
 
   const processQuery = (query: string): string => {
-    // 1. STATISTICAL QUERIES
-    if (query.includes('average') || query.includes('mean')) {
-      return `The average **${yCol}** across all ${analysis.summary.count} segments is **${analysis.summary.average.toLocaleString(undefined, { maximumFractionDigits: 2 })}**.`
-    }
-    if (query.includes('total') || query.includes('sum')) {
-      return `The total aggregate for **${yCol}** is **${analysis.summary.total.toLocaleString()}**.`
-    }
-    if (query.includes('max') || query.includes('highest') || query.includes('top')) {
-      const top = analysis.insights.find(i => i.id === 'top-performer')
-      return `The highest value is **${analysis.summary.max.toLocaleString()}**, achieved by **${top?.title.replace('🏆 Top Performer: ', '') || 'the top segment'}**.`
-    }
-    if (query.includes('min') || query.includes('lowest') || query.includes('bottom')) {
-      return `The lowest recorded value for **${yCol}** is **${analysis.summary.min.toLocaleString()}**.`
+    const avg = analysis.summary.average
+    const total = analysis.summary.total
+    const max = analysis.summary.max
+    const min = analysis.summary.min
+    const count = analysis.summary.count
+
+    // 1. COMPARISON queries
+    if (query.includes('compare') || query.includes('versus') || query.includes(' vs ') || query.includes('difference')) {
+      const parts = query.split(/compare|versus|vs|difference between|and/).filter(p => p.trim().length > 2)
+      const matchedRows = parts.map(p => rawRows.find(r =>
+        String(r[xCol]).toLowerCase().includes(p.trim())
+      )).filter(Boolean)
+      if (matchedRows.length >= 2) {
+        return matchedRows.map(r =>
+          `**${r[xCol]}**: ${yCol} = **${Number(r[yCol]).toLocaleString()}** (${((Number(r[yCol]) / avg - 1) * 100).toFixed(1)}% vs average)`
+        ).join('\n\n')
+      }
     }
 
-    // 2. TREND & FORECAST
-    if (query.includes('trend') || query.includes('direction') || query.includes('growth')) {
+    // 2. PERCENTAGE / SHARE queries
+    if (query.includes('percentage') || query.includes('share') || query.includes('proportion') || query.includes('%')) {
+      const matched = rawRows.find(r =>
+        String(r[xCol]).toLowerCase().includes(query.split(' ').filter(w => w.length > 3)[0] || '')
+      )
+      if (matched) {
+        const share = ((Number(matched[yCol]) / total) * 100).toFixed(1)
+        return `**${matched[xCol]}** accounts for **${share}%** of total ${yCol} (${Number(matched[yCol]).toLocaleString()} out of ${total.toLocaleString()}).`
+      }
+      return `The total ${yCol} is **${total.toLocaleString()}**. The average across ${count} segments is **${avg.toLocaleString(undefined, { maximumFractionDigits: 2 })}** per segment.`
+    }
+
+    // 3. CORRELATION queries
+    if (query.includes('correlation') || query.includes('relationship') || query.includes('relate')) {
+      return `I'm analyzing **${xCol}** vs **${yCol}** across **${count}** data points. The variance is **${stdDev.toFixed(1)}** and the median value is **${median.toLocaleString(undefined, { maximumFractionDigits: 2 })}**. A ${stdDev > avg * 0.5 ? 'high' : 'low'} standard deviation suggests ${stdDev > avg * 0.5 ? 'significant variation' : 'consistent values'} across ${xCol} segments.`
+    }
+
+    // 4. DISTRIBUTION queries
+    if (query.includes('distribution') || query.includes('range') || query.includes('spread') || query.includes('variance')) {
+      return `**${yCol}** distribution across **${count}** segments:\n- Range: **${min.toLocaleString()}** to **${max.toLocaleString()}**\n- Average: **${avg.toLocaleString(undefined, { maximumFractionDigits: 2 })}**\n- Median: **${median.toLocaleString(undefined, { maximumFractionDigits: 2 })}**\n- Std Deviation: **${stdDev.toFixed(1)}**`
+    }
+
+    // 5. RANKING queries
+    if (query.includes('rank') || query.includes('order') || query.includes('sort') || query.includes('sorted')) {
+      const top3 = topSegments
+      const bottom3 = bottomSegments
+      let response = `**Top 3 ${xCol} by ${yCol}:**\n`
+      top3.forEach((r, i) => { response += `${i + 1}. ${r[xCol]}: **${Number(r[yCol]).toLocaleString()}**\n` })
+      response += `\n**Bottom 3 ${xCol}:**\n`
+      bottom3.forEach((r, i) => { response += `${count - 2 + i}. ${r[xCol]}: **${Number(r[yCol]).toLocaleString()}**\n` })
+      return response
+    }
+
+    // 6. STATISTICAL QUERIES
+    if (query.includes('average') || query.includes('mean') || query.includes('typical')) {
+      return `The average **${yCol}** across all **${count}** segments is **${avg.toLocaleString(undefined, { maximumFractionDigits: 2 })}**. The median is **${median.toLocaleString(undefined, { maximumFractionDigits: 2 })}**.`
+    }
+    if (query.includes('total') || query.includes('sum') || query.includes('overall')) {
+      return `The total aggregate for **${yCol}** is **${total.toLocaleString()}**, spanning **${count}** ${xCol} segments.`
+    }
+    if (query.includes('max') || query.includes('highest') || query.includes('top') || query.includes('best')) {
+      const top = topSegments[0]
+      return `The highest value is **${max.toLocaleString()}**, achieved by **${top?.[xCol] || 'the top segment'}**.`
+    }
+    if (query.includes('min') || query.includes('lowest') || query.includes('bottom') || query.includes('worst')) {
+      const bottom = bottomSegments[0]
+      return `The lowest recorded value for **${yCol}** is **${min.toLocaleString()}** (**${bottom?.[xCol] || 'unknown segment'}**).`
+    }
+
+    // 7. TREND & FORECAST
+    if (query.includes('trend') || query.includes('direction') || query.includes('growth') || query.includes('momentum')) {
       const dir = analysis.summary.trend === 'up' ? 'upward' : analysis.summary.trend === 'down' ? 'downward' : 'stable'
-      return `I detect a **${dir}** trend with a growth velocity of **${analysis.summary.growthRate.toFixed(1)}%**. Our model shows a confidence rating of **${(analysis.summary.trendStrength * 100).toFixed(0)}%** for this trajectory.`
+      const trendStr = analysis.summary.trendStrength ? (analysis.summary.trendStrength * 100).toFixed(0) : 'N/A'
+      return `I detect a **${dir}** trend with a growth velocity of **${analysis.summary.growthRate.toFixed(1)}%**. Our model shows a confidence rating of **${trendStr}%** for this trajectory.`
     }
-    if (query.includes('forecast') || query.includes('predict') || query.includes('future')) {
+    if (query.includes('forecast') || query.includes('predict') || query.includes('future') || query.includes('next')) {
       const f = analysis.insights.find(i => i.category === 'forecast')
-      return f ? f.description : "Based on the current variance, I predict the next period will align with the existing mean, but I recommend gathering 2-3 more data points for a high-confidence forecast."
+      return f ? f.description : "Based on the current variance, I predict the next period will align with the existing mean. The current average is **" + avg.toLocaleString(undefined, { maximumFractionDigits: 2 }) + "** with a standard deviation of **" + stdDev.toFixed(1) + "**."
     }
 
-    // 3. RISK & ANOMALIES
-    if (query.includes('risk') || query.includes('problem') || query.includes('issue') || query.includes('outlier')) {
+    // 8. RISK & ANOMALIES
+    if (query.includes('risk') || query.includes('problem') || query.includes('issue') || query.includes('outlier') || query.includes('anomaly')) {
       const outlier = analysis.insights.find(i => i.category === 'outlier')
       if (outlier) {
-        return `I've identified a significant risk/outlier at **${outlier.title.replace('⚠️ Outlier Detected: ', '')}**. It deviates from the norm by ${outlier.value ? (Number(outlier.value) / analysis.summary.average).toFixed(1) : 'X'}x and should be audited for data integrity.`
+        const deviation = avg > 0 ? (Number(outlier.value) / avg).toFixed(1) : 'X'
+        return `I've identified a significant outlier at **${outlier.title.replace('⚠️ Outlier Detected: ', '')}**. It deviates from the norm by **${deviation}x** (value: **${Number(outlier.value).toLocaleString()}** vs avg **${avg.toLocaleString(undefined, { maximumFractionDigits: 2 })}**).`
       }
-      return "I haven't detected any significant statistical anomalies or 'black swan' events in this specific slice of data. Operations appear stable."
+      return "I haven't detected any significant statistical anomalies in this dataset. The values range from **" + min.toLocaleString() + "** to **" + max.toLocaleString() + "** with a standard deviation of **" + stdDev.toFixed(1) + "**."
     }
 
-    // 4. COLUMN DISCOVERY
-    if (query.includes('columns') || query.includes('data') || query.includes('fields')) {
+    // 9. COLUMN DISCOVERY
+    if (query.includes('columns') || query.includes('data') || query.includes('fields') || query.includes('schema') || query.includes('structure')) {
       const cols = Object.keys(rawRows[0] || {}).join(', ')
-      return `This dataset contains the following dimensions: **${cols}**. I am currently optimized to analyze **${yCol}** against **${xCol}**.`
+      return `This dataset contains the following dimensions: **${cols}**. I am currently optimized to analyze **${yCol}** against **${xCol}**. There are **${count}** rows of data.`
     }
 
-    // 5. SEGMENT LOOKUP (Keyword matching)
+    // 10. SPECIFIC SEGMENT LOOKUP
     for (const row of rawRows) {
       const label = String(row[xCol]).toLowerCase()
       if (query.includes(label)) {
-        return `Analyzing **${row[xCol]}**: The recorded ${yCol} is **${Number(row[yCol]).toLocaleString()}**. Compared to the average, this segment is performing **${Number(row[yCol]) > analysis.summary.average ? 'above' : 'below'}** the mean by **${Math.abs((Number(row[yCol]) / analysis.summary.average - 1) * 100).toFixed(1)}%**.`
+        const segAvg = Number(row[yCol])
+        const comparison = avg > 0 ? Math.abs((segAvg / avg - 1) * 100).toFixed(1) : '0'
+        const direction = segAvg > avg ? 'above' : segAvg < avg ? 'below' : 'at'
+        return `Analyzing **${row[xCol]}**: The recorded ${yCol} is **${segAvg.toLocaleString()}**.\n- **${comparison}%** ${direction} the average of **${avg.toLocaleString(undefined, { maximumFractionDigits: 2 })}**\n- Represents **${total > 0 ? ((segAvg / total) * 100).toFixed(1) : '0'}%** of total ${yCol}`
       }
     }
 
-    // 6. DEFAULT
-    return "I'm not sure I understand that specific question. You can ask me about **averages**, **trends**, **top performers**, **forecasts**, or even specific categories like '" + (rawRows[0]?.[xCol] || 'segment name') + "'."
+    // 11. DEFAULT with context-aware suggestions
+    return `I'm not sure I understand that specific question. Here's what I can tell you about the data:\n\n` +
+      `- **Average ${yCol}**: ${avg.toLocaleString(undefined, { maximumFractionDigits: 2 })}\n` +
+      `- **Total ${yCol}**: ${total.toLocaleString()}\n` +
+      `- **Top segment**: ${topSegments[0]?.[xCol] || 'N/A'} (${Number(topSegments[0]?.[yCol] || 0).toLocaleString()})\n` +
+      `- **Data points**: ${count} segments analyzed\n\n` +
+      `Try asking about: **averages**, **trends**, **top performers**, **rankings**, ` +
+      `**distribution**, **percentages**, **comparisons**, or specific segment names.`
   }
 
   return (
@@ -162,7 +254,7 @@ export function DataChatbot({ datasetName, analysis, xCol, yCol, rawRows }: Data
                     ? 'bg-blue-600 text-white rounded-tr-none' 
                     : 'bg-white/5 text-white/80 border border-[var(--border)] rounded-tl-none'
                 }`}>
-                  <p dangerouslySetInnerHTML={{ __html: msg.content.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-bold">$1</strong>') }} />
+                  <div dangerouslySetInnerHTML={{ __html: msg.content.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-bold">$1</strong>').replace(/\n/g, '<br/>') }} />
                   <p className="text-[10px] opacity-30 mt-1">{msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                 </div>
               </div>
@@ -194,7 +286,7 @@ export function DataChatbot({ datasetName, analysis, xCol, yCol, rawRows }: Data
               </button>
             </div>
             <div className="flex gap-2 mt-3 overflow-x-auto pb-1 scrollbar-hide">
-               {['Trend?', 'Average?', 'Top Segment?'].map(chip => (
+               {['Trend?', 'Distribution?', 'Top Segment?', 'Rank?'].map(chip => (
                  <button 
                   key={chip}
                   type="button"

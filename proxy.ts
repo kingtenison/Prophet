@@ -47,6 +47,8 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith('/dashboard') ||
     pathname.startsWith('/datasets') ||
     pathname.startsWith('/charts') ||
+    pathname.startsWith('/market') ||
+    pathname.startsWith('/settings') ||
     (pathname.startsWith('/dashboards') && !isPublicDashboard)
 
   // Skip auth check for public routes if you want, but refresh is good.

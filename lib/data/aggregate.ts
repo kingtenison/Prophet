@@ -45,20 +45,21 @@ export function aggregateData(
   xCol: string,
   yCol: string,
   aggregation: AggregationType = 'sum',
-  groupCol?: string
+  groupCol?: string,
+  filterPredicate?: (row: DataRow) => boolean
 ): { name: string; value: number; group?: string }[] {
+  const filtered = filterPredicate ? data.filter(filterPredicate) : data
   const result: { name: string; value: number; group?: string }[] = []
 
   if (groupCol) {
-    // Multi-series: group by xCol, then aggregate within each group
-    const xGroups = groupBy(data, xCol)
+    const xGroups = groupBy(filtered, xCol)
     const allGroups = Array.from(xGroups.keys()).sort((a, b) => {
       if (a === null) return 1
       if (b === null) return -1
       return String(a).localeCompare(String(b))
     })
 
-    const uniqueGroups = Array.from(new Set(data.map(d => d[groupCol])))
+    const uniqueGroups = Array.from(new Set(filtered.map(d => d[groupCol])))
 
     for (const xKey of allGroups) {
       const xRows = xGroups.get(xKey) || []
@@ -73,8 +74,7 @@ export function aggregateData(
       }
     }
   } else {
-    // Simple: group by xCol only
-    const groups = groupBy(data, xCol)
+    const groups = groupBy(filtered, xCol)
     const sortedKeys = Array.from(groups.keys()).sort((a, b) => {
       if (a === null) return 1
       if (b === null) return -1

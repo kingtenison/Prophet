@@ -1,18 +1,77 @@
 'use client'
 
+import { useEffect, useState, useCallback } from 'react'
 import { useThemeStore } from '@/store/useThemeStore'
+import { createClient } from '@/lib/supabase/client'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-import { Palette, Globe, Shield, Save, RefreshCcw } from 'lucide-react'
+import { Palette, Globe, Save, RefreshCcw, Loader2 } from 'lucide-react'
 import { useToast } from '@/components/ui/ToastProvider'
 
 export default function BrandingSettings() {
   const theme = useThemeStore()
   const { addToast } = useToast()
+  const supabase = createClient()
+  const [saving, setSaving] = useState(false)
+  const [loading, setLoading] = useState(true)
 
-  const handleSave = () => {
-    addToast({ type: 'success', title: 'Branding updated successfully' })
+  useEffect(() => {
+    loadSettings()
+  }, [])
+
+  const loadSettings = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { setLoading(false); return }
+
+    const { data } = await supabase
+      .from('settings')
+      .select('*')
+      .eq('user_id', user.id)
+      .single()
+
+    if (data) {
+      theme.setPrimaryColor(data.primary_color)
+      theme.setOrgName(data.org_name)
+      theme.setReportFooter(data.report_footer)
+      if (data.org_logo) theme.setOrgLogo(data.org_logo)
+    }
+    setLoading(false)
+  }
+
+  const handleSave = async () => {
+    setSaving(true)
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) throw new Error('Not authenticated')
+
+      const payload = {
+        user_id: user.id,
+        primary_color: theme.primaryColor,
+        org_name: theme.orgName,
+        org_logo: theme.orgLogo,
+        report_footer: theme.reportFooter,
+      }
+
+      const { error } = await supabase
+        .from('settings')
+        .upsert(payload, { onConflict: 'user_id' })
+
+      if (error) throw error
+      addToast({ type: 'success', title: 'Branding saved to server' })
+    } catch (err: any) {
+      addToast({ type: 'error', title: 'Failed to save', message: err.message })
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="w-8 h-8 animate-spin text-white/30" />
+      </div>
+    )
   }
 
   return (
@@ -23,7 +82,6 @@ export default function BrandingSettings() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Color Palette */}
         <Card className="p-6 space-y-6">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-blue-500/10 rounded-lg">
@@ -61,7 +119,6 @@ export default function BrandingSettings() {
           </div>
         </Card>
 
-        {/* Report Settings */}
         <Card className="p-6 space-y-6">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-indigo-500/10 rounded-lg">
@@ -100,7 +157,7 @@ export default function BrandingSettings() {
         <Button variant="ghost" onClick={() => window.location.reload()}>
           <RefreshCcw className="w-4 h-4 mr-2" /> Reset
         </Button>
-        <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8">
+        <Button onClick={handleSave} loading={saving} className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8">
           <Save className="w-4 h-4 mr-2" /> Save Branding
         </Button>
       </div>

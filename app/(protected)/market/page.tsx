@@ -621,23 +621,30 @@ export default function MarketResearchPage() {
                     
                     {/* Grid Map Visualization */}
                     <div className="grid grid-cols-10 gap-1.5 p-3 bg-white/5 rounded-3xl border border-white/10 shadow-2xl relative backdrop-blur-xl">
-                      {Array.from({ length: 100 }).map((_, i) => {
-                        const isUser = i === 44;
-                        const isComp = [12, 13, 24, 45, 67, 89, 72, 31, 19, 58, 81, 93, 2].includes(i);
-                        return (
-                          <div 
-                            key={i} 
-                            className={`w-6 h-6 lg:w-9 lg:h-9 rounded-md transition-all duration-1000 ${
-                              isUser ? 'bg-primary-500 shadow-[0_0_20px_rgba(37,99,235,1)] scale-125 z-10' : 
-                              isComp ? 'bg-rose-500/30' : 'bg-white/5 hover:bg-white/10'
-                            }`}
-                            style={{ 
-                              animation: isComp ? 'pulse 3s infinite' : 'none',
-                              animationDelay: `${i * 20}ms` 
-                            }}
-                          />
-                        )
-                      })}
+                      {(() => {
+                        const compPositions = new Set<number>()
+                        analysis.competitors.forEach((_, idx) => {
+                          const pos = (idx * 7 + 3) % 100
+                          compPositions.add(pos)
+                        })
+                        return Array.from({ length: 100 }).map((_, i) => {
+                          const isUser = i === 44;
+                          const isComp = compPositions.has(i) && i !== 44;
+                          return (
+                            <div 
+                              key={i} 
+                              className={`w-6 h-6 lg:w-9 lg:h-9 rounded-md transition-all duration-1000 ${
+                                isUser ? 'bg-primary-500 shadow-[0_0_20px_rgba(37,99,235,1)] scale-125 z-10' : 
+                                isComp ? 'bg-rose-500/30' : 'bg-white/5 hover:bg-white/10'
+                              }`}
+                              style={{ 
+                                animation: isComp ? 'pulse 3s infinite' : 'none',
+                                animationDelay: `${i * 20}ms` 
+                              }}
+                            />
+                          )
+                        })
+                      })()}
                     </div>
                   </div>
                 </Card>

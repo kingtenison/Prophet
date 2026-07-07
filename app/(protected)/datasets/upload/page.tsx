@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { DropZone, PreviewTable } from '@/components/upload/DropZone'
@@ -35,6 +35,17 @@ export default function UploadDatasetPage() {
     setError: setStoreError,
     reset
   } = useUploadStore()
+
+  const hasUnsaved = step !== 'upload' || !!file
+  useEffect(() => {
+    if (!hasUnsaved) return
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault()
+      e.returnValue = ''
+    }
+    window.addEventListener('beforeunload', handler)
+    return () => window.removeEventListener('beforeunload', handler)
+  }, [hasUnsaved])
 
   const handleFileDrop = async (droppedFile: File) => {
     setIsProcessing(true)

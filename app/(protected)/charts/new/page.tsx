@@ -16,7 +16,7 @@ import { Card } from '@/components/ui/Card'
 import { Select } from '@/components/ui/Select'
 import { Badge } from '@/components/ui/Badge'
 import { useChartBuilderStore } from '@/store/useChartBuilderStore'
-import { aggregateData } from '@/lib/data/aggregate'
+import { aggregateData, buildPredicate } from '@/lib/data/aggregate'
 import { useToast } from '@/components/ui/ToastProvider'
 import { useCallback } from 'react'
 import {
@@ -167,24 +167,36 @@ export default function ChartBuilderPage() {
   const chartData = useMemo(() => {
     if (!xColumn || !yColumn || rawData.length === 0) return []
 
-    const processedFilters = filters.map(f => ({
-      column: f.column,
-      operator: f.operator,
-      value: ['equals', 'contains'].includes(f.operator) ? f.value : Number(f.value)
-    }))
+    const activeFilters = filters.filter(f => f.column && f.value !== '')
+    const filterPredicate = activeFilters.length > 0
+      ? buildPredicate(activeFilters.map(f => ({
+          column: f.column,
+          operator: f.operator,
+          value: ['equals', 'contains'].includes(f.operator) ? f.value : Number(f.value)
+        })))
+      : undefined
 
     return aggregateData(
       rawData,
       xColumn,
       yColumn,
       aggregation,
-      groupColumn || undefined
+      groupColumn || undefined,
+      filterPredicate
     )
   }, [rawData, xColumn, yColumn, aggregation, groupColumn, filters])
 
   const handleSave = async (toDashboard: boolean = false) => {
-    if (!selectedDatasetId || !title) {
-      addToast({ type: 'error', title: 'Please fill in all required fields' })
+    if (!selectedDatasetId) {
+      addToast({ type: 'error', title: 'Please select a dataset' })
+      return
+    }
+    if (!xColumn || !yColumn) {
+      addToast({ type: 'error', title: 'Please select X and Y axis columns' })
+      return
+    }
+    if (!title) {
+      addToast({ type: 'error', title: 'Please enter a chart title' })
       return
     }
 

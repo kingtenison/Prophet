@@ -21,8 +21,8 @@ import { formatDate, formatBytes } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 
 export default function DashboardPage() {
-  const [datasets, setDatasets] = useState<Dataset[]>([]);
-  const [dashboards, setDashboards] = useState<Dashboard[]>([]);
+  const [datasets, setDatasets] = useState<(Dataset & { file_size?: number })[]>([]);
+  const [dashboards, setDashboards] = useState<(Dashboard & { widgetCount: number })[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const supabase = createClient();
@@ -45,8 +45,44 @@ export default function DashboardPage() {
         .select('*')
         .order('updated_at', { ascending: false });
 
-      setDatasets(datasetsData || []);
-      setDashboards(dashboardsData || []);
+      // Batch widget counts: single query aggregates all dashboard widget counts
+      const dbIds = (dashboardsData || []).map(d => d.id)
+      const widgetCounts = new Map<string, number>()
+      if (dbIds.length > 0) {
+        const { data: allWidgets } = await supabase
+          .from('widgets')
+          .select('dashboard_id')
+          .in('dashboard_id', dbIds)
+        if (allWidgets) {
+          allWidgets.forEach(w => {
+            widgetCounts.set(w.dashboard_id, (widgetCounts.get(w.dashboard_id) || 0) + 1)
+          })
+        }
+      }
+
+      const dashboardsWithWidgets = (dashboardsData || []).map(d => ({
+        ...d,
+        widgetCount: widgetCounts.get(d.id) || 0
+      }))
+
+      // Batch file sizes: single storage list call
+      const datasetsWithSize = await Promise.all(
+        (datasetsData || []).map(async (d) => {
+          let fileSize = 0
+          if (d.file_path) {
+            const { data: fileInfo } = await supabase.storage
+              .from('datasets')
+              .list('', { search: d.file_path.split('/').pop() })
+            if (fileInfo && fileInfo.length > 0) {
+              fileSize = fileInfo[0].metadata?.size || 0
+            }
+          }
+          return { ...d, file_size: fileSize }
+        })
+      )
+
+      setDatasets(datasetsWithSize);
+      setDashboards(dashboardsWithWidgets);
       setLoading(false);
     }
 
@@ -112,7 +148,7 @@ export default function DashboardPage() {
               <div className="absolute top-0 right-0 p-4 opacity-10 transform translate-x-4 -translate-y-4 group-hover:scale-110 group-hover:opacity-20 transition-all duration-500"><BarChart3 className="w-24 h-24 text-cyan-400" /></div>
               <div className="relative z-10 flex items-center gap-4">
                 <div className="p-3 rounded-2xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20"><BarChart3 className="w-6 h-6" /></div>
-                <div><p className="text-3xl font-display font-bold" style={{ color: 'var(--text-primary)' }}>{dashboards.reduce((acc, d) => acc + (d.layout ? Object.keys(d.layout).length : 0), 0)}</p><p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>Active Charts</p></div>
+                <div><p className="text-3xl font-display font-bold" style={{ color: 'var(--text-primary)' }}>{dashboards.reduce((acc, d) => acc + d.widgetCount, 0)}</p><p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>Active Charts</p></div>
               </div>
             </Card>
             <Card className="p-6 glass border-white/5 relative overflow-hidden group">
@@ -145,7 +181,7 @@ export default function DashboardPage() {
                         {dashboard.is_public && <span className="px-2 py-0.5 text-[10px] font-medium bg-emerald-500/15 text-emerald-400 rounded-full uppercase tracking-wider">Public</span>}
                       </div>
                       <div className="flex items-center gap-4 text-xs text-white/40 mb-5">
-                        <span className="flex items-center gap-1"><BarChart3 className="w-3 h-3" /> {Object.keys(dashboard.layout || {}).length} widgets</span>
+                        <span className="flex items-center gap-1"><BarChart3 className="w-3 h-3" /> {dashboard.widgetCount} widgets</span>
                         <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {formatDate(dashboard.updated_at)}</span>
                       </div>
                       <div className="flex gap-2">
@@ -187,7 +223,7 @@ export default function DashboardPage() {
                         <button onClick={() => handleDeleteDataset(dataset.id)} className="text-white/20 hover:text-rose-400 transition-colors opacity-0 group-hover:opacity-100"><MoreHorizontal className="w-4 h-4" /></button>
                       </div>
                        <div className="flex items-center justify-between text-xs">
-                         <span className="text-white/40 font-mono bg-white/5 px-2 py-0.5 rounded">{formatBytes(0)}</span>
+                          <span className="text-white/40 font-mono bg-white/5 px-2 py-0.5 rounded">{formatBytes(dataset.file_size || 0)}</span>
                          <span className="text-white/30">{dataset.row_count.toLocaleString()} rows</span>
                        </div>
                     </div>

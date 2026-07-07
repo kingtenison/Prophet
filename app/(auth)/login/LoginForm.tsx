@@ -1,11 +1,12 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useState } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { AuthCard } from '@/components/auth/AuthCard'
-import { AlertCircle, Mail, Lock } from 'lucide-react'
+import { AlertCircle, Mail, Lock, Loader2 } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 export function LoginForm({
   action,
@@ -13,14 +14,39 @@ export function LoginForm({
   action: (prevState: { error?: string }, formData: FormData) => Promise<{ error?: string }>
 }) {
   const [state, formAction] = useActionState(action, {})
+  const [socialLoading, setSocialLoading] = useState<string | null>(null)
+
+  const handleSocialLogin = async (provider: 'google' | 'github') => {
+    setSocialLoading(provider)
+    const supabase = createClient()
+    await supabase.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: `${window.location.origin}/auth/callback` }
+    })
+    setSocialLoading(null)
+  }
+
+  const [resetEmail, setResetEmail] = useState('')
+  const [showResetDialog, setShowResetDialog] = useState(false)
+  const [resetSent, setResetSent] = useState(false)
+
+  const handleForgotPassword = async () => {
+    if (!resetEmail) return
+    const supabase = createClient()
+    const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+      redirectTo: `${window.location.origin}/auth/callback?type=recovery`,
+    })
+    if (!error) {
+      setResetSent(true)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-6 relative overflow-hidden">
-      {/* Ambient background with electric blue gradients */}
+      {/* Ambient background */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-[#2563EB] opacity-[0.06] blur-[120px]" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-[#1D4ED8] opacity-[0.05] blur-[120px]" />
-        {/* Subtle grid pattern */}
         <div className="absolute inset-0 opacity-[0.015]" style={{
           backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
           backgroundSize: '60px 60px'
@@ -65,9 +91,9 @@ export function LoginForm({
                 />
                 Remember me
               </label>
-              <a href="#" className="text-[#2563EB] hover:text-[#60A5FA] transition-colors font-medium">
+              <button type="button" onClick={() => setShowResetDialog(true)} className="text-[#2563EB] hover:text-[#60A5FA] transition-colors font-medium bg-transparent border-none cursor-pointer">
                 Forgot password?
-              </a>
+              </button>
             </div>
 
             <Button type="submit" size="lg" className="w-full mt-2">
@@ -75,7 +101,6 @@ export function LoginForm({
             </Button>
           </form>
 
-          {/* Divider */}
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-white/10" />
@@ -85,10 +110,10 @@ export function LoginForm({
             </div>
           </div>
 
-          {/* Social */}
           <div className="grid grid-cols-2 gap-3">
             {[
               {
+                provider: 'google' as const,
                 label: 'Google',
                 icon: (
                   <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -100,6 +125,7 @@ export function LoginForm({
                 ),
               },
               {
+                provider: 'github' as const,
                 label: 'GitHub',
                 icon: (
                   <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
@@ -111,9 +137,11 @@ export function LoginForm({
               <button
                 key={s.label}
                 type="button"
-                className="flex items-center justify-center gap-2 px-4 py-2.5 bg-white/4 border border-white/10 rounded-xl text-sm font-medium text-white/70 hover:bg-white/8 hover:border-white/20 transition-all"
+                onClick={() => handleSocialLogin(s.provider)}
+                disabled={socialLoading !== null}
+                className="flex items-center justify-center gap-2 px-4 py-2.5 bg-white/4 border border-white/10 rounded-xl text-sm font-medium text-white/70 hover:bg-white/8 hover:border-white/20 transition-all disabled:opacity-50"
               >
-                {s.icon}
+                {socialLoading === s.provider ? <Loader2 className="w-4 h-4 animate-spin" /> : s.icon}
                 {s.label}
               </button>
             ))}
@@ -127,6 +155,54 @@ export function LoginForm({
           </p>
         </AuthCard>
       </div>
+
+      {/* Forgot Password Dialog */}
+      {showResetDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="bg-[#111] border border-white/10 rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl animate-in fade-in zoom-in-95">
+            <h3 className="text-xl font-display font-bold text-white mb-2">Reset Password</h3>
+            <p className="text-sm text-white/50 mb-6">Enter your email and we&apos;ll send you a recovery link.</p>
+            {resetSent ? (
+              <div className="text-center py-4">
+                <div className="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-4">
+                  <Mail className="w-6 h-6 text-emerald-400" />
+                </div>
+                <p className="text-emerald-400 font-medium">Check your email</p>
+                <p className="text-sm text-white/50 mt-1">Recovery link sent if the account exists.</p>
+                <button
+                  type="button"
+                  onClick={() => { setShowResetDialog(false); setResetSent(false); setResetEmail('') }}
+                  className="mt-6 text-sm text-[#2563EB] hover:text-[#60A5FA] transition-colors"
+                >
+                  Back to login
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <Input
+                  value={resetEmail}
+                  onChange={e => setResetEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  type="email"
+                  icon={<Mail className="w-4 h-4" />}
+                />
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => { setShowResetDialog(false); setResetEmail('') }}
+                    className="flex-1 py-2.5 rounded-xl text-sm font-medium bg-white/5 text-white/70 hover:bg-white/10 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <Button onClick={handleForgotPassword} className="flex-1">
+                    Send Reset Link
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
