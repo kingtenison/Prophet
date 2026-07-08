@@ -286,25 +286,76 @@ export default function MarketResearchPage() {
         )}
 
         {step === 'searching' && (
-          <div className="flex flex-col items-center justify-center py-20 text-center animate-in fade-in duration-700">
-            <div className="relative mb-8">
-              <div className="w-32 h-32 border-4 border-primary-500/20 rounded-full animate-[spin_3s_linear_infinite]" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Globe className="w-12 h-12 text-[#2563EB] animate-pulse" />
+          <div className="max-w-7xl mx-auto animate-in fade-in duration-500 space-y-8">
+            {/* Summary Banner Skeleton */}
+            <div className="p-6 rounded-2xl bg-gradient-to-r from-[#111318] to-indigo-900/30 border border-white/5 animate-pulse">
+              <div className="flex items-center justify-between">
+                <div className="space-y-3">
+                  <div className="h-5 w-32 bg-white/10 rounded" />
+                  <div className="h-7 w-64 bg-white/10 rounded" />
+                  <div className="h-4 w-48 bg-white/5 rounded" />
+                </div>
+                <div className="h-10 w-28 bg-white/5 rounded-lg" />
               </div>
             </div>
-            <h2 className="text-2xl font-display font-bold">Gathering Intelligence</h2>
-            <p className="text-white/50 mt-2">Searching for {formData.businessType}s in {formData.location}...</p>
-            
-            <div className="mt-12 space-y-3 w-full max-w-md">
-              <div className="flex items-center gap-3 text-sm text-white/50 px-4 py-2 bg-[var(--bg-tertiary)] rounded-lg border border-white/5">
-                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                Scanning local business directories...
+
+            {/* Competitor Cards Skeleton */}
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+              {[1, 2, 3, 4].map(i => (
+                <div key={i} className="p-6 rounded-xl bg-[var(--bg-tertiary)] border border-white/5 animate-pulse">
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="space-y-2">
+                      <div className="h-5 w-36 bg-white/10 rounded" />
+                      <div className="h-3 w-24 bg-white/5 rounded" />
+                    </div>
+                    <div className="h-6 w-14 bg-emerald-500/10 rounded" />
+                  </div>
+                  <div className="space-y-3">
+                    <div className="h-3 w-full bg-white/5 rounded" />
+                    <div className="h-16 w-full bg-white/[0.02] rounded-lg border border-white/5" />
+                    <div className="flex gap-1.5">
+                      <div className="h-5 w-16 bg-emerald-500/5 rounded" />
+                      <div className="h-5 w-16 bg-rose-500/5 rounded" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Strategic Overview Skeleton */}
+            <div className="p-8 rounded-xl bg-[var(--bg-tertiary)] border border-white/5 animate-pulse">
+              <div className="h-7 w-72 bg-white/10 rounded mb-6" />
+              <div className="space-y-3">
+                <div className="h-4 w-full bg-white/5 rounded" />
+                <div className="h-4 w-5/6 bg-white/5 rounded" />
+                <div className="h-4 w-4/6 bg-white/5 rounded" />
+                <div className="h-4 w-full bg-white/5 rounded" />
+                <div className="h-4 w-3/4 bg-white/5 rounded" />
               </div>
-              <div className="flex items-center gap-3 text-sm text-white/50 px-4 py-2 bg-[var(--bg-tertiary)] rounded-lg border border-white/5 opacity-60">
-                <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse" />
-                Analyzing competitor reviews and ratings...
+            </div>
+
+            {/* Matrix Grid Skeleton */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="p-6 rounded-xl bg-[var(--bg-tertiary)] border border-white/5 animate-pulse">
+                <div className="h-6 w-48 bg-white/10 rounded mb-6" />
+                <div className="grid grid-cols-2 gap-2 h-48">
+                  {[1, 2, 3, 4].map(i => (
+                    <div key={i} className="rounded-xl bg-white/5" />
+                  ))}
+                </div>
               </div>
+              <div className="p-6 rounded-xl bg-[var(--bg-tertiary)] border border-white/5 animate-pulse">
+                <div className="h-6 w-48 bg-white/10 rounded mb-6" />
+                <div className="flex items-center justify-center h-48">
+                  <div className="w-40 h-40 bg-white/5 rounded-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* Progress indicator */}
+            <div className="flex items-center justify-center gap-3 text-sm text-white/40">
+              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+              Gathering intelligence...
             </div>
           </div>
         )}

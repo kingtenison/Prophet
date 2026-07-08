@@ -7,7 +7,8 @@ import { Dataset } from '@/types'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
-import { Database, Plus, Upload, BarChart3, Calendar, MoreHorizontal, ExternalLink } from 'lucide-react'
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
+import { Database, Plus, Upload, BarChart3, Calendar, Trash2, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react'
 import { formatDate, formatBytes } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
 
@@ -15,6 +16,10 @@ export default function DatasetsPage() {
   const [datasets, setDatasets] = useState<(Dataset & { file_size?: number })[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
+  const [page, setPage] = useState(0)
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null)
+  const [deleting, setDeleting] = useState(false)
+  const pageSize = 12
   const router = useRouter()
   const supabase = createClient()
 
@@ -31,34 +36,40 @@ export default function DatasetsPage() {
       .select('*')
       .order('created_at', { ascending: false })
 
-    const withSizes = await Promise.all(
-      (data || []).map(async (d) => {
-        let fileSize = 0
-        if (d.file_path) {
-          const { data: fileInfo } = await supabase.storage
-            .from('datasets')
-            .list('', { search: d.file_path.split('/').pop() })
-          if (fileInfo && fileInfo.length > 0) {
-            fileSize = fileInfo[0].metadata?.size || 0
-          }
-        }
-        return { ...d, file_size: fileSize }
+    const { data: allFiles } = await supabase.storage
+      .from('datasets')
+      .list()
+
+    const fileSizeMap: Record<string, number> = {}
+    if (allFiles) {
+      allFiles.forEach(f => {
+        if (f.metadata?.size) fileSizeMap[f.name] = f.metadata.size
       })
-    )
+    }
+
+    const withSizes = (data || []).map(d => ({
+      ...d,
+      file_size: d.file_path ? (fileSizeMap[d.file_path.split('/').pop() || ''] || 0) : 0
+    }))
 
     setDatasets(withSizes)
     setLoading(false)
   }
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Delete this dataset permanently?')) return
-    const { error } = await supabase.from('datasets').delete().eq('id', id)
-    if (!error) setDatasets(datasets.filter(d => d.id !== id))
+  const handleDelete = async () => {
+    if (!deleteTarget) return
+    setDeleting(true)
+    const { error } = await supabase.from('datasets').delete().eq('id', deleteTarget)
+    if (!error) setDatasets(datasets.filter(d => d.id !== deleteTarget))
+    setDeleting(false)
+    setDeleteTarget(null)
   }
 
   const filtered = datasets.filter(d =>
     d.name.toLowerCase().includes(search.toLowerCase())
   )
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
+  const paginated = filtered.slice(page * pageSize, (page + 1) * pageSize)
 
   if (loading) {
     return (
@@ -90,7 +101,7 @@ export default function DatasetsPage() {
           <input
             type="text"
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={e => { setSearch(e.target.value); setPage(0) }}
             placeholder="Search datasets..."
             className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 outline-none focus:border-blue-500/50 transition-colors"
           />
@@ -110,15 +121,15 @@ export default function DatasetsPage() {
         />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map(dataset => (
+          {paginated.map(dataset => (
             <div key={dataset.id} className="group p-5 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/10 transition-all">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="p-2 rounded-lg bg-blue-500/10 shrink-0"><Database className="w-5 h-5 text-blue-400" /></div>
                   <h3 className="font-semibold truncate group-hover:text-blue-400 transition-colors" style={{ color: 'var(--text-primary)' }}>{dataset.name}</h3>
                 </div>
-                <button onClick={() => handleDelete(dataset.id)} className="text-white/20 hover:text-rose-400 transition-colors opacity-0 group-hover:opacity-100 shrink-0">
-                  <MoreHorizontal className="w-4 h-4" />
+                <button onClick={() => setDeleteTarget(dataset.id)} className="text-white/20 hover:text-rose-400 transition-colors opacity-0 group-hover:opacity-100 shrink-0">
+                  <Trash2 className="w-4 h-4" />
                 </button>
               </div>
               <div className="flex items-center gap-4 text-xs text-white/40 mb-5">
@@ -137,6 +148,37 @@ export default function DatasetsPage() {
           ))}
         </div>
       )}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-3 pt-4">
+          <button
+            onClick={() => setPage(p => Math.max(0, p - 1))}
+            disabled={page === 0}
+            className="p-2 rounded-lg bg-white/5 border border-white/10 text-white/50 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <span className="text-sm text-white/40 font-mono">
+            {page + 1} / {totalPages}
+          </span>
+          <button
+            onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+            disabled={page === totalPages - 1}
+            className="p-2 rounded-lg bg-white/5 border border-white/10 text-white/50 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleDelete}
+        title="Delete Dataset"
+        message="This action cannot be undone. The dataset and all associated data will be permanently removed."
+        confirmLabel="Delete Permanently"
+        loading={deleting}
+      />
     </div>
   )
 }

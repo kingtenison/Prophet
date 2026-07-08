@@ -1,12 +1,12 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { useThemeStore } from '@/store/useThemeStore'
 import { createClient } from '@/lib/supabase/client'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-import { Palette, Globe, Save, RefreshCcw, Loader2 } from 'lucide-react'
+import { Palette, Globe, Save, RefreshCcw, Loader2, Upload, Image as ImageIcon, X } from 'lucide-react'
 import { useToast } from '@/components/ui/ToastProvider'
 
 export default function BrandingSettings() {
@@ -15,6 +15,8 @@ export default function BrandingSettings() {
   const supabase = createClient()
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [logoUploading, setLogoUploading] = useState(false)
+  const logoInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     loadSettings()
@@ -115,6 +117,74 @@ export default function BrandingSettings() {
                 onChange={(e) => theme.setOrgName(e.target.value)}
                 placeholder="e.g. Acme Corp Intelligence"
               />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-white/40 uppercase">Organization Logo</label>
+              <div className="flex items-center gap-4">
+                {theme.orgLogo ? (
+                  <div className="relative w-16 h-16 rounded-xl border border-white/10 overflow-hidden bg-white/5 shrink-0">
+                    <img src={theme.orgLogo} alt="Logo" className="w-full h-full object-contain" />
+                    <button
+                      onClick={() => theme.setOrgLogo(null)}
+                      className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-rose-500 rounded-full flex items-center justify-center hover:bg-rose-600 transition-colors"
+                    >
+                      <X className="w-3 h-3 text-white" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="w-16 h-16 rounded-xl border border-dashed border-white/10 bg-white/[0.02] flex items-center justify-center shrink-0">
+                    <ImageIcon className="w-6 h-6 text-white/20" />
+                  </div>
+                )}
+                <div className="flex-1">
+                  <input
+                    ref={logoInputRef}
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                    className="hidden"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0]
+                      if (!file) return
+                      if (file.size > 2 * 1024 * 1024) {
+                        addToast({ type: 'error', title: 'Logo too large', message: 'Maximum size is 2 MB' })
+                        return
+                      }
+                      setLogoUploading(true)
+                      try {
+                        const { data: { user } } = await supabase.auth.getUser()
+                        if (!user) throw new Error('Not authenticated')
+                        const ext = file.name.split('.').pop()
+                        const path = `logos/${user.id}_${Date.now()}.${ext}`
+                        const { error: uploadError } = await supabase.storage
+                          .from('datasets')
+                          .upload(path, file, { upsert: true })
+                        if (uploadError) throw uploadError
+                        const { data: { publicUrl } } = supabase.storage
+                          .from('datasets')
+                          .getPublicUrl(path)
+                        theme.setOrgLogo(publicUrl)
+                        addToast({ type: 'success', title: 'Logo uploaded' })
+                      } catch (err: any) {
+                        addToast({ type: 'error', title: 'Upload failed', message: err.message })
+                      } finally {
+                        setLogoUploading(false)
+                      }
+                    }}
+                  />
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => logoInputRef.current?.click()}
+                    loading={logoUploading}
+                    className="w-full"
+                  >
+                    <Upload className="w-3.5 h-3.5 mr-1.5" />
+                    {theme.orgLogo ? 'Replace Logo' : 'Upload Logo'}
+                  </Button>
+                  <p className="text-[10px] text-white/30 mt-1">PNG, JPG, WebP, or SVG — max 2 MB</p>
+                </div>
+              </div>
             </div>
           </div>
         </Card>

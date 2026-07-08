@@ -5,6 +5,7 @@ import { useUploadStore } from '@/store/useUploadStore'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { Input } from '@/components/ui/Input'
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { 
   Trash2, 
   RefreshCw, 
@@ -31,6 +32,7 @@ export function DataCleaning() {
 
   const [renaming, setRenaming] = useState<string | null>(null)
   const [newName, setNewName] = useState('')
+  const [showResetConfirm, setShowResetConfirm] = useState(false)
 
   return (
     <div className="space-y-6">
@@ -119,14 +121,7 @@ export function DataCleaning() {
             variant="ghost" 
             size="sm" 
             className="text-xs text-white/40 hover:text-white"
-            onClick={() => {
-              if (window.confirm('Reset all changes and start over?')) {
-                // We'd need to re-parse the file to truly reset
-                // For now, let's just trigger a reload of the original data if possible
-                // Actually, the simplest way is to tell the user to restart the upload
-                window.location.reload()
-              }
-            }}
+            onClick={() => setShowResetConfirm(true)}
           >
             <RefreshCw className="w-3 h-3 mr-1.5" />
             Reset All
@@ -201,6 +196,15 @@ export function DataCleaning() {
           </table>
         </div>
       </div>
+      <ConfirmDialog
+        open={showResetConfirm}
+        onClose={() => setShowResetConfirm(false)}
+        onConfirm={() => { setShowResetConfirm(false); window.location.reload() }}
+        title="Reset All Changes"
+        message="This will discard all cleaning changes and reload the page. Unsaved progress will be lost."
+        confirmLabel="Reset Everything"
+        variant="warning"
+      />
     </div>
   )
 }
